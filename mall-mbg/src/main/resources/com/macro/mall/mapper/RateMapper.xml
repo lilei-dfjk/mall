@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.RateMapper">
+    <resultMap id="BaseResultMap" type="com.macro.mall.model.Rate">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="currency" jdbcType="VARCHAR" property="currency"/>
+        <result column="base_currency" jdbcType="VARCHAR" property="baseCurrency"/>
+        <result column="rate" jdbcType="DOUBLE" property="rate"/>
+    </resultMap>
+
+    <update id="update" parameterType="com.macro.mall.model.Rate">
+        update t_rate
+        <set>
+            currency = #{currency},base_currency = #{baseCurrency},rate = #{rate}
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="getByCurrency" parameterType="map">
+        select rate from t_rate where currency = #{currency} and base_currency = #{baseCurrency}
+    </update>
+
+    <insert id="insert" parameterType="com.macro.mall.model.Rate">
+        insert into t_rate (currency, base_currency, rate)
+        values (#{currency}, #{baseCurrency}, #{rate})
+    </insert>
+</mapper>

@@ -21,6 +21,22 @@ systemctl start docker
 3. 设置为可执行：sudo chmod +x /usr/local/bin/docker-compose
 4. 测试是否安装成功：docker-compose --version
 
+在/usr/lib/systemd/system/docker.service，配置远程访问。主要是在[Service]这个部分，加上下面两个参数：
+cd /usr/lib/systemd/system
+
+vi docker.service
+
+ExecStart=
+ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix://var/run/docker.sock
+
+systemctl daemon-reload  //重新读取配置文件
+systemctl restart docker //重新启动服务
+---------------------
+作者：She_lock
+来源：CSDN
+原文：https://blog.csdn.net/she_lock/article/details/79557022
+版权声明：本文为博主原创文章，转载请附上博文链接！
+
 ## mysql安装
 ### 下载镜像文件
 docker pull mysql:5.7

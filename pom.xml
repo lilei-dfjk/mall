@@ -8,14 +8,19 @@
     <artifactId>mall</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.14.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
     <modules>
         <module>mall-mbg</module>
         <module>mall-admin</module>
         <module>mall-search</module>
         <module>mall-portal</module>
         <module>mall-demo</module>
-        <module>mall-logistics</module>
+        <module>mall-common</module>
     </modules>
 
     <dependencyManagement>
