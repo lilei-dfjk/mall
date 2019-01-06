@@ -34,6 +34,7 @@ public class EsProduct implements Serializable {
     @Field(analyzer = "ik_max_word", type = FieldType.Text)
     private String keywords;
     private BigDecimal price;
+    private BigDecimal cnyPrice;
     private Integer sale;
     private Integer newStatus;
     private Integer recommandStatus;
@@ -42,6 +43,14 @@ public class EsProduct implements Serializable {
     private Integer sort;
     @Field(type = FieldType.Nested)
     private List<EsProductAttributeValue> attrValueList;
+
+    public BigDecimal getCnyPrice() {
+        return cnyPrice;
+    }
+
+    public void setCnyPrice(BigDecimal cnyPrice) {
+        this.cnyPrice = cnyPrice;
+    }
 
     public Long getId() {
         return id;

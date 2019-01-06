@@ -16,9 +16,10 @@
         where id = #{id}
     </update>
 
-    <update id="getByCurrency" parameterType="map">
-        select rate from t_rate where currency = #{currency} and base_currency = #{baseCurrency}
-    </update>
+    <select id="getByCurrency" parameterType="map" resultMap="BaseResultMap">
+        select id, currency, base_currency, rate
+        from t_rate where currency = #{currency} and base_currency = #{baseCurrency}
+    </select>
 
     <insert id="insert" parameterType="com.macro.mall.model.Rate">
         insert into t_rate (currency, base_currency, rate)

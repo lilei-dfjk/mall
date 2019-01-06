@@ -12,7 +12,7 @@ public class RateExchangeServiceImpl implements RateExchangeService {
     private RateMapper rateMapper;
 
     @Override
-    public double getRateByType(String currencyType, String baseCurrencyType) {
+    public Rate getRateByType(String currencyType, String baseCurrencyType) {
         Map<String, String> map = new HashMap<String, String>();
         map.put("currency", currencyType);
         map.put("baseCurrency", baseCurrencyType);

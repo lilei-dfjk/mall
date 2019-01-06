@@ -1,5 +1,6 @@
 package com.macro.mall.search.service.impl;
 
+import com.macro.mall.pay.rate.RateService;
 import com.macro.mall.search.dao.EsBrandDao;
 import com.macro.mall.search.dao.EsProductDao;
 import com.macro.mall.search.dao.EsProductTypeDao;
@@ -39,6 +40,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -66,10 +68,15 @@ public class EsProductServiceImpl implements EsProductService {
     private EsProductTypeRepository productTypeRepository;
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
+    @Autowired
+    private RateService rateService;
 
     @Override
     public int importAll() {
         List<EsProduct> esProductList = productDao.getAllEsProductList(null);
+        esProductList.stream().forEach(esProduct -> {
+            esProduct.setCnyPrice(esProduct.getPrice().divide(BigDecimal.valueOf(rateService.getAuToCnyRate()),2));
+        });
         productRepository.deleteAll();
         Iterable<EsProduct> esProductIterable = productRepository.saveAll(esProductList);
         importAllBrands();

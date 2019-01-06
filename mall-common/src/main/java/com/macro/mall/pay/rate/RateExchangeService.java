@@ -4,7 +4,7 @@ import com.macro.mall.model.Rate;
 
 public interface RateExchangeService {
 
-    double getRateByType(String currencyType, String baseCurrencyType);
+    Rate getRateByType(String currencyType, String baseCurrencyType);
 
     void update(Rate rate);
 
