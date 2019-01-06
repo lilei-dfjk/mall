@@ -123,7 +123,7 @@
                     <imageName>mall/${project.artifactId}:${project.version}</imageName>
                     <dockerHost>http://47.74.69.32:2375</dockerHost>
                     <baseImage>java:8</baseImage>
-                    <entryPoint>["java", "-jar","-Dspring.profiles.active=prod","/${project.build.finalName}.jar"]</entryPoint>
+                    <entryPoint>["java", "-jar","-Dspring.profiles.active=read","/${project.build.finalName}.jar"]</entryPoint>
                     <resources>
                         <resource>
                             <targetPath>/</targetPath>
