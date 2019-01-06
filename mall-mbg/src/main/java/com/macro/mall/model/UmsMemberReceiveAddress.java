@@ -58,6 +58,16 @@ public class UmsMemberReceiveAddress implements Serializable {
      */
     private String detailAddress;
 
+    /**
+     * 身份证正面
+     */
+    private String identityFront;
+
+    /**
+     * 身份证背面
+     */
+    private String identityBack;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -138,6 +148,22 @@ public class UmsMemberReceiveAddress implements Serializable {
 
     public void setDetailAddress(String detailAddress) {
         this.detailAddress = detailAddress;
+    }
+
+    public String getIdentityFront() {
+        return identityFront;
+    }
+
+    public void setIdentityFront(String identityFront) {
+        this.identityFront = identityFront;
+    }
+
+    public String getIdentityBack() {
+        return identityBack;
+    }
+
+    public void setIdentityBack(String identityBack) {
+        this.identityBack = identityBack;
     }
 
     @Override
