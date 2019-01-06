@@ -2,7 +2,6 @@ package com.macro.mall.portal.service.impl;
 
 import com.macro.mall.mapper.*;
 import com.macro.mall.model.*;
-import com.macro.mall.portal.component.CancelOrderSender;
 import com.macro.mall.portal.dao.PortalOrderDao;
 import com.macro.mall.portal.dao.PortalOrderItemDao;
 import com.macro.mall.portal.dao.SmsCouponHistoryDao;
@@ -55,7 +54,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     @Autowired
     private OmsOrderItemMapper orderItemMapper;
     @Autowired
-    private CancelOrderSender cancelOrderSender;
+    private OmsPortalOrderService portalOrderService;
 
     @Override
     public ConfirmOrderResult generateConfirmOrder() {
@@ -303,7 +302,8 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         OmsOrderSetting orderSetting = orderSettingMapper.selectByPrimaryKey(1L);
         long delayTimes = orderSetting.getNormalOrderOvertime()*60*1000;
         //发送延迟消息
-        cancelOrderSender.sendMessage(orderId,delayTimes);
+        portalOrderService.cancelOrder(orderId);
+//        cancelOrderSender.sendMessage(orderId,delayTimes);
     }
 
     /**
