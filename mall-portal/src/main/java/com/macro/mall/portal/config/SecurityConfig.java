@@ -49,6 +49,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/esProduct/*")// 对登录注册要允许匿名访问
                 .permitAll()
+                .antMatchers("/member/comment/list")// 获取评论列表
+                .permitAll()
                 .antMatchers("/member/**", "/returnApply/**")// 测试时开启
                 .permitAll()
                 .anyRequest()// 除上面外的所有请求全部需要鉴权认证
