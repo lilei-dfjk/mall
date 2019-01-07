@@ -28,9 +28,9 @@ public class OmsCartItemController {
     private UmsMemberService memberService;
 
     @ApiOperation("添加商品到购物车")
-    @RequestMapping(value = "/add", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
+    @RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public Object add(@RequestBody OmsCartItem cartItem) {
+    public Object add(OmsCartItem cartItem) {
         int count = cartItemService.add(cartItem);
         if (count > 0) {
             return new CommonResult().success(count);

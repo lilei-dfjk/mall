@@ -9,9 +9,16 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
+import java.nio.charset.Charset;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 @MapperScan({"com.macro.mall.mapper", "com.macro.mall.portal.dao", "com.macro.mall.search.dao"})
