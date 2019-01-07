@@ -45,11 +45,11 @@ public class JSAPIOrder {
         String finalUrl = "";
         if(location.equals("0"))
         { 
-            finalUrl =  payFunction.getUrlString(payFunction.urlCNPrex + "MakeJSAPIOrder", paraMap);
+            finalUrl =  payFunction.getUrlString(PayFunction.urlCNPrex + "MakeJSAPIOrder", paraMap);
         }
         else
         {
-            finalUrl =  payFunction.getUrlString(payFunction.urlPrex + "MakeJSAPIOrder", paraMap);
+            finalUrl =  payFunction.getUrlString(PayFunction.urlPrex + "MakeJSAPIOrder", paraMap);
         }
         System.out.println(finalUrl);
         try {
@@ -67,8 +67,8 @@ public class JSAPIOrder {
         String order_name = "测试商品";
         String currency = "AUD";
         int amount = 100;
-        String redirect_url = "http://your_site.com/redirect_to.html";
-        String notify_url = "http://your_site.com/receive_notify.html";
+        String redirect_url = "http://410c108e.ngrok.io";
+        String notify_url = "http://410c108e.ngrok.io";
         String out_order_no = "SEORD000001";
         String timeStamp = String.valueOf(System.currentTimeMillis());
         JSAPIOrder jsAPIOrder = new JSAPIOrder();

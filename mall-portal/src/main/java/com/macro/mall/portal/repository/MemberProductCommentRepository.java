@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface MemberProductCommentRepository extends MongoRepository<ProductComment, String> {
-    Page<ProductComment> findByProductIdOrderByCreateTimeDesc(Long memberId, Pageable pageable);
+    Page<ProductComment> findByProductIdOrderByCreateTimeDesc(Long productId, Pageable pageable);
 
-    ProductComment findByProductIdAndMemberId(Long productId, Long id);
+    ProductComment findByProductIdAndUserId(Long productId, Long id);
 }

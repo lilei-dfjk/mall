@@ -30,7 +30,7 @@ public class MemberProductCommentServiceImpl implements MemberProductCommentServ
     public int add(ProductComment productComment) {
         int count = 0;
         UmsMember currentMember = memberService.getCurrentMember();
-        ProductComment comment = memberProductCommentRepository.findByProductIdAndMemberId(productComment.getProductId(), currentMember.getId());
+        ProductComment comment = memberProductCommentRepository.findByProductIdAndUserId(productComment.getProductId(), currentMember.getId());
         if (productComment.getProductId() > 0 && StringUtils.isNotBlank(productComment.getComment())) {
             return -1;
         } else {
