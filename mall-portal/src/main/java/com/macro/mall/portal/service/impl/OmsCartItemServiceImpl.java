@@ -3,18 +3,22 @@ package com.macro.mall.portal.service.impl;
 import com.macro.mall.mapper.OmsCartItemMapper;
 import com.macro.mall.model.OmsCartItem;
 import com.macro.mall.model.OmsCartItemExample;
+import com.macro.mall.model.PmsProduct;
 import com.macro.mall.model.UmsMember;
+import com.macro.mall.pay.rate.RateService;
 import com.macro.mall.portal.dao.PortalProductDao;
 import com.macro.mall.portal.domain.CartProduct;
 import com.macro.mall.portal.domain.CartPromotionItem;
 import com.macro.mall.portal.service.OmsCartItemService;
 import com.macro.mall.portal.service.OmsPromotionService;
+import com.macro.mall.portal.service.PortalProductService;
 import com.macro.mall.portal.service.UmsMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,12 +37,27 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
     private OmsPromotionService promotionService;
     @Autowired
     private UmsMemberService memberService;
+    @Autowired
+    private PortalProductService portalProductService;
+    @Autowired
+    private RateService rateService;
 
     @Override
     public int add(OmsCartItem cartItem) {
         int count;
+        PmsProduct productInfo = portalProductService.getProductInfo(cartItem.getProductId());
+        if (null == productInfo) {
+            return 0;
+        }
         UmsMember currentMember = memberService.getCurrentMember();
         cartItem.setMemberId(currentMember.getId());
+        cartItem.setPrice(productInfo.getPrice());
+        cartItem.setProductPic(productInfo.getPic());
+        cartItem.setCnyPrice(productInfo.getPrice().divide(BigDecimal.valueOf(rateService.getAuToCnyRate()), 2));
+        cartItem.setProductSn(productInfo.getProductSn());
+        cartItem.setProductName(productInfo.getName());
+        cartItem.setStock(productInfo.getStock());
+
         cartItem.setMemberNickname(currentMember.getNickname());
         cartItem.setDeleteStatus(0);
         OmsCartItem existCartItem = getCartItem(cartItem);

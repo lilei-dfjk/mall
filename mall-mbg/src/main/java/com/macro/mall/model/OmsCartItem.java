@@ -28,6 +28,13 @@ public class OmsCartItem implements Serializable {
     private BigDecimal price;
 
     /**
+     * 添加到购物车的价格
+     *
+     * @mbggenerated
+     */
+    private BigDecimal cnyPrice;
+
+    /**
      * 销售属性1
      *
      * @mbggenerated
@@ -121,6 +128,17 @@ public class OmsCartItem implements Serializable {
      * @mbggenerated
      */
     private String productAttr;
+
+    /**
+     * 发布状态
+     */
+    private Integer publishStatus;
+    /**
+     * 库存
+     *
+     * @mbggenerated
+     */
+    private Integer stock;
 
     private static final long serialVersionUID = 1L;
 
@@ -290,6 +308,30 @@ public class OmsCartItem implements Serializable {
 
     public void setProductAttr(String productAttr) {
         this.productAttr = productAttr;
+    }
+
+    public BigDecimal getCnyPrice() {
+        return cnyPrice;
+    }
+
+    public void setCnyPrice(BigDecimal cnyPrice) {
+        this.cnyPrice = cnyPrice;
+    }
+
+    public Integer getPublishStatus() {
+        return publishStatus;
+    }
+
+    public void setPublishStatus(Integer publishStatus) {
+        this.publishStatus = publishStatus;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
     }
 
     @Override
