@@ -19,7 +19,6 @@
         <module>mall-admin</module>
         <module>mall-search</module>
         <module>mall-portal</module>
-        <module>mall-demo</module>
         <module>mall-common</module>
     </modules>
 

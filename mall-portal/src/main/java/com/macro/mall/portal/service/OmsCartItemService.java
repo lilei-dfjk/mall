@@ -3,6 +3,8 @@ package com.macro.mall.portal.service;
 import com.macro.mall.model.OmsCartItem;
 import com.macro.mall.portal.domain.CartProduct;
 import com.macro.mall.portal.domain.CartPromotionItem;
+import com.macro.mall.portal.model.PortalCartItem;
+import com.macro.mall.portal.model.PortalCartItemWithDeal;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -23,6 +25,8 @@ public interface OmsCartItemService {
      */
     List<OmsCartItem> list(Long memberId);
 
+    PortalCartItemWithDeal lists(Long memberId);
+
     /**
      * 获取包含促销活动信息的购物车列表
      */
@@ -36,10 +40,10 @@ public interface OmsCartItemService {
     /**
      * 批量删除购物车中的商品
      */
-    int delete(Long memberId,List<Long> ids);
+    int delete(Long memberId, List<Long> ids);
 
     /**
-     *获取购物车中用于选择商品规格的商品信息
+     * 获取购物车中用于选择商品规格的商品信息
      */
     CartProduct getCartProduct(Long productId);
 

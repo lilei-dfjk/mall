@@ -9,6 +9,9 @@ import com.macro.mall.pay.rate.RateService;
 import com.macro.mall.portal.dao.PortalProductDao;
 import com.macro.mall.portal.domain.CartProduct;
 import com.macro.mall.portal.domain.CartPromotionItem;
+import com.macro.mall.portal.model.PortalCartItem;
+import com.macro.mall.portal.model.PortalCartItemWithDeal;
+import com.macro.mall.portal.model.PortalDealInfo;
 import com.macro.mall.portal.service.OmsCartItemService;
 import com.macro.mall.portal.service.OmsPromotionService;
 import com.macro.mall.portal.service.PortalProductService;
@@ -22,6 +25,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 购物车管理Service实现类
@@ -52,8 +56,8 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
         UmsMember currentMember = memberService.getCurrentMember();
         cartItem.setMemberId(currentMember.getId());
         cartItem.setPrice(productInfo.getPrice());
-        cartItem.setProductPic(productInfo.getPic());
-        cartItem.setCnyPrice(productInfo.getPrice().divide(BigDecimal.valueOf(rateService.getAuToCnyRate()), 2));
+//        cartItem.setProductPic(productInfo.getPic());
+//        cartItem.setCnyPrice(productInfo.getPrice().divide(BigDecimal.valueOf(rateService.getAuToCnyRate()), 2));
         cartItem.setProductSn(productInfo.getProductSn());
         cartItem.setProductName(productInfo.getName());
         cartItem.setStock(productInfo.getStock());
@@ -100,6 +104,53 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
         OmsCartItemExample example = new OmsCartItemExample();
         example.createCriteria().andDeleteStatusEqualTo(0).andMemberIdEqualTo(memberId);
         return cartItemMapper.selectByExample(example);
+    }
+
+    @Override
+    public PortalCartItemWithDeal lists(Long memberId) {
+        OmsCartItemExample example = new OmsCartItemExample();
+        example.createCriteria().andDeleteStatusEqualTo(0).andMemberIdEqualTo(memberId);
+        List<OmsCartItem> omsCartItems = cartItemMapper.selectByExample(example);
+        if (!CollectionUtils.isEmpty(omsCartItems)) {
+            List<PortalCartItem> portalCartItems = omsCartItems.stream().map(omsCartItem -> initPortalCartItem(omsCartItem)).collect(Collectors.toList());
+            if (!CollectionUtils.isEmpty(portalCartItems)) {
+                int productNum;
+                // 邮寄总重量
+                double postWeight;
+                // 商品价格
+                double productPrice;
+                // 运费
+                double postPrice; // TODO
+                // 订单价格
+                double orderPrice;
+                // 人民币价格
+                double orderCnyPrice;
+                productNum = portalCartItems.stream().mapToInt(portalCartItem -> portalCartItem.getQuantity() * portalCartItem.getQuantity()).sum();
+                postWeight = portalCartItems.stream().mapToDouble(portalCartItem -> portalCartItem.getWeight().multiply(BigDecimal.valueOf(portalCartItem.getQuantity())).doubleValue()).sum();
+                productPrice = portalCartItems.stream().mapToDouble(portalCartItem -> portalCartItem.getPrice().multiply(BigDecimal.valueOf(portalCartItem.getQuantity())).doubleValue()).sum();
+                postPrice = 0;
+                orderPrice = productPrice + postPrice;
+                orderCnyPrice = portalCartItems.stream().mapToDouble(portalCartItem -> portalCartItem.getPrice().divide(BigDecimal.valueOf(rateService.getAuToCnyRate()), 2).doubleValue()).sum();
+                PortalDealInfo portalDealInfo = new PortalDealInfo(productNum, postWeight, productPrice, postPrice, orderPrice, orderCnyPrice);
+                return new PortalCartItemWithDeal(portalCartItems, portalDealInfo);
+            }
+        }
+        return new PortalCartItemWithDeal();
+    }
+
+    private PortalCartItem initPortalCartItem(OmsCartItem item) {
+        PmsProduct productInfo = portalProductService.getProductInfo(item.getProductId());
+        PortalCartItem portalCartItem = new PortalCartItem();
+        portalCartItem.setId(item.getId());
+        portalCartItem.setPic(productInfo.getPic());
+        portalCartItem.setQuantity(item.getQuantity());
+        portalCartItem.setPrice(productInfo.getPrice());
+        portalCartItem.setProductId(item.getProductId());
+        portalCartItem.setWeight(productInfo.getWeight());
+        portalCartItem.setProductName(productInfo.getName());
+        portalCartItem.setPublishStatus(productInfo.getPublishStatus());
+        portalCartItem.setCnyPrice(productInfo.getPrice().divide(BigDecimal.valueOf(rateService.getAuToCnyRate()), 2));
+        return portalCartItem;
     }
 
     @Override

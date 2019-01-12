@@ -4,6 +4,7 @@ import com.macro.mall.model.OmsCartItem;
 import com.macro.mall.portal.domain.CartProduct;
 import com.macro.mall.portal.domain.CartPromotionItem;
 import com.macro.mall.portal.domain.CommonResult;
+import com.macro.mall.portal.model.PortalCartItemWithDeal;
 import com.macro.mall.portal.service.OmsCartItemService;
 import com.macro.mall.portal.service.UmsMemberService;
 import io.swagger.annotations.Api;
@@ -30,7 +31,10 @@ public class OmsCartItemController {
     @ApiOperation("添加商品到购物车")
     @RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public Object add(OmsCartItem cartItem) {
+    public Object add(long productId, int quantity) {
+        OmsCartItem cartItem = new OmsCartItem();
+        cartItem.setProductId(productId);
+        cartItem.setQuantity(quantity);
         int count = cartItemService.add(cartItem);
         if (count > 0) {
             return new CommonResult().success(count);
@@ -42,8 +46,8 @@ public class OmsCartItemController {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
     public Object list() {
-        List<OmsCartItem> cartItemList = cartItemService.list(memberService.getCurrentMember().getId());
-        return new CommonResult().success(cartItemList);
+        PortalCartItemWithDeal deal = cartItemService.lists(memberService.getCurrentMember().getId());
+        return new CommonResult().success(deal);
     }
 
     @ApiOperation("获取某个会员的购物车列表,包括促销信息")
