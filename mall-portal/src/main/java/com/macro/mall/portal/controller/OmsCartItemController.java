@@ -59,13 +59,13 @@ public class OmsCartItemController {
     }
 
     @ApiOperation("修改购物车中某个商品的数量")
-    @RequestMapping(value = "/update/quantity", method = RequestMethod.GET)
+    @RequestMapping(value = "/update/quantity")
     @ResponseBody
     public Object updateQuantity(@RequestParam Long id,
                                  @RequestParam Integer quantity) {
         int count = cartItemService.updateQuantity(id, memberService.getCurrentMember().getId(), quantity);
         if (count > 0) {
-            return new CommonResult().success(count);
+            return new CommonResult().success(cartItemService.lists(memberService.getCurrentMember().getId()));
         }
         return new CommonResult().failed();
     }
@@ -95,7 +95,7 @@ public class OmsCartItemController {
     public Object delete(@RequestParam("ids") List<Long> ids) {
         int count = cartItemService.delete(memberService.getCurrentMember().getId(), ids);
         if (count > 0) {
-            return new CommonResult().success(count);
+            return new CommonResult().success(cartItemService.lists(memberService.getCurrentMember().getId()));
         }
         return new CommonResult().failed();
     }
@@ -106,7 +106,7 @@ public class OmsCartItemController {
     public Object clear() {
         int count = cartItemService.clear(memberService.getCurrentMember().getId());
         if (count > 0) {
-            return new CommonResult().success(count);
+            return new CommonResult().success(cartItemService.lists(memberService.getCurrentMember().getId()));
         }
         return new CommonResult().failed();
     }
