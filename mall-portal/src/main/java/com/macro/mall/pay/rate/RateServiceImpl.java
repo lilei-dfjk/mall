@@ -23,7 +23,7 @@ public class RateServiceImpl implements RateService {
         return rateByType.getRate();
     }
 
-    @Cacheable(RedisKey.CURRENT_RATE_AU_CN)
+    @Cacheable(value = RedisKey.PORTAL_RATE, key = RedisKey.CURRENT_RATE_AU_CN)
     @Override
     public Rate getRate(String currency, String baseCurrency) {
         Map<String, String> map = new HashMap<String, String>();
@@ -32,13 +32,13 @@ public class RateServiceImpl implements RateService {
         return rateMapper.getByCurrency(map);
     }
 
-    @CacheEvict(RedisKey.CURRENT_RATE_AU_CN)
+    @CacheEvict(value = RedisKey.PORTAL_RATE, key = RedisKey.CURRENT_RATE_AU_CN)
     @Override
     public void save(Rate rate) {
         rateMapper.insert(rate);
     }
 
-    @CacheEvict(RedisKey.CURRENT_RATE_AU_CN)
+    @CacheEvict(value = RedisKey.PORTAL_RATE, key = RedisKey.CURRENT_RATE_AU_CN)
     @Override
     public void update(Rate rate) {
         rateMapper.update(rate);
