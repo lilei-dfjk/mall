@@ -1,62 +1,62 @@
 package com.macro.mall.portal.service.impl;
 
+import com.macro.mall.mapper.UmsProductCollectionMapper;
 import com.macro.mall.model.PmsProduct;
 import com.macro.mall.model.UmsMember;
-import com.macro.mall.portal.domain.MemberProductCollection;
-import com.macro.mall.portal.repository.MemberProductCollectionRepository;
+import com.macro.mall.model.UmsProductCollection;
+import com.macro.mall.model.UmsProductCollectionExample;
 import com.macro.mall.portal.service.MemberCollectionService;
 import com.macro.mall.portal.service.PortalProductService;
 import com.macro.mall.portal.service.UmsMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
 
-/**
- * 会员收藏Service实现类
- * Created by macro on 2018/8/2.
- */
 @Service
 public class MemberCollectionServiceImpl implements MemberCollectionService {
+
     @Autowired
-    private MemberProductCollectionRepository productCollectionRepository;
+    private UmsProductCollectionMapper productCollectionMapper;
     @Autowired
     private UmsMemberService memberService;
     @Autowired
     private PortalProductService productService;
 
     @Override
-    public int addProduct(MemberProductCollection productCollection) {
+    public int addProduct(UmsProductCollection productCollection) {
         int count = 0;
         UmsMember currentMember = memberService.getCurrentMember();
         PmsProduct productInfo = productService.getProductInfo(productCollection.getProductId());
         productCollection.setCreateTime(new Date());
         productCollection.setMemberId(currentMember.getId());
         productCollection.setProductPic(productInfo.getPic());
-        productCollection.setProductPrice(productInfo.getPrice().doubleValue());
+        productCollection.setProductPrice(productInfo.getPrice());
         productCollection.setProductName(productInfo.getName());
-        MemberProductCollection findCollection = productCollectionRepository.findByMemberIdAndProductId(productCollection.getMemberId(), productCollection.getProductId());
-        if (findCollection == null) {
-            productCollectionRepository.save(productCollection);
+
+        UmsProductCollectionExample example = new UmsProductCollectionExample();
+        example.createCriteria().andProductIdEqualTo(productCollection.getProductId());
+        List<UmsProductCollection> collections = productCollectionMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(collections)) {
+            productCollectionMapper.insert(productCollection);
             count = 1;
         }
         return count;
     }
 
     @Override
-    public int deleteProduct(Long productId) {
-        UmsMember currentMember = memberService.getCurrentMember();
-        return productCollectionRepository.deleteByMemberIdAndProductId(currentMember.getId(), productId);
+    public int deleteProduct(Long id) {
+        return productCollectionMapper.deleteByPrimaryKey(id);
     }
 
     @Override
-    public Page<MemberProductCollection> listProduct(int start, int size) {
+    public List<UmsProductCollection> listProduct() {
         UmsMember currentMember = memberService.getCurrentMember();
-        Pageable pageable = PageRequest.of(start, size);
-        return productCollectionRepository.findByMemberIdOrderByCreateTimeDesc(currentMember.getId(), pageable);
+        UmsProductCollectionExample example = new UmsProductCollectionExample();
+        example.createCriteria().andMemberIdEqualTo(currentMember.getId());
+        List<UmsProductCollection> collections = productCollectionMapper.selectByExample(example);
+        return collections;
     }
 }

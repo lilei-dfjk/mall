@@ -1,32 +1,33 @@
-package com.macro.mall.portal.domain;
+package com.macro.mall.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
-/**
- * 用户收藏的商品
- * Created by macro on 2018/8/2.
- */
-public class MemberProductCollection {
-    @Id
-    private String id;
-    @Indexed
+public class UmsProductCollection implements Serializable {
+    private Long id;
+
     private Long memberId;
-    @Indexed
+
     private Long productId;
+
     private String productName;
+
     private String productPic;
+
     private String productSubTitle;
-    private double productPrice;
+
+    private BigDecimal productPrice;
+
     private Date createTime;
 
-    public String getId() {
+    private static final long serialVersionUID = 1L;
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -70,11 +71,11 @@ public class MemberProductCollection {
         this.productSubTitle = productSubTitle;
     }
 
-    public double getProductPrice() {
+    public BigDecimal getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(double productPrice) {
+    public void setProductPrice(BigDecimal productPrice) {
         this.productPrice = productPrice;
     }
 
@@ -84,5 +85,24 @@ public class MemberProductCollection {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("Hash = ").append(hashCode());
+        sb.append(", id=").append(id);
+        sb.append(", memberId=").append(memberId);
+        sb.append(", productId=").append(productId);
+        sb.append(", productName=").append(productName);
+        sb.append(", productPic=").append(productPic);
+        sb.append(", productSubTitle=").append(productSubTitle);
+        sb.append(", productPrice=").append(productPrice);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", serialVersionUID=").append(serialVersionUID);
+        sb.append("]");
+        return sb.toString();
     }
 }

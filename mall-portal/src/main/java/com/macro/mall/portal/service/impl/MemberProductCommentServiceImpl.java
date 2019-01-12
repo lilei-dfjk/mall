@@ -1,18 +1,18 @@
 package com.macro.mall.portal.service.impl;
 
+import com.macro.mall.mapper.UmsMemberCommentMapper;
 import com.macro.mall.model.UmsMember;
-import com.macro.mall.portal.domain.ProductComment;
-import com.macro.mall.portal.repository.MemberProductCommentRepository;
+import com.macro.mall.model.UmsMemberComment;
+import com.macro.mall.model.UmsMemberCommentExample;
 import com.macro.mall.portal.service.MemberProductCommentService;
 import com.macro.mall.portal.service.UmsMemberService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 会员关注Service实现类
@@ -23,29 +23,30 @@ public class MemberProductCommentServiceImpl implements MemberProductCommentServ
     @Autowired
     private UmsMemberService memberService;
     @Autowired
-    private MemberProductCommentRepository memberProductCommentRepository;
+    private UmsMemberCommentMapper memberCommentMapper;
 
     @Override
-    public int add(ProductComment productComment) {
-        int count = 0;
+    public int add(UmsMemberComment productComment) {
         UmsMember currentMember = memberService.getCurrentMember();
-        ProductComment comment = memberProductCommentRepository.findByProductIdAndUserId(productComment.getProductId(), currentMember.getId());
+        UmsMemberCommentExample example = new UmsMemberCommentExample();
+        example.createCriteria().andMemberIdEqualTo(currentMember.getId()).andProductIdEqualTo(productComment.getProductId());
+        List<UmsMemberComment> umsMemberComments = memberCommentMapper.selectByExample(example);
         if (productComment.getProductId() > 0 && StringUtils.isNotBlank(productComment.getComment())) {
-            if (comment == null) {
-                productComment.setUserId(currentMember.getId());
-                productComment.setUserName(currentMember.getUsername());
-                productComment.setUserIcon(currentMember.getIcon());
+            if (CollectionUtils.isEmpty(umsMemberComments)) {
+                productComment.setMemberId(currentMember.getId());
                 productComment.setCreateTime(new Date());
-                memberProductCommentRepository.save(productComment);
-                return count;
+                memberCommentMapper.insert(productComment);
+                return 1;
             }
         }
         return -1;
     }
 
     @Override
-    public Page<ProductComment> list(Long productId, int start, int size) {
-        Pageable pageable = PageRequest.of(start, size);
-        return memberProductCommentRepository.findByProductIdOrderByCreateTimeDesc(productId, pageable);
+    public List<UmsMemberComment> list(Long productId, int start, int size) {
+        UmsMemberCommentExample example = new UmsMemberCommentExample();
+        example.createCriteria().andProductIdEqualTo(productId);
+        example.setOrderByClause("'create_time' DESC");
+        return memberCommentMapper.selectByExample(example);
     }
 }
