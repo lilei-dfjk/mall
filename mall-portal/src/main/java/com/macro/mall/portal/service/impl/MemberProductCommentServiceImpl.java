@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * 会员关注Service实现类
@@ -32,19 +31,16 @@ public class MemberProductCommentServiceImpl implements MemberProductCommentServ
         UmsMember currentMember = memberService.getCurrentMember();
         ProductComment comment = memberProductCommentRepository.findByProductIdAndUserId(productComment.getProductId(), currentMember.getId());
         if (productComment.getProductId() > 0 && StringUtils.isNotBlank(productComment.getComment())) {
-            return -1;
-        } else {
             if (comment == null) {
                 productComment.setUserId(currentMember.getId());
                 productComment.setUserName(currentMember.getUsername());
                 productComment.setUserIcon(currentMember.getIcon());
                 productComment.setCreateTime(new Date());
                 memberProductCommentRepository.save(productComment);
-            } else {
-                return -1;
+                return count;
             }
         }
-        return count;
+        return -1;
     }
 
     @Override

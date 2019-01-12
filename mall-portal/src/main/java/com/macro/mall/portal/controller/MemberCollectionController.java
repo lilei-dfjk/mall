@@ -6,29 +6,32 @@ import com.macro.mall.portal.service.MemberCollectionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
-/**
- * 会员收藏管理Controller
- * Created by macro on 2018/8/2.
- */
 @Controller
 @Api(tags = "MemberCollectionController", description = "会员收藏管理")
 @RequestMapping("/member/collection")
 public class MemberCollectionController {
     @Autowired
     private MemberCollectionService memberCollectionService;
+
     @ApiOperation("添加商品收藏")
     @RequestMapping(value = "/addProduct", method = RequestMethod.POST)
     @ResponseBody
-    public Object addProduct(@RequestBody MemberProductCollection productCollection) {
-        int count = memberCollectionService.addProduct(productCollection);
-        if(count>0){
+    public Object addProduct(long productId) {
+        MemberProductCollection collection = new MemberProductCollection();
+        collection.setProductId(productId);
+        int count = memberCollectionService.addProduct(collection);
+        if (count > 0) {
             return new CommonResult().success(count);
-        }else{
+        } else {
             return new CommonResult().failed();
         }
     }
@@ -36,20 +39,20 @@ public class MemberCollectionController {
     @ApiOperation("删除收藏商品")
     @RequestMapping(value = "/deleteProduct", method = RequestMethod.POST)
     @ResponseBody
-    public Object deleteProduct(Long memberId, Long productId) {
-        int count = memberCollectionService.deleteProduct(memberId,productId);
-        if(count>0){
+    public Object deleteProduct(Long productId) {
+        int count = memberCollectionService.deleteProduct(productId);
+        if (count > 0) {
             return new CommonResult().success(count);
-        }else{
+        } else {
             return new CommonResult().failed();
         }
     }
 
-    @ApiOperation("显示关注列表")
-    @RequestMapping(value = "/listProduct/{memberId}", method = RequestMethod.GET)
+    @ApiOperation("显示收藏列表")
+    @RequestMapping(value = "/listProduct", method = RequestMethod.GET)
     @ResponseBody
-    public Object listProduct(@PathVariable Long memberId) {
-        List<MemberProductCollection> memberProductCollectionList = memberCollectionService.listProduct(memberId);
-        return new CommonResult().success(memberProductCollectionList);
+    public Object listProduct(int start, int size) {
+        Page<MemberProductCollection> pages = memberCollectionService.listProduct(start, size);
+        return new CommonResult().success(pages);
     }
 }

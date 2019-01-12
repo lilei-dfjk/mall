@@ -14,14 +14,12 @@ public class MemberProductCollection {
     private String id;
     @Indexed
     private Long memberId;
-    private String memberNickname;
-    private String memberIcon;
     @Indexed
     private Long productId;
     private String productName;
     private String productPic;
     private String productSubTitle;
-    private String productPrice;
+    private double productPrice;
     private Date createTime;
 
     public String getId() {
@@ -38,22 +36,6 @@ public class MemberProductCollection {
 
     public void setMemberId(Long memberId) {
         this.memberId = memberId;
-    }
-
-    public String getMemberNickname() {
-        return memberNickname;
-    }
-
-    public void setMemberNickname(String memberNickname) {
-        this.memberNickname = memberNickname;
-    }
-
-    public String getMemberIcon() {
-        return memberIcon;
-    }
-
-    public void setMemberIcon(String memberIcon) {
-        this.memberIcon = memberIcon;
     }
 
     public Long getProductId() {
@@ -88,11 +70,11 @@ public class MemberProductCollection {
         this.productSubTitle = productSubTitle;
     }
 
-    public String getProductPrice() {
+    public double getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(String productPrice) {
+    public void setProductPrice(double productPrice) {
         this.productPrice = productPrice;
     }
 

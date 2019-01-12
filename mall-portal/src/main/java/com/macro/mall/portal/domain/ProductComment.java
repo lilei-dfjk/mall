@@ -1,6 +1,7 @@
 package com.macro.mall.portal.domain;
 
 import lombok.Data;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.util.Date;
 import java.util.List;
@@ -10,8 +11,12 @@ import java.util.List;
  */
 @Data
 public class ProductComment {
+    @Indexed
     private Long productId;
+    @Indexed
+    private Long orderId;
     private String comment;
+    @Indexed
     private Long userId;
     private String userName;
     private String userIcon;

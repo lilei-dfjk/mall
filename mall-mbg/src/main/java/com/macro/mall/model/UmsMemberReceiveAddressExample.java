@@ -773,6 +773,146 @@ public class UmsMemberReceiveAddressExample {
             addCriterion("detail_address not between", value1, value2, "detailAddress");
             return (Criteria) this;
         }
+
+        public Criteria andIdentityFrontIsNull() {
+            addCriterion("identity_front is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityFrontIsNotNull() {
+            addCriterion("identity_front is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityFrontEqualTo(String value) {
+            addCriterion("identity_front =", value, "identityFront");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityFrontNotEqualTo(String value) {
+            addCriterion("identity_front <>", value, "identityFront");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityFrontGreaterThan(String value) {
+            addCriterion("identity_front >", value, "identityFront");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityFrontGreaterThanOrEqualTo(String value) {
+            addCriterion("identity_front >=", value, "identityFront");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityFrontLessThan(String value) {
+            addCriterion("identity_front <", value, "identityFront");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityFrontLessThanOrEqualTo(String value) {
+            addCriterion("identity_front <=", value, "identityFront");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityFrontLike(String value) {
+            addCriterion("identity_front like", value, "identityFront");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityFrontNotLike(String value) {
+            addCriterion("identity_front not like", value, "identityFront");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityFrontIn(List<String> values) {
+            addCriterion("identity_front in", values, "identityFront");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityFrontNotIn(List<String> values) {
+            addCriterion("identity_front not in", values, "identityFront");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityFrontBetween(String value1, String value2) {
+            addCriterion("identity_front between", value1, value2, "identityFront");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityFrontNotBetween(String value1, String value2) {
+            addCriterion("identity_front not between", value1, value2, "identityFront");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityBackIsNull() {
+            addCriterion("identity_back is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityBackIsNotNull() {
+            addCriterion("identity_back is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityBackEqualTo(String value) {
+            addCriterion("identity_back =", value, "identityBack");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityBackNotEqualTo(String value) {
+            addCriterion("identity_back <>", value, "identityBack");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityBackGreaterThan(String value) {
+            addCriterion("identity_back >", value, "identityBack");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityBackGreaterThanOrEqualTo(String value) {
+            addCriterion("identity_back >=", value, "identityBack");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityBackLessThan(String value) {
+            addCriterion("identity_back <", value, "identityBack");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityBackLessThanOrEqualTo(String value) {
+            addCriterion("identity_back <=", value, "identityBack");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityBackLike(String value) {
+            addCriterion("identity_back like", value, "identityBack");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityBackNotLike(String value) {
+            addCriterion("identity_back not like", value, "identityBack");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityBackIn(List<String> values) {
+            addCriterion("identity_back in", values, "identityBack");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityBackNotIn(List<String> values) {
+            addCriterion("identity_back not in", values, "identityBack");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityBackBetween(String value1, String value2) {
+            addCriterion("identity_back between", value1, value2, "identityBack");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityBackNotBetween(String value1, String value2) {
+            addCriterion("identity_back not between", value1, value2, "identityBack");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

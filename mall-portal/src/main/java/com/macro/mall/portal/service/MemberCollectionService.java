@@ -1,6 +1,7 @@
 package com.macro.mall.portal.service;
 
 import com.macro.mall.portal.domain.MemberProductCollection;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public interface MemberCollectionService {
     int addProduct(MemberProductCollection productCollection);
 
-    int deleteProduct(Long memberId, Long productId);
+    int deleteProduct(Long productId);
 
-    List<MemberProductCollection> listProduct(Long memberId);
+    Page<MemberProductCollection> listProduct(int start, int size);
 }

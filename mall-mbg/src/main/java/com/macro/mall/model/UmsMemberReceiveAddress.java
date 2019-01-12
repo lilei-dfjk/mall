@@ -60,11 +60,15 @@ public class UmsMemberReceiveAddress implements Serializable {
 
     /**
      * 身份证正面
+     *
+     * @mbggenerated
      */
     private String identityFront;
 
     /**
-     * 身份证背面
+     * 身份证反面
+     *
+     * @mbggenerated
      */
     private String identityBack;
 
@@ -182,6 +186,8 @@ public class UmsMemberReceiveAddress implements Serializable {
         sb.append(", city=").append(city);
         sb.append(", region=").append(region);
         sb.append(", detailAddress=").append(detailAddress);
+        sb.append(", identityFront=").append(identityFront);
+        sb.append(", identityBack=").append(identityBack);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

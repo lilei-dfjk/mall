@@ -15,10 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * 购物车管理Controller
- * Created by macro on 2018/8/2.
- */
 @Controller
 @Api(tags = "OmsCartItemController", description = "购物车管理")
 @RequestMapping("/cart")
