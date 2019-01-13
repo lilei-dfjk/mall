@@ -1,5 +1,6 @@
 package com.macro.mall.portal.service;
 
+import com.macro.mall.constans.PageInfoBean;
 import com.macro.mall.model.UmsMemberComment;
 
 import java.util.List;
@@ -14,5 +15,5 @@ public interface MemberProductCommentService {
     /**
      * 获取用户评论列表
      */
-    List<UmsMemberComment> list(Long productId, int start, int size);
+    PageInfoBean<UmsMemberComment> list(Long productId, int start, int size);
 }

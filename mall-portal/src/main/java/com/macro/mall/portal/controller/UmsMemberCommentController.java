@@ -1,5 +1,6 @@
 package com.macro.mall.portal.controller;
 
+import com.macro.mall.constans.PageInfoBean;
 import com.macro.mall.model.UmsMemberComment;
 import com.macro.mall.portal.domain.CommonResult;
 import com.macro.mall.portal.service.MemberProductCommentService;
@@ -14,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
-
 @Controller
 @Api(tags = "UmsMemberCommentController", description = "商品评论")
 @RequestMapping("/member/comment")
@@ -26,7 +25,8 @@ public class UmsMemberCommentController {
     @ApiOperation("创建评论")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public Object create(long productId, long orderId, String comment, @RequestParam(value = "pics", required = false) String[] pics) {
+    public Object create(long productId, long orderId, String comment,
+                         @RequestParam(value = "pics", required = false) String[] pics) {
         UmsMemberComment productComment = new UmsMemberComment();
         productComment.setProductId(productId);
         productComment.setOrderId(orderId);
@@ -44,8 +44,8 @@ public class UmsMemberCommentController {
     @ApiOperation("展示评论记录")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
-    public Object list(Long productId, int start, int size) {
-        List<UmsMemberComment> memberReadHistoryList = productCommentService.list(productId, start, size);
+    public Object list(Long productId, Integer index, Integer length) {
+        PageInfoBean<UmsMemberComment> memberReadHistoryList = productCommentService.list(productId, index, length);
         return new CommonResult().success(memberReadHistoryList);
     }
 

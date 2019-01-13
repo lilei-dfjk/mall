@@ -1,5 +1,7 @@
 package com.macro.mall.portal.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.macro.mall.constans.PageInfoBean;
 import com.macro.mall.mapper.UmsMemberCommentMapper;
 import com.macro.mall.model.UmsMember;
 import com.macro.mall.model.UmsMemberComment;
@@ -43,10 +45,14 @@ public class MemberProductCommentServiceImpl implements MemberProductCommentServ
     }
 
     @Override
-    public List<UmsMemberComment> list(Long productId, int start, int size) {
+    public PageInfoBean<UmsMemberComment> list(Long productId, int start, int size) {
+        PageHelper.startPage(start, size);
         UmsMemberCommentExample example = new UmsMemberCommentExample();
         example.createCriteria().andProductIdEqualTo(productId);
         example.setOrderByClause("'create_time' DESC");
-        return memberCommentMapper.selectByExample(example);
+        List<UmsMemberComment> umsMemberComments = memberCommentMapper.selectByExample(example);
+        int count = memberCommentMapper.countByExample(example);
+        PageInfoBean<UmsMemberComment> pageData = new PageInfoBean<UmsMemberComment>(start, size, count, umsMemberComments);
+        return pageData;
     }
 }
