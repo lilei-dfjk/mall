@@ -35,6 +35,11 @@ public class UmsMemberController {
         return memberService.register(username, password, telephone, authCode);
     }
 
+    @RequestMapping(value = "/index")
+    public String index() {
+        return "login";
+    }
+
     @ApiOperation("获取验证码")
     @RequestMapping(value = "/getAuthCode", method = RequestMethod.GET)
     @ResponseBody

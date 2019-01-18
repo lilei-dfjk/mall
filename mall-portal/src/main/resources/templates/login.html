@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>澳绎</title>
+</head>
+<meta name="viewport"content="width=device-width, initial-scale=1"/>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+<script type="text/javascript">
+    function login() {
+            $.ajax({
+            //几个参数需要注意一下
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "/sso/login" ,//url
+                data: $('#form1').serialize(),
+                success: function (result) {
+                    console.log(result);//打印服务端返回的数据(调试用)
+                    if (result.code == 200) {
+                        alert("SUCCESS");
+                    }
+                    ;
+                },
+                error : function() {
+                    alert("异常！");
+                }
+            });
+        }
+
+        function pay() {
+            $.ajax({
+            //几个参数需要注意一下
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "/pay" ,//url
+                data: $('#form2').serialize(),
+                success: function (result) {
+                    console.log(result);//打印服务端返回的数据(调试用)
+                    if (result.code == 200) {
+                        window.location.href=result.data;
+                    }
+                    ;
+                },
+                error : function() {
+                    alert("异常！");
+                }
+            });
+        }
+
+
+</script>
+<body>
+<form id="form1" method="post" action="localhost:9999/sso/login">
+    用户名： <input name="username" value="zhangsan8" type="text"/></br>
+    密码：<input name="password" value="123456" type="text"/></br>
+    <input type="button" value="submit" onclick="login()"/></br>
+</form>
+
+<form id="form2" method="post" action="localhost:9999/sso/login">
+    订单编号： <input name="orderId" value="2019011811" type="text"/></br>
+    金额：<input name="amount" value="1" type="text"/></br>
+    <input type="button" value="支付" onclick="pay()"/></br>
+</form>
+</body>
+</html>

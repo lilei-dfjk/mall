@@ -53,6 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/member/**", "/returnApply/**")// 测试时开启
                 .permitAll()
+                .antMatchers("/sso/index")
+                .permitAll()
                 .anyRequest()// 除上面外的所有请求全部需要鉴权认证
                 .authenticated()
                 .and()
