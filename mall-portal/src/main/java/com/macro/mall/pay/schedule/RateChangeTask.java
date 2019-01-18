@@ -2,7 +2,6 @@ package com.macro.mall.pay.schedule;
 
 import com.macro.mall.model.Rate;
 import com.macro.mall.pay.omipayFunction.ExchangeRate;
-import com.macro.mall.pay.rate.RateExchangeService;
 import com.macro.mall.pay.rate.RateService;
 import com.macro.mall.search.service.EsProductService;
 import net.sf.json.JSONObject;

@@ -1,34 +1,27 @@
 package com.macro.mall.pay.omipayFunction;
 
+import net.sf.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import net.sf.json.JSONObject;
-
 public class JSAPIOrder {
-    public JSONObject MakeJSAPIOrder(String m_number, String secret_key, String timeStamp, String order_name,
-            String currency, int amount, String notify_url, String redirect_url, String out_order_no,String location) {
-        return MakeJSAPIOrderSelect(m_number, secret_key, timeStamp, order_name, currency, Integer.toString(amount),notify_url, redirect_url, out_order_no,location);
-    }
-    
-    public JSONObject MakeJSAPIOrder(String m_number, String secret_key, String timeStamp, String order_name,
-            String currency, int amount, String notify_url, String redirect_url, String out_order_no) {
-        return MakeJSAPIOrderSelect(m_number, secret_key, timeStamp, order_name, currency, Integer.toString(amount),notify_url, redirect_url, out_order_no,"0");
+    public static JSONObject MakeJSAPIOrder(String m_number, String secret_key, String timeStamp, String order_name, String currency, int amount, String notify_url, String redirect_url, String out_order_no, String location, boolean direct_pay) {
+        return MakeJSAPIOrderSelect(m_number, secret_key, timeStamp, order_name, currency, amount, notify_url, redirect_url, out_order_no, location, direct_pay);
     }
 
-    public JSONObject MakeJSAPIOrderSelect(String m_number, String secret_key, String timeStamp, String order_name,
-            String currency, String amount, String notify_url, String redirect_url, String out_order_no,String location) {
+    public static JSONObject MakeJSAPIOrder(String m_number, String secret_key, String timeStamp, String order_name, String currency, int amount, String notify_url, String redirect_url, String out_order_no, boolean direct_pay) {
+        return MakeJSAPIOrderSelect(m_number, secret_key, timeStamp, order_name, currency, amount, notify_url, redirect_url, out_order_no, "0", direct_pay);
+    }
+
+    public static JSONObject MakeJSAPIOrderSelect(String m_number, String secret_key, String timeStamp, String order_name, String currency, int amount, String notify_url, String redirect_url, String out_order_no, String location, boolean direct_pay) {
         PayFunction payFunction = new PayFunction();
         JSONObject jsonResult = null;
-
         Random intRandom = new Random();
         int tempInt = intRandom.nextInt(22) + 10;
-
         String nonce_str = payFunction.getRandomString(tempInt);
-        ;
-        String sign = payFunction.getMd5(payFunction.getSignString(m_number, timeStamp, nonce_str, secret_key))
-                .toUpperCase();
+        String sign = payFunction.getMd5(payFunction.getSignString(m_number, timeStamp, nonce_str, secret_key)).toUpperCase();
 
         Map paraMap = new HashMap();
         paraMap.put("m_number", m_number);
@@ -41,15 +34,15 @@ public class JSAPIOrder {
         paraMap.put("notify_url", notify_url);
         paraMap.put("redirect_url", redirect_url);
         paraMap.put("out_order_no", out_order_no);
+        if (direct_pay) {
+            paraMap.put("direct_pay", 1);
+        }
 
         String finalUrl = "";
-        if(location.equals("0"))
-        { 
-            finalUrl =  payFunction.getUrlString(PayFunction.urlCNPrex + "MakeJSAPIOrder", paraMap);
-        }
-        else
-        {
-            finalUrl =  payFunction.getUrlString(PayFunction.urlPrex + "MakeJSAPIOrder", paraMap);
+        if (location.equals("0")) {
+            finalUrl = payFunction.getUrlString(PayFunction.urlCNPrex + "MakeJSAPIOrder", paraMap);
+        } else {
+            finalUrl = payFunction.getUrlString(PayFunction.urlPrex + "MakeJSAPIOrder", paraMap);
         }
         System.out.println(finalUrl);
         try {
@@ -71,9 +64,8 @@ public class JSAPIOrder {
         String notify_url = "http://410c108e.ngrok.io";
         String out_order_no = "SEORD000001";
         String timeStamp = String.valueOf(System.currentTimeMillis());
-        JSAPIOrder jsAPIOrder = new JSAPIOrder();
-        JSONObject result = jsAPIOrder.MakeJSAPIOrder(m_number, secret_key, timeStamp, order_name, currency, amount,
-                notify_url, redirect_url, out_order_no);
+        JSONObject result = JSAPIOrder.MakeJSAPIOrder(m_number, secret_key, timeStamp, order_name, currency, amount,
+                notify_url, redirect_url, out_order_no, true);
         System.out.println(result);
     }
 
