@@ -30,4 +30,8 @@ public class PayController {
         String payUrl = payParam.get("pay_url");
         return new CommonResult().success(payUrl);
     }
+    @RequestMapping(value = "success")
+    public String success() {
+        return "paySuccess";
+    }
 }
