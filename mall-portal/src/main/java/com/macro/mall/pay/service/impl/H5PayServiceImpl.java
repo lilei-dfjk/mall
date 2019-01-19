@@ -24,8 +24,8 @@ public class H5PayServiceImpl implements H5PayService {
     private static final String ORDER_NAME = "澳绎商品";
 
     @Override
-    public Map<String, String> getPayParam(int amount, String orderId) {
-        JSONObject jsonObject = JSAPIOrder.MakeJSAPIOrder(memberId, memberKey, System.currentTimeMillis() + "", ORDER_NAME, AUD, amount, notifyUrl, redirectUrl, orderId, true);
+    public Map<String, String> getPayParam(double amount, String orderId) {
+        JSONObject jsonObject = JSAPIOrder.MakeJSAPIOrder(memberId, memberKey, System.currentTimeMillis() + "", ORDER_NAME, AUD, (int)amount*1000, notifyUrl, redirectUrl, orderId, true);
         return jsonObject;
     }
 }

@@ -9,8 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Map;
 
@@ -25,11 +23,16 @@ public class PayController {
     @ApiOperation("支付")
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public Object pay(String orderId, int amount) {
+    public Object pay(String orderId, double amount) {
         Map<String, String> payParam = payService.getPayParam(amount, orderId);
-        String payUrl = payParam.get("pay_url");
-        return new CommonResult().success(payUrl);
+        if (payParam.get("return_code").equals("SUCCESS")){
+            String payUrl = payParam.get("pay_url");
+            return new CommonResult().success(payUrl);
+        }
+        return new CommonResult().failed(payParam.get("error_msg"));
+
     }
+
     @RequestMapping(value = "success")
     public String success() {
         return "paySuccess";
