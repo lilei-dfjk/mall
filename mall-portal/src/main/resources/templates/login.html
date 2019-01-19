@@ -4,50 +4,54 @@
     <meta charset="UTF-8">
     <title>澳绎</title>
 </head>
-<meta name="viewport"content="width=device-width, initial-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
 <script type="text/javascript">
     function login() {
-            $.ajax({
+        $.ajax({
             //几个参数需要注意一下
-                type: "POST",//方法类型
-                dataType: "json",//预期服务器返回的数据类型
-                url: "/sso/login" ,//url
-                data: $('#form1').serialize(),
-                success: function (result) {
-                    console.log(result);//打印服务端返回的数据(调试用)
-                    if (result.code == 200) {
-                        alert("SUCCESS");
-                    }
-                    ;
-                },
-                error : function() {
-                    alert("异常！");
+            type: "POST",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "/sso/login",//url
+            data: $('#form1').serialize(),
+            success: function (result) {
+                console.log(result);//打印服务端返回的数据(调试用)
+                if (result.code == 200) {
+                    alert("SUCCESS");
                 }
-            });
-        }
+                ;
+            },
+            error: function () {
+                alert("异常！");
+            }
+        });
+    }
 
-        function pay() {
-            $.ajax({
+    function pay() {
+        $.ajax({
             //几个参数需要注意一下
-                type: "POST",//方法类型
-                dataType: "json",//预期服务器返回的数据类型
-                url: "/pay" ,//url
-                data: $('#form2').serialize(),
-                success: function (result) {
-                    console.log(result);//打印服务端返回的数据(调试用)
-                    if (result.code == 200) {
-                        window.location.href=result.data;
-                    }
-                    ;
-                },
-                error : function(result) {
-                    alert("异常！"+result.data);
+            type: "POST",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "/pay",//url
+            data: $('#form2').serialize(),
+            success: function (result) {
+                console.log(result);//打印服务端返回的数据(调试用)
+                if (result.code == 200) {
+                    window.location.href = result.data;
+                } else {
+                    alert("异常！" + result.message)
                 }
-            });
-        }
+            },
+            error: function (result) {
+                alert("异常！" + result.data);
+            }
+        });
+    }
 
-$("#orderId").val(new Date().getTime());
+    $(document).ready(function () {
+        $("#orderId").val(new Date().getTime());
+    });
+
 </script>
 <body>
 <!--<form id="form1" method="post" action="localhost:9999/sso/login">
