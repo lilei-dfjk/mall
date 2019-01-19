@@ -1,13 +1,43 @@
 package com.macro.mall.logistcs.service;
 
 import com.macro.mall.logistcs.bean.LogisticsRuleBean;
+import com.macro.mall.logistcs.cons.RedisKey;
+import com.macro.mall.mapper.TLogicsRuleMapper;
+import com.macro.mall.model.TLogicsRule;
+import com.macro.mall.model.TLogicsRuleExample;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public class ZhLogisticRuleServiceImpl implements ZhLogisticRuleService{
+@Service
+public class ZhLogisticRuleServiceImpl implements ZhLogisticRuleService {
+    @Autowired
+    private TLogicsRuleMapper ruleMapper;
 
+    @Cacheable(value = RedisKey.PORTAL_LOGISTICS, key = RedisKey.LOGISTICS_RULE + "'#logisticType'" + "'.#brandRuleType'")
     @Override
-    public LogisticsRuleBean getLogisticsRulesByLogisType(String brandRuleType) {
+    public LogisticsRuleBean getLogisticsRulesByLogisType(Short logisticType, String brandRuleType) {
+        TLogicsRuleExample example = new TLogicsRuleExample();
+        example.createCriteria().andLogisTypeEqualTo(logisticType).andBrandTypeEqualTo(brandRuleType);
+        List<TLogicsRule> tLogicsRules = ruleMapper.selectByExample(example);
+        if (CollectionUtils.isNotEmpty(tLogicsRules)) {
+            TLogicsRule tLogicsRule = tLogicsRules.get(0);
+            LogisticsRuleBean ruleBean = new LogisticsRuleBean();
+            ruleBean.setBrandRuleType(tLogicsRule.getBrandType());
+            ruleBean.setId(tLogicsRule.getId());
+            ruleBean.setLogisType(tLogicsRule.getType());
+            ruleBean.setMixNumberLimit(tLogicsRule.getMixNumberLimit());
+            ruleBean.setMixPriceLimit(tLogicsRule.getMixPriceLimit());
+            ruleBean.setMixWeightLimit(tLogicsRule.getMixWeightLimit());
+            ruleBean.setNumberLimit(tLogicsRule.getNumberLimit());
+            ruleBean.setWeightLimit(tLogicsRule.getWeightLimit());
+            ruleBean.setPriceLimit(tLogicsRule.getPriceLimit());
+            ruleBean.setMixTypeFlag(tLogicsRule.getMixTypeFlag() == 1 ? true : false);
+            return ruleBean;
+        }
         return null;
     }
 

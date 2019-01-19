@@ -75,7 +75,7 @@ public class EsProductServiceImpl implements EsProductService {
     public int importAll() {
         List<EsProduct> esProductList = productDao.getAllEsProductList(null);
         esProductList.stream().forEach(esProduct -> {
-            esProduct.setCnyPrice(esProduct.getPrice().divide(BigDecimal.valueOf(rateService.getAuToCnyRate()),2));
+            esProduct.setCnyPrice(esProduct.getPrice().multiply(BigDecimal.valueOf(rateService.getAuToCnyRate())));
         });
         productRepository.deleteAll();
         Iterable<EsProduct> esProductIterable = productRepository.saveAll(esProductList);

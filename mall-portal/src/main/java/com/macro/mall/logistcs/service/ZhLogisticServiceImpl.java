@@ -4,33 +4,52 @@ import com.macro.mall.logistcs.bean.LogisticsOrderBean;
 import com.macro.mall.logistcs.bean.LogisticsRuleBean;
 import com.macro.mall.logistcs.bean.OrderBean;
 import com.macro.mall.logistcs.bean.ProductItem;
+import com.macro.mall.logistcs.cons.LogisticType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Service
 public class ZhLogisticServiceImpl implements ZhLogisticService {
 
     @Autowired
     private ZhLogisticRuleService ruleService;
 
+    @PostConstruct
+    public void init() {
+        OrderBean orderBean = new OrderBean();
+        List<ProductItem> productItemList = new ArrayList<>();
+        productItemList.add(new ProductItem(11, 100, 300, "milk", "milk_baby", LogisticType.ZH));
+        productItemList.add(new ProductItem(6, 100, 300, "milk", "milk_man_bag", LogisticType.ZH));
+        productItemList.add(new ProductItem(3, 20, 20, "food", "food", LogisticType.ZH));
+        productItemList.add(new ProductItem(2, 20, 30, "wash", "yexh", LogisticType.ZH));
+        orderBean.setProductItemList(productItemList);
+        getLogisticOrders(orderBean);
+    }
+
     @Override
-    public void getLogisticOrders(OrderBean orderBean) {
+    public List<LogisticsOrderBean> getLogisticOrders(OrderBean orderBean) {
         List<ProductItem> productItemList = orderBean.getProductItemList();
         if (CollectionUtils.isNotEmpty(productItemList)) {
             // 1. 分类 尽量同一类放在一个包裹里
-            List<String> collect = productItemList.stream().map(item -> item.getRuleType()).collect(Collectors.toList());
+            List<String> collect = productItemList.stream().map(item -> item.getRuleType()).distinct().collect(Collectors.toList());
             Map<String, List<ProductItem>> listMap = collect.stream().collect(Collectors.toMap(type -> type, type -> getListByType(type, productItemList)));
             // 2. 每一类创建一个订单
             List<LogisticsOrderBean> logisticsOrderBeans = new ArrayList<>();
             listMap.entrySet().stream().forEach(entry -> logisticsOrderBeans.addAll(createLogisticOrder(entry.getKey(), entry.getValue())));
             // 3. 合并订单
-            combineOrder(logisticsOrderBeans);
+            List<LogisticsOrderBean> logisticsOrderBeans1 = combineOrder(logisticsOrderBeans);
+            System.out.println(logisticsOrderBeans1);
+            return logisticsOrderBeans1;
         }
+        return new ArrayList<>();
     }
 
     private List<LogisticsOrderBean> combineOrder(List<LogisticsOrderBean> logisticsOrderBeans) {
@@ -38,7 +57,7 @@ public class ZhLogisticServiceImpl implements ZhLogisticService {
         logisticsOrderBeans.stream().forEach(orderBean -> {
             orderBean.getProductItemList().stream().forEach(productItem -> createLogisticsOrder(lists, productItem));
         });
-        return null;
+        return lists;
     }
 
     private List<ProductItem> getListByType(String type, List<ProductItem> items) {
@@ -53,13 +72,14 @@ public class ZhLogisticServiceImpl implements ZhLogisticService {
             items.stream().forEach(productItem -> {
                 createLogisticsOrder(orders, productItem);
             });
+            return orders;
         }
         return new ArrayList<>();
     }
 
     private List<LogisticsOrderBean> createLogisticsOrder(List<LogisticsOrderBean> logisticsOrderBeans, ProductItem productItem) {
         if (null == productItem.getRuleBean()) {
-            productItem.setRuleBean(ruleService.getLogisticsRulesByLogisType(productItem.getRuleBrandType()));
+            productItem.setRuleBean(ruleService.getLogisticsRulesByLogisType((short) productItem.getLogisticType().getValue(), productItem.getRuleBrandType()));
         }
         LogisticsRuleBean logisticsRules = productItem.getRuleBean();
         LogisticsOrderBean orderBean = new LogisticsOrderBean();
@@ -73,9 +93,9 @@ public class ZhLogisticServiceImpl implements ZhLogisticService {
                     for (int j = 0; j < productItemList.size(); j++) {
                         ProductItem productItem1 = productItemList.get(j);
                         LogisticsRuleBean ruleBean = productItem1.getRuleBean();
-                        if (!ruleBean.isMixTypeFlag() || !logisticsRules.isMixTypeFlag() || !ruleBean.getLogisType().equals(productItem1.getRuleType())) {
-                            continue;
-                        }
+//                        if ((null != ruleBean && !ruleBean.isMixTypeFlag()) || (null != logisticsRules && !logisticsRules.isMixTypeFlag()) || !ruleBean.getLogisType().equals(productItem1.getRuleType())) {
+//                            continue;
+//                        }
                         // 满足混装需求
                         // 1. 先获取自己的混装需求，然后获取对方混装需求，取最小 最后判断总订单是否满足
                         if (compitableMix(ruleBean, productItem) && compitableMix(logisticsRules, productItem)) {
@@ -85,17 +105,17 @@ public class ZhLogisticServiceImpl implements ZhLogisticService {
                             if (totalCompitableMix(lists)) {
                                 BeanUtils.copyProperties(productItem, item);
                                 logisticsOrderBean.getProductItemList().add(item);
-                                logisticsOrderBean.setTotalNumber(logisticsOrderBean.getTotalNumber() + item.getAmount());
+                                logisticsOrderBean.setTotalNumber(logisticsOrderBean.getTotalNumber() + item.getNumber());
                                 logisticsOrderBean.setTotalPrice(logisticsOrderBean.getTotalPrice() + item.getPrice());
                                 logisticsOrderBean.setTotalWeight(logisticsOrderBean.getTotalWeight() + item.getWeight());
-                                if (item.getAmount() > logisticsRules.getNumberLimit() && item.getWeight() > logisticsRules.getWeightLimit() && item.getPrice() > productItem.getPrice()) {
+                                if (item.getNumber() > logisticsRules.getNumberLimit() && item.getWeight() > logisticsRules.getWeightLimit() && item.getPrice() > productItem.getPrice()) {
                                     orderBean.setFull(true);
                                 } else {
                                     orderBean.setFull(false);
                                 }
                                 productItem.setPrice(0);
                                 productItem.setWeight(0);
-                                productItem.setAmount(0);
+                                productItem.setNumber(0);
                                 createFlag = true;
                                 break;
                             }
@@ -106,59 +126,70 @@ public class ZhLogisticServiceImpl implements ZhLogisticService {
             }
         }
         if (!createFlag) {
-            int amount = productItem.getAmount();
-            double weight = productItem.getWeight();
-            double price = productItem.getPrice();
-            if (amount > logisticsRules.getNumberLimit() && weight > logisticsRules.getWeightLimit() && price > productItem.getPrice()) {
+            BeanUtils.copyProperties(productItem, item);
+            item.setNumber(0);
+            int number = compitableSingleNumber(logisticsRules, productItem, productItem.getNumber());
+            item.setNumber(number);
+            productItem.setNumber(productItem.getNumber() - number);
+            if (productItem.getNumber() > 0) {
                 orderBean.setFull(true);
-            } else {
-                orderBean.setFull(false);
-            }
-            if (productItem.getAmount() > logisticsRules.getNumberLimit()) {
-                productItem.setAmount(productItem.getAmount() - logisticsRules.getNumberLimit());
-                item.setAmount(logisticsRules.getNumberLimit());
-            } else {
-                productItem.setAmount(productItem.getAmount());
-            }
-            if (productItem.getWeight() > logisticsRules.getWeightLimit()) {
-                productItem.setWeight(productItem.getWeight() - logisticsRules.getWeightLimit());
-                item.setWeight(logisticsRules.getWeightLimit());
-            } else {
-                productItem.setWeight(productItem.getWeight());
-            }
-            if (productItem.getPrice() > logisticsRules.getPriceLimit()) {
-                productItem.setPrice(productItem.getPrice() - logisticsRules.getPriceLimit());
-                item.setPrice(logisticsRules.getPriceLimit());
-            } else {
-                productItem.setPrice(productItem.getPrice());
             }
             orderBean.getProductItemList().add(item);
-            orderBean.getProductItemList().add(item);
-            orderBean.setTotalNumber(orderBean.getTotalNumber() + item.getAmount());
-            orderBean.setTotalPrice(orderBean.getTotalPrice() + item.getPrice());
-            orderBean.setTotalWeight(orderBean.getTotalWeight() + item.getWeight());
             logisticsOrderBeans.add(orderBean);
         }
-
-        if (productItem.getPrice() == 0 && productItem.getWeight() == 0 && productItem.getAmount() == 0) {
+        if (productItem.getNumber() == 0) {
             return logisticsOrderBeans;
         } else {
-            createLogisticsOrder(logisticsOrderBeans, productItem);
+            return createLogisticsOrder(logisticsOrderBeans, productItem);
         }
-        return null;
+    }
+
+    private int compitableSingleNumber(LogisticsRuleBean ruleBean, ProductItem item, int number) {
+        boolean flag = true;
+        if (null == ruleBean) {
+            return number;
+        }
+        if (null != ruleBean.getNumberLimit() && ruleBean.getNumberLimit() < number) {
+            flag = false;
+        }
+        if (null != ruleBean.getPriceLimit() && ruleBean.getPriceLimit() < item.getPrice() * number) {
+            flag = false;
+        }
+        if (null != ruleBean.getWeightLimit() && ruleBean.getWeightLimit() < item.getWeight() * number) {
+            flag = false;
+        }
+        if (flag) {
+            return number;
+        }
+        return compitableSingleNumber(ruleBean, item, --number);
     }
 
     private boolean compitableMix(LogisticsRuleBean ruleBean, ProductItem item) {
         if (null == ruleBean) {
+            return true;
+        }
+        if (null != ruleBean.getMixNumberLimit() && ruleBean.getMixNumberLimit() < item.getNumber()) {
             return false;
         }
-        if (null != ruleBean.getMixPriceLimit() && ruleBean.getMixPriceLimit() > item.getPrice()) {
+        if (null != ruleBean.getMixPriceLimit() && ruleBean.getMixPriceLimit() < item.getPrice() * item.getNumber()) {
             return false;
         }
-        if (null != ruleBean.getMixWeightLimit() && ruleBean.getMixWeightLimit() > item.getWeight()) {
+        if (null != ruleBean.getMixWeightLimit() && ruleBean.getMixWeightLimit() < item.getWeight() * item.getNumber()) {
             return false;
         }
-        if (null != ruleBean.getMixNumberLimit() && ruleBean.getMixNumberLimit() > item.getAmount()) {
+        return true;
+    }
+    private boolean compitableTotalMix(LogisticsRuleBean ruleBean, ProductItem item) {
+        if (null == ruleBean) {
+            return true;
+        }
+        if (null != ruleBean.getMixNumberLimit() && ruleBean.getMixNumberLimit() < item.getNumber()) {
+            return false;
+        }
+        if (null != ruleBean.getMixPriceLimit() && ruleBean.getMixPriceLimit() < item.getPrice()) {
+            return false;
+        }
+        if (null != ruleBean.getMixWeightLimit() && ruleBean.getMixWeightLimit() < item.getWeight()) {
             return false;
         }
         return true;
@@ -169,12 +200,13 @@ public class ZhLogisticServiceImpl implements ZhLogisticService {
         double weight = 0;
         double price = 0;
         for (int i = 0; i < list.size(); i++) {
-            amount += list.get(i).getAmount();
-            weight += list.get(i).getWeight();
-            price += list.get(i).getPrice();
+            int number = list.get(i).getNumber();
+            amount += number;
+            weight += list.get(i).getWeight() * number;
+            price += list.get(i).getPrice() * number;
         }
         for (int i = 0; i < list.size(); i++) {
-            if (!compitableMix(list.get(i).getRuleBean(), new ProductItem(amount, weight, price))) {
+            if (!compitableTotalMix(list.get(i).getRuleBean(), new ProductItem(amount, weight, price))) {
                 return false;
             }
         }

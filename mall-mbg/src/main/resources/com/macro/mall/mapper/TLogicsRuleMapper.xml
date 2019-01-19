@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.TLogicsRuleMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.TLogicsRule">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="logis_type" jdbcType="SMALLINT" property="logisType" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="brand_type" jdbcType="VARCHAR" property="brandType" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="number_limit" jdbcType="INTEGER" property="numberLimit" />
+    <result column="weight_limit" jdbcType="DOUBLE" property="weightLimit" />
+    <result column="price_limit" jdbcType="DOUBLE" property="priceLimit" />
+    <result column="mix_number_limit" jdbcType="INTEGER" property="mixNumberLimit" />
+    <result column="mix_weight_limit" jdbcType="DOUBLE" property="mixWeightLimit" />
+    <result column="mix_price_limit" jdbcType="DOUBLE" property="mixPriceLimit" />
+    <result column="brand_mix" jdbcType="VARCHAR" property="brandMix" />
+    <result column="type_mix" jdbcType="VARCHAR" property="typeMix" />
+    <result column="mix_type_flag" jdbcType="SMALLINT" property="mixTypeFlag" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, logis_type, type, name, brand_type, brand_name, number_limit, weight_limit, price_limit, 
+    mix_number_limit, mix_weight_limit, mix_price_limit, brand_mix, type_mix, mix_type_flag, 
+    remark
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.TLogicsRuleExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_logics_rule
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_logics_rule
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_logics_rule
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.TLogicsRuleExample">
+    delete from t_logics_rule
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.TLogicsRule">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_logics_rule (logis_type, type, name, 
+      brand_type, brand_name, number_limit, 
+      weight_limit, price_limit, mix_number_limit, 
+      mix_weight_limit, mix_price_limit, brand_mix, 
+      type_mix, mix_type_flag, remark
+      )
+    values (#{logisType,jdbcType=SMALLINT}, #{type,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{brandType,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, #{numberLimit,jdbcType=INTEGER}, 
+      #{weightLimit,jdbcType=DOUBLE}, #{priceLimit,jdbcType=DOUBLE}, #{mixNumberLimit,jdbcType=INTEGER}, 
+      #{mixWeightLimit,jdbcType=DOUBLE}, #{mixPriceLimit,jdbcType=DOUBLE}, #{brandMix,jdbcType=VARCHAR}, 
+      #{typeMix,jdbcType=VARCHAR}, #{mixTypeFlag,jdbcType=SMALLINT}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.TLogicsRule">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_logics_rule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="logisType != null">
+        logis_type,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="brandType != null">
+        brand_type,
+      </if>
+      <if test="brandName != null">
+        brand_name,
+      </if>
+      <if test="numberLimit != null">
+        number_limit,
+      </if>
+      <if test="weightLimit != null">
+        weight_limit,
+      </if>
+      <if test="priceLimit != null">
+        price_limit,
+      </if>
+      <if test="mixNumberLimit != null">
+        mix_number_limit,
+      </if>
+      <if test="mixWeightLimit != null">
+        mix_weight_limit,
+      </if>
+      <if test="mixPriceLimit != null">
+        mix_price_limit,
+      </if>
+      <if test="brandMix != null">
+        brand_mix,
+      </if>
+      <if test="typeMix != null">
+        type_mix,
+      </if>
+      <if test="mixTypeFlag != null">
+        mix_type_flag,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="logisType != null">
+        #{logisType,jdbcType=SMALLINT},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="brandType != null">
+        #{brandType,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="numberLimit != null">
+        #{numberLimit,jdbcType=INTEGER},
+      </if>
+      <if test="weightLimit != null">
+        #{weightLimit,jdbcType=DOUBLE},
+      </if>
+      <if test="priceLimit != null">
+        #{priceLimit,jdbcType=DOUBLE},
+      </if>
+      <if test="mixNumberLimit != null">
+        #{mixNumberLimit,jdbcType=INTEGER},
+      </if>
+      <if test="mixWeightLimit != null">
+        #{mixWeightLimit,jdbcType=DOUBLE},
+      </if>
+      <if test="mixPriceLimit != null">
+        #{mixPriceLimit,jdbcType=DOUBLE},
+      </if>
+      <if test="brandMix != null">
+        #{brandMix,jdbcType=VARCHAR},
+      </if>
+      <if test="typeMix != null">
+        #{typeMix,jdbcType=VARCHAR},
+      </if>
+      <if test="mixTypeFlag != null">
+        #{mixTypeFlag,jdbcType=SMALLINT},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.TLogicsRuleExample" resultType="java.lang.Integer">
+    select count(*) from t_logics_rule
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_logics_rule
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.logisType != null">
+        logis_type = #{record.logisType,jdbcType=SMALLINT},
+      </if>
+      <if test="record.type != null">
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.brandType != null">
+        brand_type = #{record.brandType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.brandName != null">
+        brand_name = #{record.brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.numberLimit != null">
+        number_limit = #{record.numberLimit,jdbcType=INTEGER},
+      </if>
+      <if test="record.weightLimit != null">
+        weight_limit = #{record.weightLimit,jdbcType=DOUBLE},
+      </if>
+      <if test="record.priceLimit != null">
+        price_limit = #{record.priceLimit,jdbcType=DOUBLE},
+      </if>
+      <if test="record.mixNumberLimit != null">
+        mix_number_limit = #{record.mixNumberLimit,jdbcType=INTEGER},
+      </if>
+      <if test="record.mixWeightLimit != null">
+        mix_weight_limit = #{record.mixWeightLimit,jdbcType=DOUBLE},
+      </if>
+      <if test="record.mixPriceLimit != null">
+        mix_price_limit = #{record.mixPriceLimit,jdbcType=DOUBLE},
+      </if>
+      <if test="record.brandMix != null">
+        brand_mix = #{record.brandMix,jdbcType=VARCHAR},
+      </if>
+      <if test="record.typeMix != null">
+        type_mix = #{record.typeMix,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mixTypeFlag != null">
+        mix_type_flag = #{record.mixTypeFlag,jdbcType=SMALLINT},
+      </if>
+      <if test="record.remark != null">
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_logics_rule
+    set id = #{record.id,jdbcType=INTEGER},
+      logis_type = #{record.logisType,jdbcType=SMALLINT},
+      type = #{record.type,jdbcType=VARCHAR},
+      name = #{record.name,jdbcType=VARCHAR},
+      brand_type = #{record.brandType,jdbcType=VARCHAR},
+      brand_name = #{record.brandName,jdbcType=VARCHAR},
+      number_limit = #{record.numberLimit,jdbcType=INTEGER},
+      weight_limit = #{record.weightLimit,jdbcType=DOUBLE},
+      price_limit = #{record.priceLimit,jdbcType=DOUBLE},
+      mix_number_limit = #{record.mixNumberLimit,jdbcType=INTEGER},
+      mix_weight_limit = #{record.mixWeightLimit,jdbcType=DOUBLE},
+      mix_price_limit = #{record.mixPriceLimit,jdbcType=DOUBLE},
+      brand_mix = #{record.brandMix,jdbcType=VARCHAR},
+      type_mix = #{record.typeMix,jdbcType=VARCHAR},
+      mix_type_flag = #{record.mixTypeFlag,jdbcType=SMALLINT},
+      remark = #{record.remark,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.TLogicsRule">
+    update t_logics_rule
+    <set>
+      <if test="logisType != null">
+        logis_type = #{logisType,jdbcType=SMALLINT},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="brandType != null">
+        brand_type = #{brandType,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        brand_name = #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="numberLimit != null">
+        number_limit = #{numberLimit,jdbcType=INTEGER},
+      </if>
+      <if test="weightLimit != null">
+        weight_limit = #{weightLimit,jdbcType=DOUBLE},
+      </if>
+      <if test="priceLimit != null">
+        price_limit = #{priceLimit,jdbcType=DOUBLE},
+      </if>
+      <if test="mixNumberLimit != null">
+        mix_number_limit = #{mixNumberLimit,jdbcType=INTEGER},
+      </if>
+      <if test="mixWeightLimit != null">
+        mix_weight_limit = #{mixWeightLimit,jdbcType=DOUBLE},
+      </if>
+      <if test="mixPriceLimit != null">
+        mix_price_limit = #{mixPriceLimit,jdbcType=DOUBLE},
+      </if>
+      <if test="brandMix != null">
+        brand_mix = #{brandMix,jdbcType=VARCHAR},
+      </if>
+      <if test="typeMix != null">
+        type_mix = #{typeMix,jdbcType=VARCHAR},
+      </if>
+      <if test="mixTypeFlag != null">
+        mix_type_flag = #{mixTypeFlag,jdbcType=SMALLINT},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.TLogicsRule">
+    update t_logics_rule
+    set logis_type = #{logisType,jdbcType=SMALLINT},
+      type = #{type,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      brand_type = #{brandType,jdbcType=VARCHAR},
+      brand_name = #{brandName,jdbcType=VARCHAR},
+      number_limit = #{numberLimit,jdbcType=INTEGER},
+      weight_limit = #{weightLimit,jdbcType=DOUBLE},
+      price_limit = #{priceLimit,jdbcType=DOUBLE},
+      mix_number_limit = #{mixNumberLimit,jdbcType=INTEGER},
+      mix_weight_limit = #{mixWeightLimit,jdbcType=DOUBLE},
+      mix_price_limit = #{mixPriceLimit,jdbcType=DOUBLE},
+      brand_mix = #{brandMix,jdbcType=VARCHAR},
+      type_mix = #{typeMix,jdbcType=VARCHAR},
+      mix_type_flag = #{mixTypeFlag,jdbcType=SMALLINT},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

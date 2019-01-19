@@ -11,7 +11,7 @@ public class LogisticsOrderBean {
     private String userId;
     private String logisticsOrderNo;
     private List<ProductItem> productItemList = new ArrayList<>();
-    private boolean full;
+    private boolean full = false;
     private double totalWeight;
     private int totalNumber;
     private double totalPrice;
