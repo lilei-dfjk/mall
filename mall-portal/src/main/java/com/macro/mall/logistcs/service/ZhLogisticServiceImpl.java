@@ -21,14 +21,16 @@ public class ZhLogisticServiceImpl implements ZhLogisticService {
 
     @Autowired
     private ZhLogisticRuleService ruleService;
+    @Autowired
+    private ExpressCalcService expressCalcService;
 
     @PostConstruct
     public void init() {
         OrderBean orderBean = new OrderBean();
         List<ProductItem> productItemList = new ArrayList<>();
-        productItemList.add(new ProductItem(11, 100, 300, "milk", "milk_baby", LogisticType.ZH));
-        productItemList.add(new ProductItem(6, 100, 300, "milk", "milk_man_bag", LogisticType.ZH));
-        productItemList.add(new ProductItem(3, 20, 20, "food", "food", LogisticType.ZH));
+//        productItemList.add(new ProductItem(11, 100, 300, "milk", "milk_baby", LogisticType.ZH));
+//        productItemList.add(new ProductItem(6, 100, 300, "milk", "milk_man_bag", LogisticType.ZH));
+        productItemList.add(new ProductItem(3, 100, 20, "food", "food", LogisticType.ZH));
         productItemList.add(new ProductItem(2, 20, 30, "wash", "yexh", LogisticType.ZH));
         orderBean.setProductItemList(productItemList);
         getLogisticOrders(orderBean);
@@ -84,7 +86,7 @@ public class ZhLogisticServiceImpl implements ZhLogisticService {
         LogisticsRuleBean logisticsRules = productItem.getRuleBean();
         LogisticsOrderBean orderBean = new LogisticsOrderBean();
         ProductItem item = new ProductItem();
-        boolean createFlag = false;
+        boolean createFlag = true;
         if (CollectionUtils.isNotEmpty(logisticsOrderBeans)) {
             for (int i = 0; i < logisticsOrderBeans.size(); i++) {
                 LogisticsOrderBean logisticsOrderBean = logisticsOrderBeans.get(i);
@@ -93,9 +95,6 @@ public class ZhLogisticServiceImpl implements ZhLogisticService {
                     for (int j = 0; j < productItemList.size(); j++) {
                         ProductItem productItem1 = productItemList.get(j);
                         LogisticsRuleBean ruleBean = productItem1.getRuleBean();
-//                        if ((null != ruleBean && !ruleBean.isMixTypeFlag()) || (null != logisticsRules && !logisticsRules.isMixTypeFlag()) || !ruleBean.getLogisType().equals(productItem1.getRuleType())) {
-//                            continue;
-//                        }
                         // 满足混装需求
                         // 1. 先获取自己的混装需求，然后获取对方混装需求，取最小 最后判断总订单是否满足
                         if (compitableMix(ruleBean, productItem) && compitableMix(logisticsRules, productItem)) {
@@ -106,26 +105,24 @@ public class ZhLogisticServiceImpl implements ZhLogisticService {
                                 BeanUtils.copyProperties(productItem, item);
                                 logisticsOrderBean.getProductItemList().add(item);
                                 logisticsOrderBean.setTotalNumber(logisticsOrderBean.getTotalNumber() + item.getNumber());
-                                logisticsOrderBean.setTotalPrice(logisticsOrderBean.getTotalPrice() + item.getPrice());
-                                logisticsOrderBean.setTotalWeight(logisticsOrderBean.getTotalWeight() + item.getWeight());
+                                logisticsOrderBean.setTotalPrice(logisticsOrderBean.getTotalPrice() + item.getPrice() * item.getNumber());
+                                logisticsOrderBean.setTotalWeight(logisticsOrderBean.getTotalWeight() + item.getWeight() * item.getNumber());
+                                logisticsOrderBean.setExpressPrice(expressCalcService.getExpressPrice(item.getLogisticType(), logisticsOrderBean));
                                 if (item.getNumber() > logisticsRules.getNumberLimit() && item.getWeight() > logisticsRules.getWeightLimit() && item.getPrice() > productItem.getPrice()) {
                                     orderBean.setFull(true);
                                 } else {
                                     orderBean.setFull(false);
                                 }
-                                productItem.setPrice(0);
-                                productItem.setWeight(0);
                                 productItem.setNumber(0);
-                                createFlag = true;
+                                createFlag = false;
                                 break;
                             }
-
                         }
                     }
                 }
             }
         }
-        if (!createFlag) {
+        if (createFlag) {
             BeanUtils.copyProperties(productItem, item);
             item.setNumber(0);
             int number = compitableSingleNumber(logisticsRules, productItem, productItem.getNumber());
@@ -135,6 +132,10 @@ public class ZhLogisticServiceImpl implements ZhLogisticService {
                 orderBean.setFull(true);
             }
             orderBean.getProductItemList().add(item);
+            orderBean.setTotalNumber(orderBean.getTotalNumber() + item.getNumber());
+            orderBean.setTotalPrice(orderBean.getTotalPrice() + item.getPrice() * item.getNumber());
+            orderBean.setTotalWeight(orderBean.getTotalWeight() + item.getWeight() * item.getNumber());
+            orderBean.setExpressPrice(expressCalcService.getExpressPrice(item.getLogisticType(), orderBean));
             logisticsOrderBeans.add(orderBean);
         }
         if (productItem.getNumber() == 0) {
@@ -179,6 +180,7 @@ public class ZhLogisticServiceImpl implements ZhLogisticService {
         }
         return true;
     }
+
     private boolean compitableTotalMix(LogisticsRuleBean ruleBean, ProductItem item) {
         if (null == ruleBean) {
             return true;

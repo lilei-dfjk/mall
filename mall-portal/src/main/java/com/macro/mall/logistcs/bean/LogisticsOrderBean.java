@@ -15,6 +15,8 @@ public class LogisticsOrderBean {
     private double totalWeight;
     private int totalNumber;
     private double totalPrice;
+    // 运费
+    private double expressPrice;
     /**
      * 是否包含杂货
      */

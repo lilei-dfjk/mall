@@ -1,5 +1,7 @@
 package com.macro.mall.portal.service.impl;
 
+import com.macro.mall.logistcs.bean.OrderBean;
+import com.macro.mall.logistcs.cons.LogisticType;
 import com.macro.mall.mapper.OmsCartItemMapper;
 import com.macro.mall.model.OmsCartItem;
 import com.macro.mall.model.OmsCartItemExample;
@@ -55,7 +57,6 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
         }
         UmsMember currentMember = memberService.getCurrentMember();
         cartItem.setMemberId(currentMember.getId());
-        cartItem.setPrice(productInfo.getPrice());
 //        cartItem.setProductPic(productInfo.getPic());
 //        cartItem.setCnyPrice(productInfo.getPrice().divide(BigDecimal.valueOf(rateService.getAuToCnyRate()), 2));
         cartItem.setProductSn(productInfo.getProductSn());
@@ -113,6 +114,11 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
         List<OmsCartItem> omsCartItems = cartItemMapper.selectByExample(example);
         if (!CollectionUtils.isEmpty(omsCartItems)) {
             List<PortalCartItem> portalCartItems = omsCartItems.stream().map(omsCartItem -> initPortalCartItem(omsCartItem)).collect(Collectors.toList());
+//            portalCartItems.stream().map(initProductItem())
+            OrderBean orderBean = new OrderBean();
+            orderBean.setUserId(memberId);
+            // 默认中环
+            orderBean.setLogisticsType(LogisticType.ZH);
             if (!CollectionUtils.isEmpty(portalCartItems)) {
                 int productNum;
                 // 邮寄总重量
@@ -130,7 +136,7 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
                 productPrice = portalCartItems.stream().mapToDouble(portalCartItem -> portalCartItem.getPrice().multiply(BigDecimal.valueOf(portalCartItem.getQuantity())).doubleValue()).sum();
                 postPrice = 0;
                 orderPrice = productPrice + postPrice;
-                orderCnyPrice = portalCartItems.stream().mapToDouble(portalCartItem -> portalCartItem.getPrice().divide(BigDecimal.valueOf(rateService.getAuToCnyRate()), 2).doubleValue()).sum();
+                orderCnyPrice = portalCartItems.stream().mapToDouble(portalCartItem -> portalCartItem.getPrice().multiply(BigDecimal.valueOf(rateService.getAuToCnyRate())).doubleValue()).sum();
                 PortalDealInfo portalDealInfo = new PortalDealInfo(productNum, postWeight, productPrice, postPrice, orderPrice, orderCnyPrice);
                 return new PortalCartItemWithDeal(portalCartItems, portalDealInfo);
             }
@@ -144,12 +150,12 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
         portalCartItem.setId(item.getId());
         portalCartItem.setPic(productInfo.getPic());
         portalCartItem.setQuantity(item.getQuantity());
-        portalCartItem.setPrice(productInfo.getPrice());
+        portalCartItem.setPrice(item.getPrice());
         portalCartItem.setProductId(item.getProductId());
         portalCartItem.setWeight(productInfo.getWeight());
         portalCartItem.setProductName(productInfo.getName());
         portalCartItem.setPublishStatus(productInfo.getPublishStatus());
-        portalCartItem.setCnyPrice(productInfo.getPrice().divide(BigDecimal.valueOf(rateService.getAuToCnyRate()), 2));
+        portalCartItem.setCnyPrice(productInfo.getPrice().multiply(BigDecimal.valueOf(rateService.getAuToCnyRate())));
         return portalCartItem;
     }
 

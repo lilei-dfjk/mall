@@ -1,13 +1,14 @@
 package com.macro.mall.logistcs.bean;
 
+import com.macro.mall.logistcs.cons.LogisticType;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 public class OrderBean {
-    private String userId;
+    private Long userId;
     private String orderNo;
-    private String logisticsType;
+    private LogisticType logisticsType;
     private List<ProductItem> productItemList;
 }

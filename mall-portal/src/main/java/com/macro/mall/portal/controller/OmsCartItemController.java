@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -27,10 +28,11 @@ public class OmsCartItemController {
     @ApiOperation("添加商品到购物车")
     @RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public Object add(long productId, int quantity) {
+    public Object add(long productId, int quantity, double price) {
         OmsCartItem cartItem = new OmsCartItem();
         cartItem.setProductId(productId);
         cartItem.setQuantity(quantity);
+        cartItem.setPrice(BigDecimal.valueOf(price));
         int count = cartItemService.add(cartItem);
         if (count > 0) {
             return new CommonResult().success(count);
