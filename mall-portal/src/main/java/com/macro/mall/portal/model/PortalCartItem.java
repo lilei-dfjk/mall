@@ -11,8 +11,8 @@ public class PortalCartItem implements Serializable {
     private Long productId;
     private String productName;
     private String pic;
-    private BigDecimal price;
     private BigDecimal cnyPrice;
+    private BigDecimal price;
     private Integer quantity;
     private BigDecimal weight;
     // 是否上架

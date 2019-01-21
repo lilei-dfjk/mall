@@ -1,6 +1,9 @@
 package com.macro.mall.portal.service.impl;
 
+import com.macro.mall.logistcs.bean.LogisticsOrderBean;
+import com.macro.mall.logistcs.bean.LogisticsRuleBean;
 import com.macro.mall.logistcs.bean.OrderBean;
+import com.macro.mall.logistcs.bean.ProductItem;
 import com.macro.mall.logistcs.cons.LogisticType;
 import com.macro.mall.mapper.OmsCartItemMapper;
 import com.macro.mall.model.OmsCartItem;
@@ -14,10 +17,7 @@ import com.macro.mall.portal.domain.CartPromotionItem;
 import com.macro.mall.portal.model.PortalCartItem;
 import com.macro.mall.portal.model.PortalCartItemWithDeal;
 import com.macro.mall.portal.model.PortalDealInfo;
-import com.macro.mall.portal.service.OmsCartItemService;
-import com.macro.mall.portal.service.OmsPromotionService;
-import com.macro.mall.portal.service.PortalProductService;
-import com.macro.mall.portal.service.UmsMemberService;
+import com.macro.mall.portal.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -47,6 +47,11 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
     private PortalProductService portalProductService;
     @Autowired
     private RateService rateService;
+    @Autowired
+    private PmsProductLogisticRuleService productLogisticRuleService;
+    @Autowired
+    private com.macro.mall.logistcs.service.ZhLogisticService ZhLogisticService;
+
 
     @Override
     public int add(OmsCartItem cartItem) {
@@ -113,35 +118,56 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
         example.createCriteria().andDeleteStatusEqualTo(0).andMemberIdEqualTo(memberId);
         List<OmsCartItem> omsCartItems = cartItemMapper.selectByExample(example);
         if (!CollectionUtils.isEmpty(omsCartItems)) {
-            List<PortalCartItem> portalCartItems = omsCartItems.stream().map(omsCartItem -> initPortalCartItem(omsCartItem)).collect(Collectors.toList());
-//            portalCartItems.stream().map(initProductItem())
+//            List<PortalCartItem> portalCartItems = omsCartItems.stream().map(omsCartItem -> initPortalCartItem(omsCartItem)).collect(Collectors.toList());
             OrderBean orderBean = new OrderBean();
             orderBean.setUserId(memberId);
             // 默认中环
             orderBean.setLogisticsType(LogisticType.ZH);
-            if (!CollectionUtils.isEmpty(portalCartItems)) {
+            List<ProductItem> productItems = omsCartItems.stream().map(portalCartItem -> initProductItem(portalCartItem, orderBean.getLogisticsType())).collect(Collectors.toList());
+            orderBean.setProductItemList(productItems);
+            List<LogisticsOrderBean> logisticOrders = ZhLogisticService.getLogisticOrders(orderBean);
+            if (!CollectionUtils.isEmpty(productItems)) {
                 int productNum;
                 // 邮寄总重量
                 double postWeight;
                 // 商品价格
                 double productPrice;
                 // 运费
-                double postPrice; // TODO
+                double postPrice;
                 // 订单价格
                 double orderPrice;
                 // 人民币价格
                 double orderCnyPrice;
-                productNum = portalCartItems.stream().mapToInt(portalCartItem -> portalCartItem.getQuantity() * portalCartItem.getQuantity()).sum();
-                postWeight = portalCartItems.stream().mapToDouble(portalCartItem -> portalCartItem.getWeight().multiply(BigDecimal.valueOf(portalCartItem.getQuantity())).doubleValue()).sum();
-                productPrice = portalCartItems.stream().mapToDouble(portalCartItem -> portalCartItem.getPrice().multiply(BigDecimal.valueOf(portalCartItem.getQuantity())).doubleValue()).sum();
-                postPrice = 0;
+                productNum = logisticOrders.stream().mapToInt(logisticsOrderBean -> logisticsOrderBean.getTotalNumber()).sum();
+                postWeight = logisticOrders.stream().mapToDouble(logisticsOrderBean -> logisticsOrderBean.getTotalWeight()).sum();
+                productPrice = logisticOrders.stream().mapToDouble(logisticsOrderBean -> logisticsOrderBean.getTotalPrice()).sum();
+                postPrice = logisticOrders.stream().mapToDouble(logisticsOrderBean -> logisticsOrderBean.getExpressPrice()).sum();
                 orderPrice = productPrice + postPrice;
-                orderCnyPrice = portalCartItems.stream().mapToDouble(portalCartItem -> portalCartItem.getPrice().multiply(BigDecimal.valueOf(rateService.getAuToCnyRate())).doubleValue()).sum();
+                orderCnyPrice = BigDecimal.valueOf(orderPrice).multiply(BigDecimal.valueOf(rateService.getAuToCnyRate())).doubleValue();
                 PortalDealInfo portalDealInfo = new PortalDealInfo(productNum, postWeight, productPrice, postPrice, orderPrice, orderCnyPrice);
-                return new PortalCartItemWithDeal(portalCartItems, portalDealInfo);
+                return new PortalCartItemWithDeal(productItems, portalDealInfo);
             }
         }
         return new PortalCartItemWithDeal();
+    }
+
+    private ProductItem initProductItem(OmsCartItem item, LogisticType logisticType) {
+        PmsProduct productInfo = portalProductService.getProductInfo(item.getProductId());
+        LogisticsRuleBean logisticRuleBean = productLogisticRuleService.getLogisticRuleBean(item.getProductId(), logisticType);
+        ProductItem productItem = new ProductItem();
+        productItem.setNumber(item.getQuantity());
+        productItem.setRuleBean(logisticRuleBean);
+        productItem.setPic(productInfo.getPic());
+        productItem.setProductName(productInfo.getName());
+        productItem.setPrice(item.getPrice().doubleValue());
+        productItem.setWeight(productInfo.getWeight().doubleValue());
+        productItem.setPublishStatus(productInfo.getPublishStatus());
+        productItem.setCnyPrice(productInfo.getPrice().multiply(BigDecimal.valueOf(rateService.getAuToCnyRate())).doubleValue());
+        if (null != logisticRuleBean) {
+            productItem.setRuleType(logisticRuleBean.getLogisType());
+            productItem.setRuleBrandType(logisticRuleBean.getBrandRuleType());
+        }
+        return productItem;
     }
 
     private PortalCartItem initPortalCartItem(OmsCartItem item) {
