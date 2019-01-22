@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,6 +22,10 @@ public class ProductItem {
     private String ruleType;
     private String ruleBrandType;
     private LogisticsRuleBean ruleBean;
+    private String pic;
+    private double cnyPrice;
+    // 是否上架
+    private int publishStatus;
 
     public ProductItem(int number, double weight, double price) {
         this.number = number;
