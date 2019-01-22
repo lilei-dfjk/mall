@@ -1,9 +1,9 @@
 package com.macro.mall.portal.controller;
 
 import com.macro.mall.portal.domain.CommonResult;
-import com.macro.mall.portal.domain.ConfirmOrderResult;
+import com.macro.mall.portal.domain.ConfirmOrderBeanResult;
 import com.macro.mall.portal.domain.OrderParam;
-import com.macro.mall.portal.service.OmsPortalOrderService;
+import com.macro.mall.portal.service.OmsOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.*;
  * Created by macro on 2018/8/30.
  */
 @Controller
-@Api(tags = "OmsPortalOrderController", description = "订单管理")
-//@RequestMapping("/order")
-public class OmsPortalOrderController {
+@Api(tags = "OmsOrderController", description = "订单管理")
+@RequestMapping("/order")
+public class OmsOrderController {
     @Autowired
-    private OmsPortalOrderService portalOrderService;
+    private OmsOrderService portalOrderService;
 
     @ApiOperation("根据购物车信息生成确认单信息")
     @RequestMapping(value = "/generateConfirmOrder", method = RequestMethod.POST)
     @ResponseBody
     public Object generateConfirmOrder() {
-        ConfirmOrderResult confirmOrderResult = portalOrderService.generateConfirmOrder();
+        ConfirmOrderBeanResult confirmOrderResult = portalOrderService.generateConfirmOrder();
         return new CommonResult().success(confirmOrderResult);
     }
 
