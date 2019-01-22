@@ -8,4 +8,5 @@ import java.util.List;
 public interface ZhLogisticService {
 
     public List<LogisticsOrderBean> getLogisticOrders(OrderBean orderBean);
+
 }

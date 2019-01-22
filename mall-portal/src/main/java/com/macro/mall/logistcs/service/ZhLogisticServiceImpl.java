@@ -5,12 +5,15 @@ import com.macro.mall.logistcs.bean.LogisticsRuleBean;
 import com.macro.mall.logistcs.bean.OrderBean;
 import com.macro.mall.logistcs.bean.ProductItem;
 import com.macro.mall.logistcs.cons.LogisticType;
+import org.apache.axis.AxisFault;
+import org.apache.axis.client.Call;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -213,5 +216,66 @@ public class ZhLogisticServiceImpl implements ZhLogisticService {
             }
         }
         return true;
+    }
+
+    public static void main(String[] args) throws AxisFault {
+        try {
+            String endpoint = "http://www.zhonghuan.com.au:8085/API/cxf/au/recordservice?wsdl";
+            // 直接引用远程的wsdl文件
+            // 以下都是套路
+            org.apache.axis.client.Service service = new org.apache.axis.client.Service();
+            Call call = (Call) service.createCall();
+            call.setTargetEndpointAddress(endpoint);
+            call.setTimeout(2000);
+            call.setOperationName(new QName("http://zh.au.service.RecordServiceI.com", "getRecordrtxml"));// WSDL里面描述的接口名称
+            call.addParameter("stock",
+                    org.apache.axis.encoding.XMLType.XSD_DATE,
+                    javax.xml.rpc.ParameterMode.IN);// 接口的参数
+            call.setReturnType(org.apache.axis.encoding.XMLType.XSD_STRING);// 设置返回类型
+            String xml = getxml();
+            String result = (String) call.invoke(new Object[]{xml});
+            // 给方法传递参数，并且调用方法
+            System.out.println("result is " + result);
+        } catch (Exception e) {
+            System.err.println(e.toString());
+        }
+    }
+
+
+    public static String getxml() {
+        String stock = "";
+        stock += "<ydjbxx>";
+        stock += "<chrusername>usertest</chrusername>";
+        stock += "<chrstockcode>au</chrstockcode>";
+        stock += "<chrpassword>123456</chrpassword>";
+        stock += "<chryyrmc></chryyrmc>";
+        stock += "<chrzydhm></chrzydhm>";
+        stock += "<chrhbh></chrhbh>";
+        stock += "<chrjckrq></chrjckrq>";
+        stock += "<chrzl>1</chrzl>";
+        stock += "<chrsjr>12</chrsjr>";
+        stock += "<chrsjrdz>1213</chrsjrdz>";
+        stock += "<chrsjrdh>13626994142</chrsjrdh>";
+        stock += "<chrjjr>luyuan</chrjjr>";
+        stock += "<chrjjrdh>0450494903</chrjjrdh>";
+        stock += "<chrsfzhm>352227198407180525</chrsfzhm>";
+        stock += "<ydhwxxlist>";
+        stock += "<ydhwxx>";
+        stock += "<chrpm>成人奶粉</chrpm>";
+        stock += "<chrpp>德运</chrpp>";
+        stock += "<chrggxh>900g</chrggxh>";
+        stock += "<chrjz>5.00</chrjz>";
+        stock += "<chrjs>2</chrjs>";
+        stock += "</ydhwxx>";
+        stock += "<ydhwxx>";
+        stock += "<chrpm>成人奶粉</chrpm>";
+        stock += "<chrpp>德运</chrpp>";
+        stock += "<chrggxh>900g</chrggxh>";
+        stock += "<chrjz>50.00</chrjz>";
+        stock += "<chrjs>2</chrjs>";
+        stock += "</ydhwxx>";
+        stock += "</ydhwxxlist>";
+        stock += "</ydjbxx>";
+        return stock;
     }
 }
