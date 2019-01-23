@@ -14,15 +14,45 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ZhRecordBean implements Serializable {
+    /**
+     * 营运人名称(平台用户名)
+     */
     private String chrusername;
+    /**
+     * 仓库编码
+     */
     private String chrstockcode;
+    /**
+     * 密码
+     */
     private String chrpassword;
+    /**
+     * 重量
+     */
     private String chrzl;
+    /**
+     * 收件人
+     */
     private String chrsjr;
+    /**
+     * 收件人地址
+     */
     private String chrsjrdz;
+    /**
+     * 收件人电话
+     */
     private String chrsjrdh;
+    /**
+     * 寄件人
+     */
     private String chrjjr;
+    /**
+     * 寄件人电话
+     */
     private String chrjjrdh;
+    /**
+     * 身份证号码
+     */
     private String chrsfzhm;
     private List<Ydhwxx> ydhwxxlist;
 

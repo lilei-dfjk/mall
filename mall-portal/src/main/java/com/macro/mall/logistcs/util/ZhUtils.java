@@ -1,13 +1,16 @@
 package com.macro.mall.logistcs.util;
 
 import com.macro.mall.exception.LogisticsException;
-import com.macro.mall.logistcs.bean.Ydhwxx;
-import com.macro.mall.logistcs.bean.ZhRecordBackBean;
-import com.macro.mall.logistcs.bean.ZhRecordBean;
+import com.macro.mall.logistcs.bean.*;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.core.util.Base64Encoder;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.apache.axis.client.Call;
+import org.apache.commons.io.IOUtils;
 
 import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,39 +30,91 @@ public class ZhUtils {
         String endpoint = "http://www.zhonghuan.com.au:8085/API/cxf/au/recordservice?wsdl";
         QName qName = new QName("http://zh.au.service.RecordServiceI.com", "getRecordrtxml");
         String xml = getRecordXml(recordBean);
-        String s = wsdlRequest(endpoint, qName, xml);
-        // 给方法传递参数，并且调用方法
-        XStream xStream = new XStream();
-        xStream.alias("BackMap", ZhRecordBackBean.class);
-        return (ZhRecordBackBean) xStream.fromXML(s);
-    }
-
-    public static ZhRecordBackBean uploadIdentify(ZhRecordBean recordBean) throws LogisticsException {
-        return null;
-    }
-
-    public static String logisticsTrack(String logisNo) throws LogisticsException {
-        String xml = "<fydh>" + logisNo + "</fydh>" + "<countrytype>au</countrytype>";
-        String endpoint = "http://www.zhonghuan.com.au:8085/API/cxf/common/logisticsservice?wsdl";
-        QName qName = new QName("http://zh.au.service.LogisticsServiceI.com", "getLogisticsInformation");
-        String s = wsdlRequest(endpoint, qName, xml);
-        return s;
-    }
-
-    private static String wsdlRequest(String endpoint, QName qname, String requestXml) throws LogisticsException {
+        String result = "";
         try {
             org.apache.axis.client.Service service = new org.apache.axis.client.Service();
             Call call = (Call) service.createCall();
             call.setTargetEndpointAddress(endpoint);
             call.setTimeout(2000);
-            call.setOperationName(qname);// WSDL里面描述的接口名称
+            call.setOperationName(qName);// WSDL里面描述的接口名称
             call.addParameter("stock",
                     org.apache.axis.encoding.XMLType.XSD_DATE,
                     javax.xml.rpc.ParameterMode.IN);// 接口的参数
             call.setReturnType(org.apache.axis.encoding.XMLType.XSD_STRING);// 设置返回类型
-            return (String) call.invoke(new Object[]{requestXml});
+            result = (String) call.invoke(new Object[]{xml});
         } catch (Exception e) {
             e.printStackTrace();
+            throw new LogisticsException(e.getMessage(), e);
+        }
+        // 给方法传递参数，并且调用方法
+        XStream xStream = new XStream();
+        xStream.alias("BackMap", ZhRecordBackBean.class);
+        return (ZhRecordBackBean) xStream.fromXML(result);
+    }
+
+    public static IdcardbackBean uploadIdentify(String name, String identifyNo, String frontUrl, String backUrl) throws LogisticsException {
+        try {
+            String endpoint = "http://www.zhonghuan.com.au:8085/API/cxf/common/idcardservice?wsdl";
+            org.apache.axis.client.Service service = new org.apache.axis.client.Service();
+            Call call = (Call) service.createCall();
+            call.setTargetEndpointAddress(endpoint);
+            call.setTimeout(10000);
+            call.setOperationName(new QName("http://zh.au.service.IdcardServiceI.com", "upIdcard"));// WSDL里面描述的接口名称
+            call.addParameter("consignee",
+                    org.apache.axis.encoding.XMLType.XSD_DATE,
+                    javax.xml.rpc.ParameterMode.IN);// 接口的参数
+            call.addParameter("cusidcard",
+                    org.apache.axis.encoding.XMLType.XSD_DATE,
+                    javax.xml.rpc.ParameterMode.IN);// 接口的参数
+            call.addParameter("baseidupimg",
+                    org.apache.axis.encoding.XMLType.XSD_DATE,
+                    javax.xml.rpc.ParameterMode.IN);// 接口的参数
+            call.addParameter("baseiddownimg",
+                    org.apache.axis.encoding.XMLType.XSD_DATE,
+                    javax.xml.rpc.ParameterMode.IN);// 接口的参数
+            call.setReturnType(org.apache.axis.encoding.XMLType.XSD_STRING);// 设置返回类型
+
+            String result = (String) call.invoke(new Object[]{name, identifyNo, getBase64Image(frontUrl), getBase64Image(backUrl)});
+            XStream xStream = new XStream();
+            xStream.alias("Idcardback", IdcardbackBean.class);
+            return (IdcardbackBean) xStream.fromXML(result);
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            throw new LogisticsException(e.getMessage(), e);
+        }
+    }
+
+    private static String getBase64Image(String imageUrl) throws IOException {
+        URL url = new URL(imageUrl);
+        byte[] bytes = IOUtils.toByteArray(url.openConnection().getInputStream());
+        Base64Encoder encoder = new Base64Encoder();
+        return encoder.encode(bytes);
+    }
+
+    public static ZhLogisTrackBackBean logisticsTrack(String logisNo) throws LogisticsException {
+        try {
+            String endpoint = "http://www.zhonghuan.com.au:8085/API/cxf/common/logisticsservice?wsdl";
+            // 直接引用远程的wsdl文件
+            // 以下都是套路
+            org.apache.axis.client.Service service = new org.apache.axis.client.Service();
+            Call call = (Call) service.createCall();
+            call.setTargetEndpointAddress(endpoint);
+            call.setTimeout(2000);
+            call.setOperationName(new QName("http://zh.au.service.LogisticsServiceI.com", "getLogisticsInformation"));// WSDL里面描述的接口名称
+            call.addParameter("fydh",
+                    org.apache.axis.encoding.XMLType.XSD_DATE,
+                    javax.xml.rpc.ParameterMode.IN);// 接口的参数
+            call.addParameter("countrytype",
+                    org.apache.axis.encoding.XMLType.XSD_DATE,
+                    javax.xml.rpc.ParameterMode.IN);// 接口的参数
+            call.setReturnType(org.apache.axis.encoding.XMLType.XSD_STRING);// 设置返回类型
+            String result = (String) call.invoke(new Object[]{logisNo, "au"});
+            XStream xStream = new XStream(new DomDriver("utf8"));
+            xStream.processAnnotations(ZhLogisTrackBackBean.class); // 识别obj类中的注解
+            xStream.processAnnotations(ZhLogisTrackBackListBean.class); // 识别obj类中的注解
+            return (ZhLogisTrackBackBean) xStream.fromXML(result);
+        } catch (Exception e) {
+            System.err.println(e.toString());
             throw new LogisticsException(e.getMessage(), e);
         }
     }
@@ -74,7 +129,12 @@ public class ZhUtils {
         try {
             ZhRecordBackBean record = ZhUtils.record(recordBean);
             System.out.println(record);
-            String s = ZhUtils.logisticsTrack(record.getChrfydh());
+            ZhLogisTrackBackBean zhLogisTrackBackBean = ZhUtils.logisticsTrack(record.getChrfydh());
+            System.out.println(zhLogisTrackBackBean);
+            IdcardbackBean idcardbackBean = ZhUtils.uploadIdentify("张三", "37126236283",
+                    "https://aoyibuy-oss.oss-ap-southeast-2.aliyuncs.com/mall/images/20181231/%E7%BE%8E%E5%8F%AF%E5%8D%93.jpg",
+                    "https://aoyibuy-oss.oss-ap-southeast-2.aliyuncs.com/mall/images/20181231/%E7%BE%8E%E5%8F%AF%E5%8D%93.jpg");
+            System.out.println(idcardbackBean);
         } catch (LogisticsException e) {
             e.printStackTrace();
         }

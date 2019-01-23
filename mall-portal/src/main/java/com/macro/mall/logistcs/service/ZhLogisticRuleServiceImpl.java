@@ -65,14 +65,4 @@ public class ZhLogisticRuleServiceImpl implements ZhLogisticRuleService {
         return 0;
     }
 
-    private List createLogicsOrder(int orderId, int number, double price, int weight, List list) {
-        int number2 = calcNumberRules(number);
-        int weight2 = calcNumberRules(weight);
-        double price2 = calcPriceRules(price);
-        if (number2 > 0 || weight2 > 0 || price2 > 0) {
-            createLogicsOrder(orderId, number2, price2, weight2, list);
-        }
-        list.add(number2);
-        return list;
-    }
 }

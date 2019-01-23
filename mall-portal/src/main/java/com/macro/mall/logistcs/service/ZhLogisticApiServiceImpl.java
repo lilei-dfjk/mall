@@ -12,8 +12,7 @@ import java.rmi.RemoteException;
 @Service
 public class ZhLogisticApiServiceImpl implements LogisticApiService {
     @Override
-    public String recordLogistic(OrderBean orderBean) {
-        ZhRecordBean zhRecordBean = new ZhRecordBean();
+    public String recordLogistic(ZhRecordBean zhRecordBean) {
         try {
             ZhRecordBackBean record = ZhUtils.record(zhRecordBean);
             if (record.getBackjudge().equals("true")) {
@@ -26,7 +25,7 @@ public class ZhLogisticApiServiceImpl implements LogisticApiService {
     }
 
     @Override
-    public void uploadIdentify() {
+    public void uploadIdentify(String name, String identifyNo, String frontUrl, String backUrl) {
 
     }
 
