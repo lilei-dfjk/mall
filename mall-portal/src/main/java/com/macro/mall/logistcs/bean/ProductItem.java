@@ -11,9 +11,12 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductItem {
-    private String productId;
+    private long productId;
     private String productName;
     private String productType;
+    private String productSn;
+    private long productSkuId;
+    private int stock;
     private String brand;
     private int number;
     private double weight;

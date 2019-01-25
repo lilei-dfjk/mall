@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 订单管理Controller
  * Created by macro on 2018/8/30.
@@ -24,8 +26,8 @@ public class OmsOrderController {
     @ApiOperation("根据购物车信息生成确认单信息")
     @RequestMapping(value = "/generateConfirmOrder", method = RequestMethod.POST)
     @ResponseBody
-    public Object generateConfirmOrder() {
-        ConfirmOrderBeanResult confirmOrderResult = portalOrderService.generateConfirmOrder();
+    public Object generateConfirmOrder(List<Long> ids) {
+        ConfirmOrderBeanResult confirmOrderResult = portalOrderService.generateConfirmOrder(ids);
         return new CommonResult().success(confirmOrderResult);
     }
 

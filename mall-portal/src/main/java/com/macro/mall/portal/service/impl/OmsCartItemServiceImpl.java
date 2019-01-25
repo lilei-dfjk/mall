@@ -107,7 +107,11 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
 
     @Override
     public PortalCartItemWithDeal lists(Long memberId) {
-        return omsOrderService.getPortalCartInfo();
+        return omsOrderService.getPortalCartInfo(null);
+    }
+    @Override
+    public PortalCartItemWithDeal lists(Long memberId, List<Long> ids) {
+        return omsOrderService.getPortalCartInfo(ids);
     }
 
     @Override

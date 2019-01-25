@@ -27,6 +27,8 @@ public interface OmsCartItemService {
 
     PortalCartItemWithDeal lists(Long memberId);
 
+    PortalCartItemWithDeal lists(Long memberId, List<Long> ids);
+
     /**
      * 获取包含促销活动信息的购物车列表
      */

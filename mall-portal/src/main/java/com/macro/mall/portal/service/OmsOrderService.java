@@ -6,13 +6,19 @@ import com.macro.mall.portal.domain.OrderParam;
 import com.macro.mall.portal.model.PortalCartItemWithDeal;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface OmsOrderService {
     /**
      * 根据用户购物车信息生成确认单信息
      */
-    ConfirmOrderBeanResult generateConfirmOrder();
+    ConfirmOrderBeanResult generateConfirmOrder(List<Long> ids);
 
-    PortalCartItemWithDeal getPortalCartInfo();
+    /**
+     * @param ids 购物车选择商品
+     * @return
+     */
+    PortalCartItemWithDeal getPortalCartInfo(List<Long> ids);
 
     /**
      * 根据提交信息生成订单
