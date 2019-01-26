@@ -1,10 +1,8 @@
 package com.macro.mall.portal.service.impl;
 
 import com.macro.mall.mapper.OmsCartItemMapper;
-import com.macro.mall.model.OmsCartItem;
-import com.macro.mall.model.OmsCartItemExample;
-import com.macro.mall.model.PmsProduct;
-import com.macro.mall.model.UmsMember;
+import com.macro.mall.mapper.PmsSkuStockMapper;
+import com.macro.mall.model.*;
 import com.macro.mall.pay.rate.RateService;
 import com.macro.mall.portal.dao.PortalProductDao;
 import com.macro.mall.portal.domain.CartProduct;
@@ -39,6 +37,8 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
     @Autowired
     private RateService rateService;
     @Autowired
+    private PmsSkuStockMapper skuStockMapper;
+    @Autowired
     private OmsOrderService omsOrderService;
     @Autowired
     private PmsProductLogisticRuleService productLogisticRuleService;
@@ -50,6 +50,16 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
     public int add(OmsCartItem cartItem) {
         int count;
         PmsProduct productInfo = portalProductService.getProductInfo(cartItem.getProductId());
+        PmsSkuStockExample example = new PmsSkuStockExample();
+        example.createCriteria().andProductIdEqualTo(cartItem.getProductId());
+        List<PmsSkuStock> pmsSkuStocks = skuStockMapper.selectByExample(example);
+        if (!CollectionUtils.isEmpty(pmsSkuStocks)) {
+            PmsSkuStock pmsSkuStock = pmsSkuStocks.get(0);
+            cartItem.setProductSkuId(pmsSkuStock.getId());
+            cartItem.setProductSkuCode(pmsSkuStock.getSkuCode());
+            cartItem.setStock(pmsSkuStock.getStock());
+        }
+
         if (null == productInfo) {
             return 0;
         }
@@ -59,8 +69,6 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
 //        cartItem.setCnyPrice(productInfo.getPrice().divide(BigDecimal.valueOf(rateService.getAuToCnyRate()), 2));
         cartItem.setProductSn(productInfo.getProductSn());
         cartItem.setProductName(productInfo.getName());
-        cartItem.setStock(productInfo.getStock());
-
         cartItem.setMemberNickname(currentMember.getNickname());
         cartItem.setDeleteStatus(0);
         OmsCartItem existCartItem = getCartItem(cartItem);
@@ -109,6 +117,7 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
     public PortalCartItemWithDeal lists(Long memberId) {
         return omsOrderService.getPortalCartInfo(null);
     }
+
     @Override
     public PortalCartItemWithDeal lists(Long memberId, List<Long> ids) {
         return omsOrderService.getPortalCartInfo(ids);
