@@ -215,7 +215,8 @@ public class OmsOrderServiceImpl implements OmsOrderService {
      */
     private boolean hasStock(List<ProductItem> carLists) {
         for (ProductItem productItem : carLists) {
-            if (productItem.getNumber() >= productItem.getStock() || productItem.getStock() <= 0) {
+            PmsSkuStock skuStock = skuStockMapper.selectByPrimaryKey(productItem.getProductSkuId());
+            if (productItem.getNumber() >= (skuStock.getStock() - skuStock.getLockStock()) || productItem.getStock() <= 0) {
                 return false;
             }
         }
@@ -272,7 +273,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         //恢复所有下单商品的锁定库存，扣减真实库存
         OmsOrderDetail orderDetail = portalOrderDao.getDetail(orderId);
         int count = portalOrderDao.updateSkuStock(orderDetail.getOrderItemList());
-        return new CommonResult().success("支付成功",count);
+        return new CommonResult().success("支付成功", count);
     }
 
     @Override
