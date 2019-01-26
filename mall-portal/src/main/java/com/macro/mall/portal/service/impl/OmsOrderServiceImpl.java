@@ -80,7 +80,9 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         UmsMember currentMember = memberService.getCurrentMember();
         OmsCartItemExample example = new OmsCartItemExample();
         example.createCriteria().andDeleteStatusEqualTo(0).andMemberIdEqualTo(currentMember.getId());
-        example.createCriteria().andIdIn(cardIds);
+        if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(cardIds)) {
+            example.createCriteria().andIdIn(cardIds);
+        }
         List<OmsCartItem> omsCartItems = cartItemMapper.selectByExample(example);
         if (!CollectionUtils.isEmpty(omsCartItems)) {
             OrderBean orderBean = new OrderBean();
