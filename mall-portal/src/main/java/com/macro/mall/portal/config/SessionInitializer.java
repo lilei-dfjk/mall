@@ -1,3 +1,4 @@
+/*
 package com.macro.mall.portal.config;
 
 import org.apache.catalina.security.SecurityConfig;
@@ -8,3 +9,4 @@ public class SessionInitializer extends AbstractHttpSessionApplicationInitialize
         super(SecurityConfig.class, SessionConfig.class);
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.macro.mall.portal.config;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,3 +34,4 @@ public class SessionConfig {
         return connectionFactory;
     }
 }
+*/
