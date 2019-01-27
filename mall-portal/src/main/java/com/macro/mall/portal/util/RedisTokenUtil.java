@@ -51,8 +51,8 @@ public class RedisTokenUtil {
         return (String) redisTemplate.opsForHash().get(getLoginKey(token), "username");
     }
 
-    public UserDetails getUserDetails(String token) {
-        Object userDetails = redisTemplate.opsForHash().get(getLoginKey(token), "userDetails");
-        return JsonUtil.jsonToPojo((String) userDetails, UserDetails.class);
-    }
+//    public UserDetails getUserDetails(String token) {
+//        Object userDetails = redisTemplate.opsForHash().get(getLoginKey(token), "userDetails");
+//        return JsonUtil.jsonToPojo((String) userDetails, UserDetails.class);
+//    }
 }

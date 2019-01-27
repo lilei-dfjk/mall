@@ -15,7 +15,7 @@ public class ProductItem {
     private String productName;
     private String productType;
     private String productSn;
-    private long productSkuId;
+//    private long productSkuId;
     private int stock;
     private String brand;
     private int number;

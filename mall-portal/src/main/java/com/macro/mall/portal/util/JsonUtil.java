@@ -5,11 +5,6 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
-
-/**
- * Jackson json序列化和反序列化工具类
- * Created by macro on 2018/4/26.
- */
 public class JsonUtil {
 
     // 定义jackson对象
@@ -27,7 +22,7 @@ public class JsonUtil {
 		}
     	return null;
     }
-    
+
     /**
      * 将json结果集转化为对象
      * 

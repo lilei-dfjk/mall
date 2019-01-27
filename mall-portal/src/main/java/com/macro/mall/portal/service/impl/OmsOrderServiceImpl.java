@@ -7,7 +7,7 @@ import com.macro.mall.logistcs.bean.ProductItem;
 import com.macro.mall.logistcs.cons.LogisticType;
 import com.macro.mall.mapper.OmsCartItemMapper;
 import com.macro.mall.mapper.OmsOrderMapper;
-import com.macro.mall.mapper.PmsSkuStockMapper;
+import com.macro.mall.mapper.PmsProductMapper;
 import com.macro.mall.model.*;
 import com.macro.mall.pay.rate.RateService;
 import com.macro.mall.portal.dao.PortalOrderDao;
@@ -20,8 +20,10 @@ import com.macro.mall.portal.domain.OrderParam;
 import com.macro.mall.portal.model.PortalCartItemWithDeal;
 import com.macro.mall.portal.model.PortalDealInfo;
 import com.macro.mall.portal.service.*;
+import com.macro.mall.portal.util.RedisLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -54,9 +56,9 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     @Autowired
     private OmsOrderMapper orderMapper;
     @Autowired
-    private OmsCartItemService cartItemService;
+    private PmsProductMapper pmsProductMapper;
     @Autowired
-    private PmsSkuStockMapper skuStockMapper;
+    private OmsCartItemService cartItemService;
     @Value("${redis.key.prefix.orderId}")
     private String REDIS_KEY_PREFIX_ORDER_ID;
     @Autowired
@@ -65,6 +67,8 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     private PmsProductLogisticRuleService productLogisticRuleService;
     @Autowired
     private com.macro.mall.logistcs.service.ZhLogisticService zhLogisticService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 
     @Override
@@ -126,7 +130,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         productItem.setRuleBean(logisticRuleBean);
         productItem.setPic(productInfo.getPic());
         productItem.setStock(productInfo.getStock());
-        productItem.setProductSkuId(item.getProductSkuId());
+//        productItem.setProductSkuId(item.getProductSkuId());
         productItem.setProductName(productInfo.getName());
         productItem.setPrice(item.getPrice().doubleValue());
         productItem.setWeight(productInfo.getWeight().doubleValue());
@@ -217,7 +221,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
      */
     private boolean hasStock(List<ProductItem> carLists) {
         for (ProductItem productItem : carLists) {
-            PmsSkuStock skuStock = skuStockMapper.selectByPrimaryKey(productItem.getProductSkuId());
+            PmsProduct skuStock = pmsProductMapper.selectByPrimaryKey(productItem.getProductId());
             if (productItem.getNumber() >= (skuStock.getStock() - skuStock.getLockStock()) || productItem.getStock() <= 0) {
                 return false;
             }
@@ -230,9 +234,24 @@ public class OmsOrderServiceImpl implements OmsOrderService {
      */
     private void lockStock(List<ProductItem> carLists) {
         for (ProductItem productItem : carLists) {
-            PmsSkuStock skuStock = skuStockMapper.selectByPrimaryKey(productItem.getProductSkuId());
-            skuStock.setLockStock(skuStock.getLockStock() + productItem.getNumber());
-            skuStockMapper.updateByPrimaryKeySelective(skuStock);
+            lockStock(productItem);
+        }
+    }
+
+    private void lockStock(ProductItem productItem) {
+        RedisLock lock = new RedisLock(redisTemplate, "product.stock.lock." + productItem.getProductId(), 10000, 20000);
+        try {
+            if (lock.lock()) {
+                PmsProduct skuStock = pmsProductMapper.selectByPrimaryKey(productItem.getProductId());
+                skuStock.setLockStock(skuStock.getLockStock() + productItem.getNumber());
+                pmsProductMapper.updateByPrimaryKeySelective(skuStock);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            //为了让分布式锁的算法更稳键些，持有锁的客户端在解锁之前应该再检查一次自己的锁是否已经超时，再去做DEL操作，因为可能客户端因为某个耗时的操作而挂起，
+            //操作完的时候锁因为超时已经被别人获得，这时就不必解锁了。 ————这里没有做
+            lock.unlock();
         }
     }
 

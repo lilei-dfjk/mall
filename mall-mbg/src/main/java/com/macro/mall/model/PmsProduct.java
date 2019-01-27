@@ -77,6 +77,8 @@ public class PmsProduct implements Serializable {
 
     private BigDecimal price;
 
+    private BigDecimal rmbPrice;
+
     /**
      * 促销价格
      *
@@ -125,6 +127,13 @@ public class PmsProduct implements Serializable {
      * @mbggenerated
      */
     private Integer stock;
+
+    /**
+     * 库存锁定
+     *
+     * @mbggenerated
+     */
+    private Integer lockStock;
 
     /**
      * 库存预警值
@@ -369,6 +378,14 @@ public class PmsProduct implements Serializable {
         this.price = price;
     }
 
+    public BigDecimal getRmbPrice() {
+        return rmbPrice;
+    }
+
+    public void setRmbPrice(BigDecimal rmbPrice) {
+        this.rmbPrice = rmbPrice;
+    }
+
     public BigDecimal getPromotionPrice() {
         return promotionPrice;
     }
@@ -423,6 +440,14 @@ public class PmsProduct implements Serializable {
 
     public void setStock(Integer stock) {
         this.stock = stock;
+    }
+
+    public Integer getLockStock() {
+        return lockStock;
+    }
+
+    public void setLockStock(Integer lockStock) {
+        this.lockStock = lockStock;
     }
 
     public Integer getLowStock() {
@@ -599,6 +624,7 @@ public class PmsProduct implements Serializable {
         sb.append(", sort=").append(sort);
         sb.append(", sale=").append(sale);
         sb.append(", price=").append(price);
+        sb.append(", rmbPrice=").append(rmbPrice);
         sb.append(", promotionPrice=").append(promotionPrice);
         sb.append(", giftGrowth=").append(giftGrowth);
         sb.append(", giftPoint=").append(giftPoint);
@@ -606,6 +632,7 @@ public class PmsProduct implements Serializable {
         sb.append(", subTitle=").append(subTitle);
         sb.append(", originalPrice=").append(originalPrice);
         sb.append(", stock=").append(stock);
+        sb.append(", lockStock=").append(lockStock);
         sb.append(", lowStock=").append(lowStock);
         sb.append(", unit=").append(unit);
         sb.append(", weight=").append(weight);

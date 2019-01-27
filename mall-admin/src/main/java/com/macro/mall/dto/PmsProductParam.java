@@ -7,7 +7,6 @@ import java.util.List;
 
 /**
  * 创建和修改商品时使用的参数
- * Created by macro on 2018/4/26.
  */
 public class PmsProductParam extends PmsProduct{
     @ApiModelProperty("商品阶梯价格设置")
@@ -24,6 +23,8 @@ public class PmsProductParam extends PmsProduct{
     private List<CmsSubjectProductRelation> subjectProductRelationList;
     @ApiModelProperty("优选专区和商品的关系")
     private List<CmsPrefrenceAreaProductRelation> prefrenceAreaProductRelationList;
+    @ApiModelProperty("产品物流规则")
+    private List<PmsProductLogisticRuleParam> productLogisticRuleParamList;
 
     public List<PmsProductLadder> getProductLadderList() {
         return productLadderList;
@@ -79,5 +80,13 @@ public class PmsProductParam extends PmsProduct{
 
     public void setPrefrenceAreaProductRelationList(List<CmsPrefrenceAreaProductRelation> prefrenceAreaProductRelationList) {
         this.prefrenceAreaProductRelationList = prefrenceAreaProductRelationList;
+    }
+
+    public List<PmsProductLogisticRuleParam> getProductLogisticRuleParamList() {
+        return productLogisticRuleParamList;
+    }
+
+    public void setProductLogisticRuleParamList(List<PmsProductLogisticRuleParam> productLogisticRuleParamList) {
+        this.productLogisticRuleParamList = productLogisticRuleParamList;
     }
 }

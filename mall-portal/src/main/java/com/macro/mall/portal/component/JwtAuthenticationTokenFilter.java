@@ -41,8 +41,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             String authToken = authHeader.substring(this.tokenHead.length());// The part after "Bearer "
             if (redisTokenUtil.hasToken(authToken)) {
                 String username = redisTokenUtil.getUsernameByToken(authToken);
-//                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                UserDetails userDetails = redisTokenUtil.getUserDetails(authToken);
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+//                UserDetails userDetails = redisTokenUtil.getUserDetails(authToken);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 LOGGER.info("authenticated user:{}", username);

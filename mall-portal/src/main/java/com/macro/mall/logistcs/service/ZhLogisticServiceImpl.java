@@ -27,7 +27,7 @@ public class ZhLogisticServiceImpl implements ZhLogisticService {
     @Autowired
     private ExpressCalcService expressCalcService;
 
-    @PostConstruct
+//    @PostConstruct
     public void init() {
         OrderBean orderBean = new OrderBean();
         List<ProductItem> productItemList = new ArrayList<>();

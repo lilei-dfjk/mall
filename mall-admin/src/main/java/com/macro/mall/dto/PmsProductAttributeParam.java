@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public class PmsProductAttributeParam {
     @ApiModelProperty("属性分类ID")
-    @NotEmpty(message = "属性分类不能为空")
+//    @NotEmpty(message = "属性分类不能为空")
     private Long productAttributeCategoryId;
     @ApiModelProperty("属性名称")
     @NotEmpty(message = "属性名称不能为空")

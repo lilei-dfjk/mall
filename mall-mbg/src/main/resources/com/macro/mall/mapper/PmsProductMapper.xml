@@ -18,6 +18,7 @@
     <result column="sort" jdbcType="INTEGER" property="sort" />
     <result column="sale" jdbcType="INTEGER" property="sale" />
     <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="rmb_price" jdbcType="DECIMAL" property="rmbPrice" />
     <result column="promotion_price" jdbcType="DECIMAL" property="promotionPrice" />
     <result column="gift_growth" jdbcType="INTEGER" property="giftGrowth" />
     <result column="gift_point" jdbcType="INTEGER" property="giftPoint" />
@@ -25,6 +26,7 @@
     <result column="sub_title" jdbcType="VARCHAR" property="subTitle" />
     <result column="original_price" jdbcType="DECIMAL" property="originalPrice" />
     <result column="stock" jdbcType="INTEGER" property="stock" />
+    <result column="lock_stock" jdbcType="INTEGER" property="lockStock" />
     <result column="low_stock" jdbcType="INTEGER" property="lowStock" />
     <result column="unit" jdbcType="VARCHAR" property="unit" />
     <result column="weight" jdbcType="DECIMAL" property="weight" />
@@ -108,10 +110,10 @@
   <sql id="Base_Column_List">
     id, brand_id, product_category_id, feight_template_id, product_attribute_category_id, 
     name, pic, product_sn, delete_status, publish_status, new_status, recommand_status, 
-    verify_status, sort, sale, price, promotion_price, gift_growth, gift_point, use_point_limit, 
-    sub_title, original_price, stock, low_stock, unit, weight, preview_status, service_ids, 
-    keywords, note, album_pics, detail_title, promotion_start_time, promotion_end_time, 
-    promotion_per_limit, promotion_type, brand_name, product_category_name
+    verify_status, sort, sale, price, rmb_price, promotion_price, gift_growth, gift_point, 
+    use_point_limit, sub_title, original_price, stock, lock_stock, low_stock, unit, weight, 
+    preview_status, service_ids, keywords, note, album_pics, detail_title, promotion_start_time, 
+    promotion_end_time, promotion_per_limit, promotion_type, brand_name, product_category_name
   </sql>
   <sql id="Blob_Column_List">
     description, detail_desc, detail_html, detail_mobile_html
@@ -173,12 +175,13 @@
       product_sn, delete_status, publish_status, 
       new_status, recommand_status, verify_status, 
       sort, sale, price, 
-      promotion_price, gift_growth, gift_point, 
-      use_point_limit, sub_title, original_price, 
-      stock, low_stock, unit, 
-      weight, preview_status, service_ids, 
-      keywords, note, album_pics, 
-      detail_title, promotion_start_time, promotion_end_time, 
+      rmb_price, promotion_price, gift_growth, 
+      gift_point, use_point_limit, sub_title, 
+      original_price, stock, lock_stock, 
+      low_stock, unit, weight, 
+      preview_status, service_ids, keywords, 
+      note, album_pics, detail_title, 
+      promotion_start_time, promotion_end_time, 
       promotion_per_limit, promotion_type, brand_name, 
       product_category_name, description, detail_desc, 
       detail_html, detail_mobile_html)
@@ -187,12 +190,13 @@
       #{productSn,jdbcType=VARCHAR}, #{deleteStatus,jdbcType=INTEGER}, #{publishStatus,jdbcType=INTEGER}, 
       #{newStatus,jdbcType=INTEGER}, #{recommandStatus,jdbcType=INTEGER}, #{verifyStatus,jdbcType=INTEGER}, 
       #{sort,jdbcType=INTEGER}, #{sale,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, 
-      #{promotionPrice,jdbcType=DECIMAL}, #{giftGrowth,jdbcType=INTEGER}, #{giftPoint,jdbcType=INTEGER}, 
-      #{usePointLimit,jdbcType=INTEGER}, #{subTitle,jdbcType=VARCHAR}, #{originalPrice,jdbcType=DECIMAL}, 
-      #{stock,jdbcType=INTEGER}, #{lowStock,jdbcType=INTEGER}, #{unit,jdbcType=VARCHAR}, 
-      #{weight,jdbcType=DECIMAL}, #{previewStatus,jdbcType=INTEGER}, #{serviceIds,jdbcType=VARCHAR}, 
-      #{keywords,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{albumPics,jdbcType=VARCHAR}, 
-      #{detailTitle,jdbcType=VARCHAR}, #{promotionStartTime,jdbcType=TIMESTAMP}, #{promotionEndTime,jdbcType=TIMESTAMP}, 
+      #{rmbPrice,jdbcType=DECIMAL}, #{promotionPrice,jdbcType=DECIMAL}, #{giftGrowth,jdbcType=INTEGER}, 
+      #{giftPoint,jdbcType=INTEGER}, #{usePointLimit,jdbcType=INTEGER}, #{subTitle,jdbcType=VARCHAR}, 
+      #{originalPrice,jdbcType=DECIMAL}, #{stock,jdbcType=INTEGER}, #{lockStock,jdbcType=INTEGER}, 
+      #{lowStock,jdbcType=INTEGER}, #{unit,jdbcType=VARCHAR}, #{weight,jdbcType=DECIMAL}, 
+      #{previewStatus,jdbcType=INTEGER}, #{serviceIds,jdbcType=VARCHAR}, #{keywords,jdbcType=VARCHAR}, 
+      #{note,jdbcType=VARCHAR}, #{albumPics,jdbcType=VARCHAR}, #{detailTitle,jdbcType=VARCHAR}, 
+      #{promotionStartTime,jdbcType=TIMESTAMP}, #{promotionEndTime,jdbcType=TIMESTAMP}, 
       #{promotionPerLimit,jdbcType=INTEGER}, #{promotionType,jdbcType=INTEGER}, #{brandName,jdbcType=VARCHAR}, 
       #{productCategoryName,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR}, #{detailDesc,jdbcType=LONGVARCHAR}, 
       #{detailHtml,jdbcType=LONGVARCHAR}, #{detailMobileHtml,jdbcType=LONGVARCHAR})
@@ -248,6 +252,9 @@
       <if test="price != null">
         price,
       </if>
+      <if test="rmbPrice != null">
+        rmb_price,
+      </if>
       <if test="promotionPrice != null">
         promotion_price,
       </if>
@@ -268,6 +275,9 @@
       </if>
       <if test="stock != null">
         stock,
+      </if>
+      <if test="lockStock != null">
+        lock_stock,
       </if>
       <if test="lowStock != null">
         low_stock,
@@ -373,6 +383,9 @@
       <if test="price != null">
         #{price,jdbcType=DECIMAL},
       </if>
+      <if test="rmbPrice != null">
+        #{rmbPrice,jdbcType=DECIMAL},
+      </if>
       <if test="promotionPrice != null">
         #{promotionPrice,jdbcType=DECIMAL},
       </if>
@@ -393,6 +406,9 @@
       </if>
       <if test="stock != null">
         #{stock,jdbcType=INTEGER},
+      </if>
+      <if test="lockStock != null">
+        #{lockStock,jdbcType=INTEGER},
       </if>
       <if test="lowStock != null">
         #{lowStock,jdbcType=INTEGER},
@@ -510,6 +526,9 @@
       <if test="record.price != null">
         price = #{record.price,jdbcType=DECIMAL},
       </if>
+      <if test="record.rmbPrice != null">
+        rmb_price = #{record.rmbPrice,jdbcType=DECIMAL},
+      </if>
       <if test="record.promotionPrice != null">
         promotion_price = #{record.promotionPrice,jdbcType=DECIMAL},
       </if>
@@ -530,6 +549,9 @@
       </if>
       <if test="record.stock != null">
         stock = #{record.stock,jdbcType=INTEGER},
+      </if>
+      <if test="record.lockStock != null">
+        lock_stock = #{record.lockStock,jdbcType=INTEGER},
       </if>
       <if test="record.lowStock != null">
         low_stock = #{record.lowStock,jdbcType=INTEGER},
@@ -611,6 +633,7 @@
       sort = #{record.sort,jdbcType=INTEGER},
       sale = #{record.sale,jdbcType=INTEGER},
       price = #{record.price,jdbcType=DECIMAL},
+      rmb_price = #{record.rmbPrice,jdbcType=DECIMAL},
       promotion_price = #{record.promotionPrice,jdbcType=DECIMAL},
       gift_growth = #{record.giftGrowth,jdbcType=INTEGER},
       gift_point = #{record.giftPoint,jdbcType=INTEGER},
@@ -618,6 +641,7 @@
       sub_title = #{record.subTitle,jdbcType=VARCHAR},
       original_price = #{record.originalPrice,jdbcType=DECIMAL},
       stock = #{record.stock,jdbcType=INTEGER},
+      lock_stock = #{record.lockStock,jdbcType=INTEGER},
       low_stock = #{record.lowStock,jdbcType=INTEGER},
       unit = #{record.unit,jdbcType=VARCHAR},
       weight = #{record.weight,jdbcType=DECIMAL},
@@ -659,6 +683,7 @@
       sort = #{record.sort,jdbcType=INTEGER},
       sale = #{record.sale,jdbcType=INTEGER},
       price = #{record.price,jdbcType=DECIMAL},
+      rmb_price = #{record.rmbPrice,jdbcType=DECIMAL},
       promotion_price = #{record.promotionPrice,jdbcType=DECIMAL},
       gift_growth = #{record.giftGrowth,jdbcType=INTEGER},
       gift_point = #{record.giftPoint,jdbcType=INTEGER},
@@ -666,6 +691,7 @@
       sub_title = #{record.subTitle,jdbcType=VARCHAR},
       original_price = #{record.originalPrice,jdbcType=DECIMAL},
       stock = #{record.stock,jdbcType=INTEGER},
+      lock_stock = #{record.lockStock,jdbcType=INTEGER},
       low_stock = #{record.lowStock,jdbcType=INTEGER},
       unit = #{record.unit,jdbcType=VARCHAR},
       weight = #{record.weight,jdbcType=DECIMAL},
@@ -733,6 +759,9 @@
       <if test="price != null">
         price = #{price,jdbcType=DECIMAL},
       </if>
+      <if test="rmbPrice != null">
+        rmb_price = #{rmbPrice,jdbcType=DECIMAL},
+      </if>
       <if test="promotionPrice != null">
         promotion_price = #{promotionPrice,jdbcType=DECIMAL},
       </if>
@@ -753,6 +782,9 @@
       </if>
       <if test="stock != null">
         stock = #{stock,jdbcType=INTEGER},
+      </if>
+      <if test="lockStock != null">
+        lock_stock = #{lockStock,jdbcType=INTEGER},
       </if>
       <if test="lowStock != null">
         low_stock = #{lowStock,jdbcType=INTEGER},
@@ -831,6 +863,7 @@
       sort = #{sort,jdbcType=INTEGER},
       sale = #{sale,jdbcType=INTEGER},
       price = #{price,jdbcType=DECIMAL},
+      rmb_price = #{rmbPrice,jdbcType=DECIMAL},
       promotion_price = #{promotionPrice,jdbcType=DECIMAL},
       gift_growth = #{giftGrowth,jdbcType=INTEGER},
       gift_point = #{giftPoint,jdbcType=INTEGER},
@@ -838,6 +871,7 @@
       sub_title = #{subTitle,jdbcType=VARCHAR},
       original_price = #{originalPrice,jdbcType=DECIMAL},
       stock = #{stock,jdbcType=INTEGER},
+      lock_stock = #{lockStock,jdbcType=INTEGER},
       low_stock = #{lowStock,jdbcType=INTEGER},
       unit = #{unit,jdbcType=VARCHAR},
       weight = #{weight,jdbcType=DECIMAL},
@@ -876,6 +910,7 @@
       sort = #{sort,jdbcType=INTEGER},
       sale = #{sale,jdbcType=INTEGER},
       price = #{price,jdbcType=DECIMAL},
+      rmb_price = #{rmbPrice,jdbcType=DECIMAL},
       promotion_price = #{promotionPrice,jdbcType=DECIMAL},
       gift_growth = #{giftGrowth,jdbcType=INTEGER},
       gift_point = #{giftPoint,jdbcType=INTEGER},
@@ -883,6 +918,7 @@
       sub_title = #{subTitle,jdbcType=VARCHAR},
       original_price = #{originalPrice,jdbcType=DECIMAL},
       stock = #{stock,jdbcType=INTEGER},
+      lock_stock = #{lockStock,jdbcType=INTEGER},
       low_stock = #{lowStock,jdbcType=INTEGER},
       unit = #{unit,jdbcType=VARCHAR},
       weight = #{weight,jdbcType=DECIMAL},

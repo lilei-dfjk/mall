@@ -8,7 +8,6 @@ import com.macro.mall.dto.PmsProductResult;
 import com.macro.mall.mapper.*;
 import com.macro.mall.model.*;
 import com.macro.mall.service.PmsProductService;
-import io.swagger.annotations.Example;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +59,10 @@ public class PmsProductServiceImpl implements PmsProductService {
     @Autowired
     private CmsPrefrenceAreaProductRelationMapper prefrenceAreaProductRelationMapper;
     @Autowired
+    private PmsProductLogisticRuleMapper productLogisticRuleMapper;
+    @Autowired
+    private PmsProductLogisticRuleDao productLogisticRuleDao;
+    @Autowired
     private PmsProductDao productDao;
     @Autowired
     private PmsProductVertifyRecordDao productVertifyRecordDao;
@@ -76,12 +79,15 @@ public class PmsProductServiceImpl implements PmsProductService {
         Long productId = product.getId();
         //会员价格
         relateAndInsertList(memberPriceDao, productParam.getMemberPriceList(), productId);
+        //物流规则
+        relateAndInsertList(productLogisticRuleDao, productParam.getProductLogisticRuleParamList(), productId);
+
         //阶梯价格
         relateAndInsertList(productLadderDao, productParam.getProductLadderList(), productId);
         //满减价格
         relateAndInsertList(productFullReductionDao, productParam.getProductFullReductionList(), productId);
         //处理sku的编码
-        handleSkuStockCode(productParam.getSkuStockList(),productId);
+        handleSkuStockCode(productParam.getSkuStockList(), productId);
         //添加sku库存信息
         relateAndInsertList(skuStockDao, productParam.getSkuStockList(), productId);
         //添加商品参数,添加自定义商品规格
@@ -95,10 +101,10 @@ public class PmsProductServiceImpl implements PmsProductService {
     }
 
     private void handleSkuStockCode(List<PmsSkuStock> skuStockList, Long productId) {
-        if(CollectionUtils.isEmpty(skuStockList))return;
-        for(int i=0;i<skuStockList.size();i++){
+        if (CollectionUtils.isEmpty(skuStockList)) return;
+        for (int i = 0; i < skuStockList.size(); i++) {
             PmsSkuStock skuStock = skuStockList.get(i);
-            if(StringUtils.isEmpty(skuStock.getSkuCode())){
+            if (StringUtils.isEmpty(skuStock.getSkuCode())) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
                 StringBuilder sb = new StringBuilder();
                 //日期
@@ -106,7 +112,7 @@ public class PmsProductServiceImpl implements PmsProductService {
                 //四位商品id
                 sb.append(String.format("%04d", productId));
                 //三位索引id
-                sb.append(String.format("%03d", i+1));
+                sb.append(String.format("%03d", i + 1));
                 skuStock.setSkuCode(sb.toString());
             }
         }
@@ -124,6 +130,11 @@ public class PmsProductServiceImpl implements PmsProductService {
         PmsProduct product = productParam;
         product.setId(id);
         productMapper.updateByPrimaryKeySelective(product);
+        //物流规则
+        PmsProductLogisticRuleExample ruleExample = new PmsProductLogisticRuleExample();
+        ruleExample.createCriteria().andProductIdEqualTo(id);
+        productLogisticRuleMapper.deleteByExample(ruleExample);
+        relateAndInsertList(productLogisticRuleDao, productParam.getMemberPriceList(), id);
         //会员价格
         PmsMemberPriceExample pmsMemberPriceExample = new PmsMemberPriceExample();
         pmsMemberPriceExample.createCriteria().andProductIdEqualTo(id);
@@ -143,7 +154,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         PmsSkuStockExample skuStockExample = new PmsSkuStockExample();
         skuStockExample.createCriteria().andProductIdEqualTo(id);
         skuStockMapper.deleteByExample(skuStockExample);
-        handleSkuStockCode(productParam.getSkuStockList(),id);
+        handleSkuStockCode(productParam.getSkuStockList(), id);
         relateAndInsertList(skuStockDao, productParam.getSkuStockList(), id);
         //修改商品参数,添加自定义商品规格
         PmsProductAttributeValueExample productAttributeValueExample = new PmsProductAttributeValueExample();
@@ -254,7 +265,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         PmsProductExample productExample = new PmsProductExample();
         PmsProductExample.Criteria criteria = productExample.createCriteria();
         criteria.andDeleteStatusEqualTo(0);
-        if(!StringUtils.isEmpty(keyword)){
+        if (!StringUtils.isEmpty(keyword)) {
             criteria.andNameLike("%" + keyword + "%");
             productExample.or().andDeleteStatusEqualTo(0).andProductSnLike("%" + keyword + "%");
         }
@@ -333,6 +344,30 @@ public class PmsProductServiceImpl implements PmsProductService {
      * @param productId 建立关系的id
      */
     private void relateAndInsertList(Object dao, List dataList, Long productId) {
+        try {
+            if (CollectionUtils.isEmpty(dataList)) return;
+            for (Object item : dataList) {
+                Method setId = item.getClass().getMethod("setId", Long.class);
+                setId.invoke(item, (Long) null);
+                Method setProductId = item.getClass().getMethod("setProductId", Long.class);
+                setProductId.invoke(item, productId);
+            }
+            Method insertList = dao.getClass().getMethod("insertList", List.class);
+            insertList.invoke(dao, dataList);
+        } catch (Exception e) {
+            LOGGER.warn("创建产品出错:{}", e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    /**
+     * 建立和插入关系表操作
+     *
+     * @param dao       可以操作的dao
+     * @param dataList  要插入的数据
+     * @param productId 建立关系的id
+     */
+    private void logisticRuleAndInsertList(Object dao, List dataList, Long productId) {
         try {
             if (CollectionUtils.isEmpty(dataList)) return;
             for (Object item : dataList) {
