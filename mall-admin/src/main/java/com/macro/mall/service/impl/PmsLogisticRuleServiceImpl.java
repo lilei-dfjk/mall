@@ -4,6 +4,7 @@ import com.macro.mall.mapper.TLogicsRuleMapper;
 import com.macro.mall.model.TLogicsRule;
 import com.macro.mall.model.TLogicsRuleExample;
 import com.macro.mall.service.PmsLogisticRuleService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,10 @@ public class PmsLogisticRuleServiceImpl implements PmsLogisticRuleService {
     @Override
     public void listRulesByLogisticType(short logisticType) {
         TLogicsRuleExample example = new TLogicsRuleExample();
+        example.createCriteria().andLogisTypeEqualTo(logisticType);
         List<TLogicsRule> tLogicsRules = ruleMapper.selectByExample(example);
+        if (CollectionUtils.isNotEmpty(tLogicsRules)) {
+
+        }
     }
 }
