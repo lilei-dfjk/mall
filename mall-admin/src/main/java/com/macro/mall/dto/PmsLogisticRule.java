@@ -1,13 +1,11 @@
 package com.macro.mall.dto;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 public class PmsLogisticRule {
     private List<PmsLogisticRule> brands = new ArrayList<>();
     private String ruleName;

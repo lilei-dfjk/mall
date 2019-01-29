@@ -1,7 +1,7 @@
 package com.macro.mall.controller;
 
+import com.macro.mall.dto.CommonResult;
 import com.macro.mall.service.PmsLogisticRuleService;
-import com.macro.mall.service.PmsProductLogisticRuleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +17,11 @@ public class PmsProductLogisRuleController {
     @Autowired
     private PmsLogisticRuleService ruleService;
 
-    @ApiOperation("查询订单")
+    @ApiOperation("物流规则")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
     public Object list(Short logisticType) {
-        ruleService.listRulesByLogisticType(logisticType);
-//        List<OmsOrder> orderList = orderService.list(queryParam, pageSize, pageNum);
-//        return new CommonResult().pageSuccess(orderList);
-        return null;
+        return new CommonResult().pageSuccess(ruleService.listRulesByLogisticType(logisticType));
     }
 
 }

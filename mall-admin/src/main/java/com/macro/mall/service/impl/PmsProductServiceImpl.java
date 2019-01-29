@@ -83,19 +83,19 @@ public class PmsProductServiceImpl implements PmsProductService {
         relateAndInsertList(productLogisticRuleDao, productParam.getProductLogisticRuleParamList(), productId);
 
         //阶梯价格
-        relateAndInsertList(productLadderDao, productParam.getProductLadderList(), productId);
+//        relateAndInsertList(productLadderDao, productParam.getProductLadderList(), productId);
         //满减价格
-        relateAndInsertList(productFullReductionDao, productParam.getProductFullReductionList(), productId);
+//        relateAndInsertList(productFullReductionDao, productParam.getProductFullReductionList(), productId);
         //处理sku的编码
-        handleSkuStockCode(productParam.getSkuStockList(), productId);
+//        handleSkuStockCode(productParam.getSkuStockList(), productId);
         //添加sku库存信息
-        relateAndInsertList(skuStockDao, productParam.getSkuStockList(), productId);
+//        relateAndInsertList(skuStockDao, productParam.getSkuStockList(), productId);
         //添加商品参数,添加自定义商品规格
-        relateAndInsertList(productAttributeValueDao, productParam.getProductAttributeValueList(), productId);
+//        relateAndInsertList(productAttributeValueDao, productParam.getProductAttributeValueList(), productId);
         //关联专题
-        relateAndInsertList(subjectProductRelationDao, productParam.getSubjectProductRelationList(), productId);
+//        relateAndInsertList(subjectProductRelationDao, productParam.getSubjectProductRelationList(), productId);
         //关联优选
-        relateAndInsertList(prefrenceAreaProductRelationDao, productParam.getPrefrenceAreaProductRelationList(), productId);
+//        relateAndInsertList(prefrenceAreaProductRelationDao, productParam.getPrefrenceAreaProductRelationList(), productId);
         count = 1;
         return count;
     }
@@ -141,36 +141,36 @@ public class PmsProductServiceImpl implements PmsProductService {
         memberPriceMapper.deleteByExample(pmsMemberPriceExample);
         relateAndInsertList(memberPriceDao, productParam.getMemberPriceList(), id);
         //阶梯价格
-        PmsProductLadderExample ladderExample = new PmsProductLadderExample();
-        ladderExample.createCriteria().andProductIdEqualTo(id);
-        productLadderMapper.deleteByExample(ladderExample);
-        relateAndInsertList(productLadderDao, productParam.getProductLadderList(), id);
+//        PmsProductLadderExample ladderExample = new PmsProductLadderExample();
+//        ladderExample.createCriteria().andProductIdEqualTo(id);
+//        productLadderMapper.deleteByExample(ladderExample);
+//        relateAndInsertList(productLadderDao, productParam.getProductLadderList(), id);
         //满减价格
-        PmsProductFullReductionExample fullReductionExample = new PmsProductFullReductionExample();
-        fullReductionExample.createCriteria().andProductIdEqualTo(id);
-        productFullReductionMapper.deleteByExample(fullReductionExample);
-        relateAndInsertList(productFullReductionDao, productParam.getProductFullReductionList(), id);
+//        PmsProductFullReductionExample fullReductionExample = new PmsProductFullReductionExample();
+//        fullReductionExample.createCriteria().andProductIdEqualTo(id);
+//        productFullReductionMapper.deleteByExample(fullReductionExample);
+//        relateAndInsertList(productFullReductionDao, productParam.getProductFullReductionList(), id);
         //修改sku库存信息
-        PmsSkuStockExample skuStockExample = new PmsSkuStockExample();
-        skuStockExample.createCriteria().andProductIdEqualTo(id);
-        skuStockMapper.deleteByExample(skuStockExample);
-        handleSkuStockCode(productParam.getSkuStockList(), id);
-        relateAndInsertList(skuStockDao, productParam.getSkuStockList(), id);
+//        PmsSkuStockExample skuStockExample = new PmsSkuStockExample();
+//        skuStockExample.createCriteria().andProductIdEqualTo(id);
+//        skuStockMapper.deleteByExample(skuStockExample);
+//        handleSkuStockCode(productParam.getSkuStockList(), id);
+//        relateAndInsertList(skuStockDao, productParam.getSkuStockList(), id);
         //修改商品参数,添加自定义商品规格
-        PmsProductAttributeValueExample productAttributeValueExample = new PmsProductAttributeValueExample();
-        productAttributeValueExample.createCriteria().andProductIdEqualTo(id);
-        productAttributeValueMapper.deleteByExample(productAttributeValueExample);
-        relateAndInsertList(productAttributeValueDao, productParam.getProductAttributeValueList(), id);
+//        PmsProductAttributeValueExample productAttributeValueExample = new PmsProductAttributeValueExample();
+//        productAttributeValueExample.createCriteria().andProductIdEqualTo(id);
+//        productAttributeValueMapper.deleteByExample(productAttributeValueExample);
+//        relateAndInsertList(productAttributeValueDao, productParam.getProductAttributeValueList(), id);
         //关联专题
-        CmsSubjectProductRelationExample subjectProductRelationExample = new CmsSubjectProductRelationExample();
-        subjectProductRelationExample.createCriteria().andProductIdEqualTo(id);
-        subjectProductRelationMapper.deleteByExample(subjectProductRelationExample);
-        relateAndInsertList(subjectProductRelationDao, productParam.getSubjectProductRelationList(), id);
+//        CmsSubjectProductRelationExample subjectProductRelationExample = new CmsSubjectProductRelationExample();
+//        subjectProductRelationExample.createCriteria().andProductIdEqualTo(id);
+//        subjectProductRelationMapper.deleteByExample(subjectProductRelationExample);
+//        relateAndInsertList(subjectProductRelationDao, productParam.getSubjectProductRelationList(), id);
         //关联优选
-        CmsPrefrenceAreaProductRelationExample prefrenceAreaExample = new CmsPrefrenceAreaProductRelationExample();
-        prefrenceAreaExample.createCriteria().andProductIdEqualTo(id);
-        prefrenceAreaProductRelationMapper.deleteByExample(prefrenceAreaExample);
-        relateAndInsertList(prefrenceAreaProductRelationDao, productParam.getPrefrenceAreaProductRelationList(), id);
+//        CmsPrefrenceAreaProductRelationExample prefrenceAreaExample = new CmsPrefrenceAreaProductRelationExample();
+//        prefrenceAreaExample.createCriteria().andProductIdEqualTo(id);
+//        prefrenceAreaProductRelationMapper.deleteByExample(prefrenceAreaExample);
+//        relateAndInsertList(prefrenceAreaProductRelationDao, productParam.getPrefrenceAreaProductRelationList(), id);
         count = 1;
         return count;
     }
