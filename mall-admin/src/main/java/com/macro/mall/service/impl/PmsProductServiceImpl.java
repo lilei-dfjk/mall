@@ -80,7 +80,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         //会员价格
         relateAndInsertList(memberPriceDao, productParam.getMemberPriceList(), productId);
         //物流规则
-        relateAndInsertList(productLogisticRuleDao, productParam.getProductLogisticRuleParamList(), productId);
+        logisticRuleAndInsertList(productLogisticRuleDao, productParam.getProductLogisticRuleParamList(), productId);
 
         //阶梯价格
 //        relateAndInsertList(productLadderDao, productParam.getProductLadderList(), productId);
@@ -371,8 +371,8 @@ public class PmsProductServiceImpl implements PmsProductService {
         try {
             if (CollectionUtils.isEmpty(dataList)) return;
             for (Object item : dataList) {
-                Method setId = item.getClass().getMethod("setId", Long.class);
-                setId.invoke(item, (Long) null);
+                Method setId = item.getClass().getMethod("setId", Integer.class);
+                setId.invoke(item, (Integer) null);
                 Method setProductId = item.getClass().getMethod("setProductId", Long.class);
                 setProductId.invoke(item, productId);
             }
