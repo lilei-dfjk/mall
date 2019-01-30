@@ -134,7 +134,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         PmsProductLogisticRuleExample ruleExample = new PmsProductLogisticRuleExample();
         ruleExample.createCriteria().andProductIdEqualTo(id);
         productLogisticRuleMapper.deleteByExample(ruleExample);
-        relateAndInsertList(productLogisticRuleDao, productParam.getMemberPriceList(), id);
+        logisticRuleAndInsertList(productLogisticRuleDao, productParam.getProductLogisticRuleParamList(), id);
         //会员价格
         PmsMemberPriceExample pmsMemberPriceExample = new PmsMemberPriceExample();
         pmsMemberPriceExample.createCriteria().andProductIdEqualTo(id);
