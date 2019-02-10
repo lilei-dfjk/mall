@@ -13,7 +13,7 @@ public class PortalProductServiceImpl implements PortalProductService {
     @Autowired
     private PmsProductMapper pmsProductMapper;
 
-    @Cacheable(value = RedisKey.PORTAL_PORTAL, key = RedisKey.PORTAL_PRODUCT + "'#productId'")
+    @Cacheable(value = RedisKey.PORTAL_PORTAL, key = "'"+RedisKey.PORTAL_PRODUCT + "'+#productId")
     @Override
     public PmsProduct getProductInfo(long productId) {
         return pmsProductMapper.selectByPrimaryKey(productId);

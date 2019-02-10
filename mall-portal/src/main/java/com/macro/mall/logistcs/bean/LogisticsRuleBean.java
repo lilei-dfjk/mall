@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LogisticsRuleBean {
+public class LogisticsRuleBean implements Serializable {
 	private int id;
 	private String logisType;
 	private String brandRuleType;
