@@ -1,5 +1,12 @@
 package com.macro.mall.search.controller;
 
+import com.macro.mall.mapper.PmsMemberPriceMapper;
+import com.macro.mall.model.PmsMemberPrice;
+import com.macro.mall.model.PmsMemberPriceExample;
+import com.macro.mall.model.UmsMember;
+import com.macro.mall.pay.rate.RateService;
+import com.macro.mall.portal.service.UmsMemberService;
+import com.macro.mall.portal.util.JwtTokenUtil;
 import com.macro.mall.search.domain.*;
 import com.macro.mall.search.service.EsProductService;
 import io.swagger.annotations.Api;
@@ -8,8 +15,11 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -22,6 +32,14 @@ import java.util.List;
 public class EsProductController {
     @Autowired
     private EsProductService esProductService;
+    @Autowired
+    private JwtTokenUtil tokenUtil;
+    @Autowired
+    private UmsMemberService memberService;
+    @Autowired
+    private PmsMemberPriceMapper memberPriceMapper;
+    @Autowired
+    private RateService rateService;
 
     @ApiOperation(value = "导入所有数据库中商品到ES")
     @RequestMapping(value = "/importAll", method = RequestMethod.POST)
@@ -34,9 +52,8 @@ public class EsProductController {
     @ApiOperation(value = "根据id获取商品详情")
     @RequestMapping(value = "/info/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Object info(@PathVariable Long id) {
-        esProductService.findById(id);
-        return new CommonResult().success(null);
+    public Object info(@PathVariable Long id, HttpServletRequest request) {
+        return new CommonResult().success(esProductService.findById(id, request));
     }
 
     @ApiOperation(value = "根据id删除商品")
@@ -72,8 +89,10 @@ public class EsProductController {
     @ResponseBody
     public Object search(@RequestParam(required = false) String keyword,
                          @RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                         @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+                         @RequestParam(required = false, defaultValue = "5") Integer pageSize,
+                         HttpServletRequest request) {
         Page<EsProduct> esProductPage = esProductService.search(keyword, pageNum, pageSize);
+        initMemberPrice(request, esProductPage);
         return new CommonResult().pageSuccess(esProductPage);
     }
 
@@ -87,8 +106,10 @@ public class EsProductController {
                          @RequestParam(required = false) Long productCategoryId,
                          @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                          @RequestParam(required = false, defaultValue = "5") Integer pageSize,
-                         @RequestParam(required = false, defaultValue = "0") Integer sort) {
+                         @RequestParam(required = false, defaultValue = "0") Integer sort,
+                         HttpServletRequest request) {
         Page<EsProduct> esProductPage = esProductService.search(keyword, brandId, productCategoryId, pageNum, pageSize, sort);
+        initMemberPrice(request, esProductPage);
         return new CommonResult().pageSuccess(esProductPage);
     }
 
@@ -117,6 +138,7 @@ public class EsProductController {
         List<EsBrand> brands = esProductService.getBrands();
         return new CommonResult().success(brands);
     }
+
     @ApiOperation(value = "获取产品类型")
     @RequestMapping(value = "/types", method = RequestMethod.GET)
     @ResponseBody
@@ -124,4 +146,25 @@ public class EsProductController {
         List<EsProductType> types = esProductService.getProductTypes();
         return new CommonResult().success(types);
     }
+
+    private void initMemberPrice(HttpServletRequest request, Page<EsProduct> pages) {
+        if (tokenUtil.isLogin(request)) {
+            pages.stream().forEach(esProduct -> {
+                Long id = esProduct.getId();
+                UmsMember currentMember = memberService.getCurrentMember();
+                if (null != currentMember) {
+                    Long memberLevelId = currentMember.getMemberLevelId();
+                    PmsMemberPriceExample example = new PmsMemberPriceExample();
+                    example.createCriteria().andMemberLevelIdEqualTo(memberLevelId)
+                            .andProductIdEqualTo(id);
+                    List<PmsMemberPrice> pmsMemberPrices = memberPriceMapper.selectByExample(example);
+                    if (!CollectionUtils.isEmpty(pmsMemberPrices)) {
+                        esProduct.setPrice(pmsMemberPrices.get(0).getMemberPrice());
+                        esProduct.setCnyPrice(esProduct.getPrice().multiply(BigDecimal.valueOf(rateService.getAuToCnyRate())));
+                    }
+                }
+            });
+        }
+    }
+
 }

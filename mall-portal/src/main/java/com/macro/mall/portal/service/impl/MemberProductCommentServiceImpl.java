@@ -55,4 +55,16 @@ public class MemberProductCommentServiceImpl implements MemberProductCommentServ
         PageInfoBean<UmsMemberComment> pageData = new PageInfoBean<UmsMemberComment>(start, size, count, umsMemberComments);
         return pageData;
     }
+
+    @Override
+    public double rate(Long productId) {
+        UmsMemberCommentExample example = new UmsMemberCommentExample();
+        example.createCriteria().andProductIdEqualTo(productId);
+        int count = memberCommentMapper.countByExample(example);
+        UmsMemberCommentExample example2 = new UmsMemberCommentExample();
+        example2.createCriteria().andProductIdEqualTo(productId)
+        .andStarGreaterThanOrEqualTo(2.5);
+        int count2 = memberCommentMapper.countByExample(example2);
+        return count2 * 1.0 / count;
+    }
 }

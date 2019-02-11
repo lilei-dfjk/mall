@@ -8,6 +8,7 @@
     <result column="order_id" jdbcType="BIGINT" property="orderId" />
     <result column="comment" jdbcType="VARCHAR" property="comment" />
     <result column="pics" jdbcType="VARCHAR" property="pics" />
+    <result column="star" jdbcType="DOUBLE" property="star" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -69,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, product_id, member_id, order_id, comment, pics, create_time
+    id, product_id, member_id, order_id, comment, pics, star, create_time
   </sql>
   <select id="selectByExample" parameterType="com.macro.mall.model.UmsMemberCommentExample" resultMap="BaseResultMap">
     select
@@ -106,11 +107,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into ums_member_comment (product_id, member_id, order_id, 
-      comment, pics, create_time
-      )
+      comment, pics, star, 
+      create_time)
     values (#{productId,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{orderId,jdbcType=BIGINT}, 
-      #{comment,jdbcType=VARCHAR}, #{pics,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
-      )
+      #{comment,jdbcType=VARCHAR}, #{pics,jdbcType=VARCHAR}, #{star,jdbcType=DOUBLE}, 
+      #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.macro.mall.model.UmsMemberComment">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -133,6 +134,9 @@
       <if test="pics != null">
         pics,
       </if>
+      <if test="star != null">
+        star,
+      </if>
       <if test="createTime != null">
         create_time,
       </if>
@@ -152,6 +156,9 @@
       </if>
       <if test="pics != null">
         #{pics,jdbcType=VARCHAR},
+      </if>
+      <if test="star != null">
+        #{star,jdbcType=DOUBLE},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -185,6 +192,9 @@
       <if test="record.pics != null">
         pics = #{record.pics,jdbcType=VARCHAR},
       </if>
+      <if test="record.star != null">
+        star = #{record.star,jdbcType=DOUBLE},
+      </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
@@ -201,6 +211,7 @@
       order_id = #{record.orderId,jdbcType=BIGINT},
       comment = #{record.comment,jdbcType=VARCHAR},
       pics = #{record.pics,jdbcType=VARCHAR},
+      star = #{record.star,jdbcType=DOUBLE},
       create_time = #{record.createTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -224,6 +235,9 @@
       <if test="pics != null">
         pics = #{pics,jdbcType=VARCHAR},
       </if>
+      <if test="star != null">
+        star = #{star,jdbcType=DOUBLE},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -237,6 +251,7 @@
       order_id = #{orderId,jdbcType=BIGINT},
       comment = #{comment,jdbcType=VARCHAR},
       pics = #{pics,jdbcType=VARCHAR},
+      star = #{star,jdbcType=DOUBLE},
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>

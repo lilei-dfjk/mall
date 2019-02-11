@@ -16,4 +16,6 @@ public interface MemberProductCommentService {
      * 获取用户评论列表
      */
     PageInfoBean<UmsMemberComment> list(Long productId, int start, int size);
+
+    double rate(Long productId);
 }

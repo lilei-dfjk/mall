@@ -25,6 +25,6 @@ public class CityController {
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     @ResponseBody
     public Object citys() {
-        return new CommonResult().success(cityService.listAllProvice());
+        return new CommonResult().success(cityService.listAllCitys());
     }
 }

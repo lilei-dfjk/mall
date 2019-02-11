@@ -32,10 +32,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-/**
- * 会员管理Service实现类
- * Created by macro on 2018/8/3.
- */
 @Service
 public class UmsMemberServiceImpl implements UmsMemberService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UmsMemberServiceImpl.class);
@@ -104,6 +100,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         List<UmsMemberLevel> memberLevelList = memberLevelMapper.selectByExample(levelExample);
         if (!CollectionUtils.isEmpty(memberLevelList)) {
             umsMember.setMemberLevelId(memberLevelList.get(0).getId());
+            umsMember.setMemberLevelName(memberLevelList.get(0).getName());
         }
         memberMapper.insert(umsMember);
         umsMember.setPassword(null);

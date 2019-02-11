@@ -4,8 +4,10 @@ import com.macro.mall.search.domain.EsBrand;
 import com.macro.mall.search.domain.EsProduct;
 import com.macro.mall.search.domain.EsProductRelatedInfo;
 import com.macro.mall.search.domain.EsProductType;
+import com.macro.mall.search.model.ProductDetailMode;
 import org.springframework.data.domain.Page;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -13,7 +15,7 @@ import java.util.List;
  * Created by macro on 2018/6/19.
  */
 public interface EsProductService {
-    void findById(Long id);
+    ProductDetailMode findById(Long id, HttpServletRequest request);
 
     /**
      * 从数据库中导入所有商品到ES

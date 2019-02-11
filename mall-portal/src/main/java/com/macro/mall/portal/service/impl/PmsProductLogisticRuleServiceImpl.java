@@ -25,8 +25,6 @@ public class PmsProductLogisticRuleServiceImpl implements PmsProductLogisticRule
     @Autowired
     private TLogicsRuleMapper ruleMapper;
 
-    //    @Cacheable(value = RedisKey.PORTAL_PRODUCT, key = RedisKey.PRODUCT_RULE + "'#productId'+'#logisticType.getValue()'")
-//    @Cacheable(key = "'" + CacheKeys.AUDIO_INFO_KEY + "'.concat(#audioId)", value = CacheKeys.AUDIO_CACHE_KEY)
     @Cacheable(value = RedisKey.PORTAL_PORTAL, key = "'" + RedisKey.PRODUCT_RULE + "'+#productId+'_'+#logisticType")
     @Override
     public LogisticsRuleBean getLogisticRuleBean(long productId, LogisticType logisticType) {

@@ -1,6 +1,17 @@
 package com.macro.mall.search.service.impl;
 
+import com.macro.mall.logistcs.bean.LogisticsRuleBean;
+import com.macro.mall.logistcs.cons.LogisticType;
+import com.macro.mall.mapper.PmsMemberPriceMapper;
+import com.macro.mall.model.PmsMemberPrice;
+import com.macro.mall.model.PmsMemberPriceExample;
+import com.macro.mall.model.PmsProduct;
+import com.macro.mall.model.UmsMember;
 import com.macro.mall.pay.rate.RateService;
+import com.macro.mall.portal.service.PmsProductLogisticRuleService;
+import com.macro.mall.portal.service.PortalProductService;
+import com.macro.mall.portal.service.UmsMemberService;
+import com.macro.mall.portal.util.JwtTokenUtil;
 import com.macro.mall.search.dao.EsBrandDao;
 import com.macro.mall.search.dao.EsProductDao;
 import com.macro.mall.search.dao.EsProductTypeDao;
@@ -8,11 +19,13 @@ import com.macro.mall.search.domain.EsBrand;
 import com.macro.mall.search.domain.EsProduct;
 import com.macro.mall.search.domain.EsProductRelatedInfo;
 import com.macro.mall.search.domain.EsProductType;
+import com.macro.mall.search.model.ProductDetailMode;
 import com.macro.mall.search.repository.EsBrandRepository;
 import com.macro.mall.search.repository.EsProductRepository;
 import com.macro.mall.search.repository.EsProductTypeRepository;
 import com.macro.mall.search.service.EsProductService;
 import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.lucene.search.function.FunctionScoreQuery;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -40,6 +53,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -71,9 +85,54 @@ public class EsProductServiceImpl implements EsProductService {
     @Autowired
     private RateService rateService;
 
-    @Override
-    public void findById(Long id) {
+    @Autowired
+    private PortalProductService portalProductService;
+    @Autowired
+    private PmsProductLogisticRuleService productLogisticRuleService;
 
+    @Autowired
+    private UmsMemberService memberService;
+    @Autowired
+    private PmsMemberPriceMapper memberPriceMapper;
+    @Autowired
+    private JwtTokenUtil tokenUtil;
+
+    @Override
+    public ProductDetailMode findById(Long id, HttpServletRequest request) {
+        PmsProduct productInfo = portalProductService.getProductInfo(id);
+        LogisticsRuleBean logisticRuleBean = productLogisticRuleService.getLogisticRuleBean(id, LogisticType.ZH);
+        ProductDetailMode mode = new ProductDetailMode();
+        mode.setId(mode.getId());
+        String albumPics = productInfo.getAlbumPics();
+        if (StringUtils.isEmpty(albumPics)) {
+            String[] split = albumPics.split(",");
+            if (ArrayUtils.isNotEmpty(split)) {
+                mode.setAlbumPics(CollectionUtils.arrayToList(split));
+            }
+        }
+        mode.setPrice(mode.getPrice());
+        mode.setH5Remark(productInfo.getDetailMobileHtml());
+        mode.setPcRemark(productInfo.getDetailHtml());
+        mode.setName(productInfo.getName());
+        mode.setWeight(productInfo.getWeight());
+        mode.setPrice(productInfo.getPrice());
+        mode.setMaxBuy(logisticRuleBean.getNumberLimit());
+        if (tokenUtil.isLogin(request)) {
+            UmsMember currentMember = memberService.getCurrentMember();
+            if (null != currentMember) {
+                Long memberLevelId = currentMember.getMemberLevelId();
+                PmsMemberPriceExample example = new PmsMemberPriceExample();
+                example.createCriteria().andMemberLevelIdEqualTo(memberLevelId)
+                        .andProductIdEqualTo(id);
+                List<PmsMemberPrice> pmsMemberPrices = memberPriceMapper.selectByExample(example);
+                if (!CollectionUtils.isEmpty(pmsMemberPrices)) {
+                    mode.setPrice(pmsMemberPrices.get(0).getMemberPrice());
+                }
+            }
+        }
+
+        mode.setCnyPrice(mode.getPrice().multiply(BigDecimal.valueOf(rateService.getAuToCnyRate())));
+        return mode;
     }
 
     @Override

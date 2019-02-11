@@ -58,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/sso/*")// 对登录注册要允许匿名访问
                 .permitAll()
-                .antMatchers("/esProduct/*")// 对登录注册要允许匿名访问
+                .antMatchers("/product/**")// 对登录注册要允许匿名访问
                 .permitAll()
                 .antMatchers("/member/comment/list")// 获取评论列表
                 .permitAll()

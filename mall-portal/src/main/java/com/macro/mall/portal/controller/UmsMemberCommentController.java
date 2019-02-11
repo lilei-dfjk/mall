@@ -25,11 +25,12 @@ public class UmsMemberCommentController {
     @ApiOperation("创建评论")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public Object create(long productId, long orderId, String comment,
+    public Object create(long productId, long orderId, String comment, double star,
                          @RequestParam(value = "pics", required = false) String[] pics) {
         UmsMemberComment productComment = new UmsMemberComment();
         productComment.setProductId(productId);
         productComment.setOrderId(orderId);
+        productComment.setStar(star);
         if (ArrayUtils.isNotEmpty(pics)) {
             productComment.setPics(StringUtils.join(pics, ","));
         }
@@ -47,6 +48,14 @@ public class UmsMemberCommentController {
     public Object list(Long productId, Integer index, Integer length) {
         PageInfoBean<UmsMemberComment> memberReadHistoryList = productCommentService.list(productId, index, length);
         return new CommonResult().success(memberReadHistoryList);
+    }
+
+    @ApiOperation("好评率")
+    @RequestMapping(value = "/rate", method = RequestMethod.GET)
+    @ResponseBody
+    public Object rate(Long productId) {
+        double rate = productCommentService.rate(productId);
+        return new CommonResult().success(rate);
     }
 
 }

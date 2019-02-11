@@ -19,17 +19,24 @@ public class CityServiceImpl implements CityService {
     @Autowired
     private TDAreainfoMapper areainfoMapper;
 
-    @Cacheable(value = RedisKey.PORTAL_SEARCH, key = RedisKey.SEARCH_CITY_LIST)
+    //    @Cacheable(value = RedisKey.PORTAL_SEARCH, key = RedisKey.SEARCH_CITY_LIST)
     @Override
     public CityModel listAllProvice() {
         TDAreainfoExample example = new TDAreainfoExample();
         example.createCriteria().andArealevelEqualTo((byte) 1);
         List<TDAreainfo> provinces = areainfoMapper.selectByExample(example);
-        List<TDAreainfo> citys = areainfoMapper.selectByExample(example);
         List<TDAreainfo> countys = areainfoMapper.selectByExample(example);
+        List<TDAreainfo> citys = areainfoMapper.selectByExample(example);
         Map<String, String> provinces_list = provinces.stream().collect(Collectors.toMap(province -> province.getId() + "", province -> province.getName()));
         Map<String, String> citys_list = citys.stream().collect(Collectors.toMap(province -> province.getId() + "", province -> province.getName()));
         Map<String, String> countys_list = countys.stream().collect(Collectors.toMap(province -> province.getId() + "", province -> province.getName()));
         return new CityModel(provinces_list, citys_list, countys_list);
+    }
+
+    @Cacheable(value = RedisKey.PORTAL_SEARCH, key = RedisKey.SEARCH_CITY_LIST)
+    @Override
+    public List<TDAreainfo> listAllCitys() {
+        TDAreainfoExample example = new TDAreainfoExample();
+        return areainfoMapper.selectByExample(example);
     }
 }
