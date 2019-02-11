@@ -72,6 +72,11 @@ public class EsProductServiceImpl implements EsProductService {
     private RateService rateService;
 
     @Override
+    public void findById(Long id) {
+
+    }
+
+    @Override
     public int importAll() {
         List<EsProduct> esProductList = productDao.getAllEsProductList(null);
         esProductList.stream().forEach(esProduct -> {

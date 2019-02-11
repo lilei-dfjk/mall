@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Controller
 @Api(tags = "EsProductController", description = "搜索商品管理")
-@RequestMapping("/esProduct")
+@RequestMapping("/product")
 public class EsProductController {
     @Autowired
     private EsProductService esProductService;
@@ -29,6 +29,14 @@ public class EsProductController {
     public Object importAllList() {
         int count = esProductService.importAll();
         return new CommonResult().success(count);
+    }
+
+    @ApiOperation(value = "根据id获取商品详情")
+    @RequestMapping(value = "/info/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public Object info(@PathVariable Long id) {
+        esProductService.findById(id);
+        return new CommonResult().success(null);
     }
 
     @ApiOperation(value = "根据id删除商品")

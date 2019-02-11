@@ -13,6 +13,8 @@ import java.util.List;
  * Created by macro on 2018/6/19.
  */
 public interface EsProductService {
+    void findById(Long id);
+
     /**
      * 从数据库中导入所有商品到ES
      */
