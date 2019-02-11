@@ -21,6 +21,13 @@ public class UmsMemberComment implements Serializable {
      */
     private String pics;
 
+    /**
+     * 星级
+     *
+     * @mbggenerated
+     */
+    private Double star;
+
     private Date createTime;
 
     private static final long serialVersionUID = 1L;
@@ -73,6 +80,14 @@ public class UmsMemberComment implements Serializable {
         this.pics = pics;
     }
 
+    public Double getStar() {
+        return star;
+    }
+
+    public void setStar(Double star) {
+        this.star = star;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -93,6 +108,7 @@ public class UmsMemberComment implements Serializable {
         sb.append(", orderId=").append(orderId);
         sb.append(", comment=").append(comment);
         sb.append(", pics=").append(pics);
+        sb.append(", star=").append(star);
         sb.append(", createTime=").append(createTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

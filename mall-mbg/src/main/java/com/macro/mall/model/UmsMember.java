@@ -8,6 +8,8 @@ public class UmsMember implements Serializable {
 
     private Long memberLevelId;
 
+    private String memberLevelName;
+
     /**
      * 用户名
      *
@@ -143,6 +145,14 @@ public class UmsMember implements Serializable {
 
     public void setMemberLevelId(Long memberLevelId) {
         this.memberLevelId = memberLevelId;
+    }
+
+    public String getMemberLevelName() {
+        return memberLevelName;
+    }
+
+    public void setMemberLevelName(String memberLevelName) {
+        this.memberLevelName = memberLevelName;
     }
 
     public String getUsername() {

@@ -125,6 +125,8 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         PmsProduct productInfo = portalProductService.getProductInfo(item.getProductId());
         LogisticsRuleBean logisticRuleBean = productLogisticRuleService.getLogisticRuleBean(item.getProductId(), logisticType);
         ProductItem productItem = new ProductItem();
+        productItem.setCartId(item.getId());
+        productItem.setProductId(productInfo.getId());
         productItem.setNumber(item.getQuantity());
         productItem.setProductSn(productInfo.getProductSn());
         productItem.setRuleBean(logisticRuleBean);
