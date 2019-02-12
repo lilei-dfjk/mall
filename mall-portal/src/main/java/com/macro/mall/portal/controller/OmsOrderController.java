@@ -22,7 +22,7 @@ public class OmsOrderController {
     @ApiOperation("根据购物车信息生成确认单信息")
     @RequestMapping(value = "/generateConfirmOrder", method = RequestMethod.POST)
     @ResponseBody
-    public Object generateConfirmOrder(List<Long> ids) {
+    public Object generateConfirmOrder(@RequestParam("ids") List<Long> ids) {
         ConfirmOrderBeanResult confirmOrderResult = portalOrderService.generateConfirmOrder(ids);
         return new CommonResult().success(confirmOrderResult);
     }
@@ -30,7 +30,10 @@ public class OmsOrderController {
     @ApiOperation("根据购物车信息生成订单")
     @RequestMapping(value = "/generateOrder", method = RequestMethod.POST)
     @ResponseBody
-    public Object generateOrder(@RequestBody OrderParam orderParam) {
+    public Object generateOrder(Long memberReceiveAddressId, @RequestParam("ids") List<Long> ids) {
+        OrderParam orderParam = new OrderParam();
+        orderParam.setIds(ids);
+        orderParam.setMemberReceiveAddressId(memberReceiveAddressId);
         return portalOrderService.generateOrder(orderParam);
     }
 

@@ -1,5 +1,6 @@
 package com.macro.mall.logistcs.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.macro.mall.logistcs.cons.LogisticType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,9 +23,13 @@ public class ProductItem {
     private int number;
     private double weight;
     private double price;
+    @JsonIgnore
     private LogisticType logisticType;
+    @JsonIgnore
     private String ruleType;
+    @JsonIgnore
     private String ruleBrandType;
+    @JsonIgnore
     private LogisticsRuleBean ruleBean;
     private String pic;
     private double cnyPrice;
