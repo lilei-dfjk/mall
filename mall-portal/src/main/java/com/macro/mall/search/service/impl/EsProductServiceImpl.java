@@ -69,31 +69,29 @@ import java.util.Map;
 public class EsProductServiceImpl implements EsProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EsProductServiceImpl.class);
     @Autowired
-    private EsProductDao productDao;
-    @Autowired
-    private EsProductRepository productRepository;
-    @Autowired
     private EsBrandDao brandDao;
     @Autowired
     private EsBrandRepository brandRepository;
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
+    @Autowired
+    private PmsMemberPriceMapper memberPriceMapper;
+    @Autowired
+    private UmsMemberService memberService;
+    @Autowired
+    private PortalProductService portalProductService;
+    @Autowired
+    private EsProductDao productDao;
+    @Autowired
+    private PmsProductLogisticRuleService productLogisticRuleService;
+    @Autowired
+    private EsProductRepository productRepository;
     @Autowired
     private EsProductTypeDao productTypeDao;
     @Autowired
     private EsProductTypeRepository productTypeRepository;
     @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
-    @Autowired
     private RateService rateService;
-
-    @Autowired
-    private PortalProductService portalProductService;
-    @Autowired
-    private PmsProductLogisticRuleService productLogisticRuleService;
-
-    @Autowired
-    private UmsMemberService memberService;
-    @Autowired
-    private PmsMemberPriceMapper memberPriceMapper;
     @Autowired
     private JwtTokenUtil tokenUtil;
 
@@ -116,6 +114,7 @@ public class EsProductServiceImpl implements EsProductService {
         mode.setName(productInfo.getName());
         mode.setWeight(productInfo.getWeight());
         mode.setPrice(productInfo.getPrice());
+        mode.setStock(productInfo.getStock());
         mode.setMaxBuy(logisticRuleBean.getNumberLimit());
         if (tokenUtil.isLogin(request)) {
             UmsMember currentMember = memberService.getCurrentMember();
