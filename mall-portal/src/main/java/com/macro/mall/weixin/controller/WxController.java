@@ -15,33 +15,26 @@ import java.net.URLEncoder;
 @Api(tags = "WxVerifyController", description = "会员收藏管理")
 @RequestMapping("/wx")
 public class WxController {
-    @RequestMapping("/verify")
-    @ResponseBody
-    public String verifyWXToken(HttpServletRequest request) throws AesException {
-        String msgSignature = request.getParameter("signature");
-        String msgTimestamp = request.getParameter("timestamp");
-        String msgNonce = request.getParameter("nonce");
-        String echostr = request.getParameter("echostr");
-        if (WXPublicUtils.verifyUrl(msgSignature, msgTimestamp, msgNonce)) {
-            return echostr;
-        }
-        return null;
-    }
     @RequestMapping("/auth")
-    @ResponseBody
     public String auth(HttpServletRequest request) throws AesException {
-        String backUrl = "http://brucebsc.eicp.net/WxAuth/wxCallBack";
-        String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+ AuthUtil.APPID
-                + "&redirect_uri="+ URLEncoder.encode(backUrl)
+        String backUrl = "http://4f1fa95e.ngrok.io/wx/auth/callback";
+        String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + AuthUtil.APPID
+                + "&redirect_uri=" + URLEncoder.encode(backUrl)
                 + "&response_type=code"
                 + "&scope=snsapi_userinfo"
                 + "&state=STATE#wechat_redirect";
-//        resp.sendRedirect(url);
-        return null;
+
+        return "redirect:" + url;
     }
+
     @RequestMapping("/auth/callback")
-    @ResponseBody
     public String authCallback(HttpServletRequest request) throws AesException {
+        return "redirect:http://47.74.69.32:8999";
+    }
+
+    @RequestMapping("/verify")
+    @ResponseBody
+    public String verifyWXToken(HttpServletRequest request) throws AesException {
         String msgSignature = request.getParameter("signature");
         String msgTimestamp = request.getParameter("timestamp");
         String msgNonce = request.getParameter("nonce");
