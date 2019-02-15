@@ -87,7 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/sso/logout")
                 .logoutSuccessHandler(goLogoutSuccessHandler())
                 .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID");
+                .deleteCookies("JSESSIONID").and().cors();
 //                .and()
 //                .requiresChannel()
 //                .antMatchers("/sso/*")
