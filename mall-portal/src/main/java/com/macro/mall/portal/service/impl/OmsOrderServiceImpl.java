@@ -17,6 +17,7 @@ import com.macro.mall.portal.domain.CommonResult;
 import com.macro.mall.portal.domain.ConfirmOrderBeanResult;
 import com.macro.mall.portal.domain.OmsOrderDetail;
 import com.macro.mall.portal.domain.OrderParam;
+import com.macro.mall.portal.model.OmsOrderModel;
 import com.macro.mall.portal.model.PortalCartItemWithDeal;
 import com.macro.mall.portal.model.PortalDealInfo;
 import com.macro.mall.portal.service.*;
@@ -312,5 +313,52 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     @Override
     public void sendDelayMessageCancelOrder(Long orderId) {
 
+    }
+
+    @Override
+    public CommonResult listOrders(int status) {
+        OmsOrderModel mode0 = new OmsOrderModel();
+        mode0.setNumber(5);
+        mode0.setOrderNo("20198934323434");
+        mode0.setPrice(BigDecimal.valueOf(327.22));
+        mode0.setStatus(0);
+        OmsOrderModel model1 = new OmsOrderModel();
+        model1.setNumber(5);
+        model1.setOrderNo("20198934323434");
+        model1.setPrice(BigDecimal.valueOf(327.22));
+        model1.setStatus(1);
+        OmsOrderModel model2 = new OmsOrderModel();
+        model2.setNumber(5);
+        model2.setOrderNo("20198934323434");
+        model2.setPrice(BigDecimal.valueOf(327.22));
+        model2.setStatus(2);
+        OmsOrderModel model3 = new OmsOrderModel();
+        model3.setNumber(5);
+        model3.setOrderNo("20198934323434");
+        model3.setPrice(BigDecimal.valueOf(327.22));
+        model3.setStatus(3);
+        OmsOrderModel model4 = new OmsOrderModel();
+        model4.setNumber(5);
+        model4.setOrderNo("20198934323434");
+        model4.setPrice(BigDecimal.valueOf(327.22));
+        model4.setStatus(4);
+        OmsOrderModel model5 = new OmsOrderModel();
+        model5.setNumber(5);
+        model5.setOrderNo("20198934323434");
+        model5.setPrice(BigDecimal.valueOf(327.22));
+        model5.setStatus(5);
+        return new CommonResult().success(Arrays.asList(mode0, model1, model2, model3, model4, model5));
+    }
+
+    @Override
+    public CommonResult orderNums() {
+        Map<Integer, Integer> orderNums = new HashMap();
+        orderNums.put(0, 2);
+        orderNums.put(1, 3);
+        orderNums.put(2, 2);
+        orderNums.put(3, 2);
+        orderNums.put(4, 2);
+        orderNums.put(5, 2);
+        return new CommonResult().success(orderNums);
     }
 }

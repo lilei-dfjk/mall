@@ -75,7 +75,9 @@ public class ZhLogisticServiceImpl implements ZhLogisticService {
             // 第一类商品生成一个订单，如果不满足条件则生成多个订单，
             // 然后判断第二个商品，是否能够混装，然后以此类推
             items.stream().forEach(productItem -> {
-                createLogisticsOrder(orders, productItem);
+                ProductItem itemTemp = new ProductItem();
+                BeanUtils.copyProperties(productItem, itemTemp);
+                createLogisticsOrder(orders, itemTemp);
             });
             return orders;
         }

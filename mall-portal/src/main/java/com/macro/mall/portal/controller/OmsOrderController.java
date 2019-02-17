@@ -8,7 +8,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -57,5 +60,25 @@ public class OmsOrderController {
     public Object cancelOrder(Long orderId) {
         portalOrderService.sendDelayMessageCancelOrder(orderId);
         return new CommonResult().success(null);
+    }
+
+    /**
+     * 订单状态：0->待付款；1->待发货；2->已发货；3->已完成；4->已关闭；5->无效订单
+     *
+     * @param status
+     * @return
+     */
+    @ApiOperation("获取订单列表")
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @ResponseBody
+    public Object list(Integer status) {
+        return portalOrderService.listOrders(status);
+    }
+
+    @ApiOperation("获取订单数量")
+    @RequestMapping(value = "/nums", method = RequestMethod.GET)
+    @ResponseBody
+    public Object orderNums() {
+        return portalOrderService.orderNums();
     }
 }

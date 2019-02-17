@@ -48,4 +48,8 @@ public interface OmsOrderService {
      * 发送延迟消息取消订单
      */
     void sendDelayMessageCancelOrder(Long orderId);
+
+    CommonResult listOrders(int status);
+
+    CommonResult orderNums();
 }
