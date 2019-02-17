@@ -60,4 +60,5 @@ public interface OmsCartItemService {
      */
     int clear(Long memberId);
 
+    int nums(Long id);
 }

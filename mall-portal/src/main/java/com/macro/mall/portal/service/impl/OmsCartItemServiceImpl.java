@@ -178,4 +178,11 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
         example.createCriteria().andMemberIdEqualTo(memberId);
         return cartItemMapper.updateByExampleSelective(record, example);
     }
+
+    @Override
+    public int nums(Long id) {
+        OmsCartItemExample example = new OmsCartItemExample();
+        example.createCriteria().andMemberIdEqualTo(id);
+        return cartItemMapper.countByExample(example);
+    }
 }

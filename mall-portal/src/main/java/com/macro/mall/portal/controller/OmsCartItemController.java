@@ -48,6 +48,12 @@ public class OmsCartItemController {
         return new CommonResult().success(deal);
     }
 
+    @RequestMapping(value = "/nums", method = RequestMethod.GET)
+    @ResponseBody
+    public Object nums() {
+        return new CommonResult().success(cartItemService.nums(memberService.getCurrentMember().getId()));
+    }
+
     @ApiOperation("获取某个会员的购物车列表,包括促销信息")
     @RequestMapping(value = "/list/promotion", method = RequestMethod.GET)
     @ResponseBody
