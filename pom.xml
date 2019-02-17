@@ -15,8 +15,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <modules>
-        <module>mall-mbg</module>
-        <module>mall-admin</module>
+       <module>mall-mbg</module>
+        <!-- <module>mall-admin</module>-->
       <!--  <module>mall-search</module>-->
         <module>mall-portal</module>
         <module>mall-common</module>
