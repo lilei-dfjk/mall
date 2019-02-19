@@ -1,6 +1,7 @@
 package com.macro.mall.portal.controller;
 
 import com.macro.mall.model.UmsMember;
+import com.macro.mall.portal.domain.CommonResult;
 import com.macro.mall.portal.model.UserMemberModel;
 import com.macro.mall.portal.service.UmsMemberService;
 import io.swagger.annotations.Api;
@@ -30,6 +31,6 @@ public class UmsMemberInfoController {
         model.setTelephone(currentMember.getPhone());
         model.setMemberId(currentMember.getId());
         model.setUsername(currentMember.getUsername());
-        return model;
+        return new CommonResult().success(model);
     }
 }

@@ -71,7 +71,7 @@ public class OmsOrderController {
     @ApiOperation("获取订单列表")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
-    public Object list(Integer status) {
+    public Object list(@RequestParam(required = false) Integer status) {
         return portalOrderService.listOrders(status);
     }
 
@@ -80,5 +80,12 @@ public class OmsOrderController {
     @ResponseBody
     public Object orderNums() {
         return portalOrderService.orderNums();
+    }
+
+    @ApiOperation("删除订单")
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public Object delete(Long orderId) {
+        return new CommonResult().success("删除成功");
     }
 }

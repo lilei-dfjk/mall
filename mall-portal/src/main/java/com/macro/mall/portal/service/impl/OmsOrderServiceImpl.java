@@ -17,6 +17,7 @@ import com.macro.mall.portal.domain.CommonResult;
 import com.macro.mall.portal.domain.ConfirmOrderBeanResult;
 import com.macro.mall.portal.domain.OmsOrderDetail;
 import com.macro.mall.portal.domain.OrderParam;
+import com.macro.mall.portal.model.OmsOrderItemModel;
 import com.macro.mall.portal.model.OmsOrderModel;
 import com.macro.mall.portal.model.PortalCartItemWithDeal;
 import com.macro.mall.portal.model.PortalDealInfo;
@@ -316,37 +317,59 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     }
 
     @Override
-    public CommonResult listOrders(int status) {
+    public CommonResult listOrders(Integer status) {
         OmsOrderModel mode0 = new OmsOrderModel();
+        OmsOrderItemModel itemModel0=new OmsOrderItemModel();
+        itemModel0.setProductId(57L);
+        itemModel0.setProductPic("http://aoyibuy-oss.oss-ap-southeast-2.aliyuncs.com/mall/images/20190201/Hydrangeas.jpg");
+        itemModel0.setProductName("产品测试产品测试");
+        OmsOrderItemModel itemModel00=new OmsOrderItemModel();
+        itemModel0.setProductId(57L);
+        itemModel0.setProductPic("http://aoyibuy-oss.oss-ap-southeast-2.aliyuncs.com/mall/images/20190201/Hydrangeas.jpg");
+        itemModel0.setProductName("产品测试产品测试");
+        List<OmsOrderItemModel> omsOrderItemModels = Arrays.asList(itemModel0, itemModel00);
+
         mode0.setNumber(5);
         mode0.setOrderNo("20198934323434");
         mode0.setPrice(BigDecimal.valueOf(327.22));
         mode0.setStatus(0);
+        mode0.setProducts(omsOrderItemModels);
+
         OmsOrderModel model1 = new OmsOrderModel();
         model1.setNumber(5);
         model1.setOrderNo("20198934323434");
         model1.setPrice(BigDecimal.valueOf(327.22));
         model1.setStatus(1);
+        model1.setProducts(omsOrderItemModels);
+
         OmsOrderModel model2 = new OmsOrderModel();
         model2.setNumber(5);
         model2.setOrderNo("20198934323434");
         model2.setPrice(BigDecimal.valueOf(327.22));
         model2.setStatus(2);
+        model2.setProducts(omsOrderItemModels);
+
         OmsOrderModel model3 = new OmsOrderModel();
         model3.setNumber(5);
         model3.setOrderNo("20198934323434");
         model3.setPrice(BigDecimal.valueOf(327.22));
         model3.setStatus(3);
+        model3.setProducts(omsOrderItemModels);
+
         OmsOrderModel model4 = new OmsOrderModel();
         model4.setNumber(5);
         model4.setOrderNo("20198934323434");
         model4.setPrice(BigDecimal.valueOf(327.22));
         model4.setStatus(4);
+        model4.setProducts(omsOrderItemModels);
+
         OmsOrderModel model5 = new OmsOrderModel();
         model5.setNumber(5);
         model5.setOrderNo("20198934323434");
         model5.setPrice(BigDecimal.valueOf(327.22));
         model5.setStatus(5);
+        model5.setProducts(omsOrderItemModels);
+
         return new CommonResult().success(Arrays.asList(mode0, model1, model2, model3, model4, model5));
     }
 

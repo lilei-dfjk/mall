@@ -49,7 +49,7 @@ public interface OmsOrderService {
      */
     void sendDelayMessageCancelOrder(Long orderId);
 
-    CommonResult listOrders(int status);
+    CommonResult listOrders(Integer status);
 
     CommonResult orderNums();
 }

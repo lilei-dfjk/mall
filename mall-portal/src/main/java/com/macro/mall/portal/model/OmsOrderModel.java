@@ -1,5 +1,6 @@
 package com.macro.mall.portal.model;
 
+import com.macro.mall.model.OmsOrderItem;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -11,6 +12,6 @@ public class OmsOrderModel implements Serializable {
     private String orderNo;
     private int number;
     private BigDecimal price;
-    private List products;
+    private List<OmsOrderItemModel> products;
     private int status;
 }
