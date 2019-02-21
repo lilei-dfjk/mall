@@ -31,9 +31,59 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UmsMemberService memberService;
     @Autowired
-    private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
-    @Autowired
     private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    @Autowired
+    private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
+
+    /**
+     * 允许跨域调用的过滤器
+     */
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin("*");
+        config.setAllowCredentials(true);
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+        bean.setOrder(0);
+        return new CorsFilter(source);
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService())
+                .passwordEncoder(passwordEncoder());
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    @Bean
+    @Override
+    public UserDetailsService userDetailsService() {
+        //获取登录用户信息
+        return new UserDetailsService() {
+            @Override
+            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                UmsMember member = memberService.getByUsername(username);
+                if (member != null) {
+                    return new MemberDetails(member);
+                }
+                throw new UsernameNotFoundException("用户名或密码错误");
+            }
+        };
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -65,7 +115,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/member/comment/list")// 获取评论列表
                 .permitAll()
-                .antMatchers("/member/**", "/returnApply/**")// 测试时开启
+                .antMatchers("/returnApply/**")// 测试时开启
                 .permitAll()
                 .antMatchers("/sso/index")
                 .permitAll()
@@ -108,67 +158,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(restAuthenticationEntryPoint);
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService())
-                .passwordEncoder(passwordEncoder());
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-    @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        //获取登录用户信息
-        return new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                UmsMember member = memberService.getByUsername(username);
-                if (member != null) {
-                    return new MemberDetails(member);
-                }
-                throw new UsernameNotFoundException("用户名或密码错误");
-            }
-        };
-    }
-
-    @Bean
-    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
-        return new JwtAuthenticationTokenFilter();
-    }
-
     @Bean
     public GoAuthenticationSuccessHandler goAuthenticationSuccessHandler() {
         return new GoAuthenticationSuccessHandler();
     }
+
     @Bean
     public GoLogoutSuccessHandler goLogoutSuccessHandler() {
         return new GoLogoutSuccessHandler();
     }
 
-    /**
-     * 允许跨域调用的过滤器
-     */
     @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("*");
-        config.setAllowCredentials(true);
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
-        bean.setOrder(0);
-        return new CorsFilter(source);
+    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
+        return new JwtAuthenticationTokenFilter();
     }
 }

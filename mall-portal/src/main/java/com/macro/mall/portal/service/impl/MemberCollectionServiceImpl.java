@@ -30,6 +30,9 @@ public class MemberCollectionServiceImpl implements MemberCollectionService {
         int count = 0;
         UmsMember currentMember = memberService.getCurrentMember();
         PmsProduct productInfo = productService.getProductInfo(productCollection.getProductId());
+        if (null == productInfo) {
+            return -1;
+        }
         productCollection.setCreateTime(new Date());
         productCollection.setMemberId(currentMember.getId());
         productCollection.setProductPic(productInfo.getPic());
