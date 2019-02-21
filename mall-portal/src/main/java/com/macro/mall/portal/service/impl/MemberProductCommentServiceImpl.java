@@ -23,9 +23,9 @@ import java.util.List;
 @Service
 public class MemberProductCommentServiceImpl implements MemberProductCommentService {
     @Autowired
-    private UmsMemberService memberService;
-    @Autowired
     private UmsMemberCommentMapper memberCommentMapper;
+    @Autowired
+    private UmsMemberService memberService;
 
     @Override
     public int add(UmsMemberComment productComment) {
@@ -63,8 +63,11 @@ public class MemberProductCommentServiceImpl implements MemberProductCommentServ
         int count = memberCommentMapper.countByExample(example);
         UmsMemberCommentExample example2 = new UmsMemberCommentExample();
         example2.createCriteria().andProductIdEqualTo(productId)
-        .andStarGreaterThanOrEqualTo(2.5);
+                .andStarGreaterThanOrEqualTo(2.5);
         int count2 = memberCommentMapper.countByExample(example2);
+        if (count == 0 || count2 == 0) {
+            return 1;
+        }
         return count2 * 1.0 / count;
     }
 }
