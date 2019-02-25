@@ -1351,6 +1351,216 @@ public class UmsMemberExample {
             addCriterion("history_integration not between", value1, value2, "historyIntegration");
             return (Criteria) this;
         }
+
+        public Criteria andWxOpenIdIsNull() {
+            addCriterion("wx_open_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxOpenIdIsNotNull() {
+            addCriterion("wx_open_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxOpenIdEqualTo(String value) {
+            addCriterion("wx_open_id =", value, "wxOpenId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxOpenIdNotEqualTo(String value) {
+            addCriterion("wx_open_id <>", value, "wxOpenId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxOpenIdGreaterThan(String value) {
+            addCriterion("wx_open_id >", value, "wxOpenId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxOpenIdGreaterThanOrEqualTo(String value) {
+            addCriterion("wx_open_id >=", value, "wxOpenId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxOpenIdLessThan(String value) {
+            addCriterion("wx_open_id <", value, "wxOpenId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxOpenIdLessThanOrEqualTo(String value) {
+            addCriterion("wx_open_id <=", value, "wxOpenId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxOpenIdLike(String value) {
+            addCriterion("wx_open_id like", value, "wxOpenId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxOpenIdNotLike(String value) {
+            addCriterion("wx_open_id not like", value, "wxOpenId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxOpenIdIn(List<String> values) {
+            addCriterion("wx_open_id in", values, "wxOpenId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxOpenIdNotIn(List<String> values) {
+            addCriterion("wx_open_id not in", values, "wxOpenId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxOpenIdBetween(String value1, String value2) {
+            addCriterion("wx_open_id between", value1, value2, "wxOpenId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxOpenIdNotBetween(String value1, String value2) {
+            addCriterion("wx_open_id not between", value1, value2, "wxOpenId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxUnionIdIsNull() {
+            addCriterion("wx_union_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxUnionIdIsNotNull() {
+            addCriterion("wx_union_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxUnionIdEqualTo(String value) {
+            addCriterion("wx_union_id =", value, "wxUnionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxUnionIdNotEqualTo(String value) {
+            addCriterion("wx_union_id <>", value, "wxUnionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxUnionIdGreaterThan(String value) {
+            addCriterion("wx_union_id >", value, "wxUnionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxUnionIdGreaterThanOrEqualTo(String value) {
+            addCriterion("wx_union_id >=", value, "wxUnionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxUnionIdLessThan(String value) {
+            addCriterion("wx_union_id <", value, "wxUnionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxUnionIdLessThanOrEqualTo(String value) {
+            addCriterion("wx_union_id <=", value, "wxUnionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxUnionIdLike(String value) {
+            addCriterion("wx_union_id like", value, "wxUnionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxUnionIdNotLike(String value) {
+            addCriterion("wx_union_id not like", value, "wxUnionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxUnionIdIn(List<String> values) {
+            addCriterion("wx_union_id in", values, "wxUnionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxUnionIdNotIn(List<String> values) {
+            addCriterion("wx_union_id not in", values, "wxUnionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxUnionIdBetween(String value1, String value2) {
+            addCriterion("wx_union_id between", value1, value2, "wxUnionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWxUnionIdNotBetween(String value1, String value2) {
+            addCriterion("wx_union_id not between", value1, value2, "wxUnionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailIsNull() {
+            addCriterion("mail is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailIsNotNull() {
+            addCriterion("mail is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailEqualTo(String value) {
+            addCriterion("mail =", value, "mail");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailNotEqualTo(String value) {
+            addCriterion("mail <>", value, "mail");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailGreaterThan(String value) {
+            addCriterion("mail >", value, "mail");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailGreaterThanOrEqualTo(String value) {
+            addCriterion("mail >=", value, "mail");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailLessThan(String value) {
+            addCriterion("mail <", value, "mail");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailLessThanOrEqualTo(String value) {
+            addCriterion("mail <=", value, "mail");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailLike(String value) {
+            addCriterion("mail like", value, "mail");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailNotLike(String value) {
+            addCriterion("mail not like", value, "mail");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailIn(List<String> values) {
+            addCriterion("mail in", values, "mail");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailNotIn(List<String> values) {
+            addCriterion("mail not in", values, "mail");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailBetween(String value1, String value2) {
+            addCriterion("mail between", value1, value2, "mail");
+            return (Criteria) this;
+        }
+
+        public Criteria andMailNotBetween(String value1, String value2) {
+            addCriterion("mail not between", value1, value2, "mail");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

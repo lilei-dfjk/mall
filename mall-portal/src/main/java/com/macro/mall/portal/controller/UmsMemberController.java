@@ -25,14 +25,11 @@ public class UmsMemberController {
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
-    @ApiOperation("注册")
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @ApiOperation("获取验证码")
+    @RequestMapping(value = "/getAuthCode", method = RequestMethod.GET)
     @ResponseBody
-    public Object register(@RequestParam String username,
-                           @RequestParam String password,
-                           @RequestParam String telephone,
-                           @RequestParam String authCode) {
-        return memberService.register(username, password, telephone, authCode);
+    public Object getAuthCode(@RequestParam String telephone) {
+        return memberService.generateAuthCode(telephone);
     }
 
     @RequestMapping(value = "/index")
@@ -40,11 +37,15 @@ public class UmsMemberController {
         return "login";
     }
 
-    @ApiOperation("获取验证码")
-    @RequestMapping(value = "/getAuthCode", method = RequestMethod.GET)
+    @ApiOperation("注册")
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    public Object getAuthCode(@RequestParam String telephone) {
-        return memberService.generateAuthCode(telephone);
+    public Object register(@RequestParam String username,
+                           @RequestParam String password,
+                           @RequestParam String telephone,
+                           @RequestParam String mail,
+                           @RequestParam String authCode) {
+        return memberService.register(username, password, telephone, authCode, mail);
     }
 
     @ApiOperation("修改密码")

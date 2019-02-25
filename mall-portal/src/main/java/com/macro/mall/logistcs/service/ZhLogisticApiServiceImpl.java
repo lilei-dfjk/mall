@@ -1,13 +1,17 @@
 package com.macro.mall.logistcs.service;
 
-import com.macro.mall.logistcs.bean.OrderBean;
+import com.macro.mall.exception.LogisticsException;
+import com.macro.mall.logistcs.LogisticTrackModel;
+import com.macro.mall.logistcs.bean.ZhLogisTrackBackBean;
+import com.macro.mall.logistcs.bean.ZhLogisTrackBackListBean;
 import com.macro.mall.logistcs.bean.ZhRecordBackBean;
 import com.macro.mall.logistcs.bean.ZhRecordBean;
 import com.macro.mall.logistcs.util.ZhUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
-import javax.xml.rpc.ServiceException;
-import java.rmi.RemoteException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ZhLogisticApiServiceImpl implements LogisticApiService {
@@ -30,7 +34,17 @@ public class ZhLogisticApiServiceImpl implements LogisticApiService {
     }
 
     @Override
-    public void getLogisticTrack(String expressNo) {
-
+    public List<LogisticTrackModel> getLogisticTrack(String expressNo) {
+        ZhLogisTrackBackBean zhLogisTrackBackBean = null;
+        try {
+            zhLogisTrackBackBean = ZhUtils.logisticsTrack(expressNo);
+            List<ZhLogisTrackBackListBean> logisticsback = zhLogisTrackBackBean.getLogisticsback();
+            if (CollectionUtils.isNotEmpty(logisticsback)) {
+                return logisticsback.stream().map(logic -> new LogisticTrackModel(logic.getZtai(), logic.getTime())).collect(Collectors.toList());
+            }
+        } catch (LogisticsException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

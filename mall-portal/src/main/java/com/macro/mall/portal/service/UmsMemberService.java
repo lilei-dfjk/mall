@@ -2,12 +2,10 @@ package com.macro.mall.portal.service;
 
 import com.macro.mall.model.UmsMember;
 import com.macro.mall.portal.domain.CommonResult;
+import com.macro.mall.portal.model.UserMemberModel;
+import com.macro.mall.weixin.bean.SNSUserInfo;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * 会员管理Service
- * Created by macro on 2018/8/3.
- */
 public interface UmsMemberService {
     /**
      * 根据用户名获取会员
@@ -23,7 +21,7 @@ public interface UmsMemberService {
      * 用户注册
      */
     @Transactional
-    CommonResult register(String username, String password, String telephone, String authCode);
+    CommonResult register(String username, String password, String telephone, String authCode, String mail);
 
     /**
      * 生成验证码
@@ -35,6 +33,15 @@ public interface UmsMemberService {
      */
     @Transactional
     CommonResult updatePassword(String telephone, String password, String authCode);
+
+    /**
+     * 修改用户信息
+     */
+    @Transactional
+    void updateUserInfo(UserMemberModel userMemberModel);
+
+    @Transactional
+    CommonResult wxAuthInit(SNSUserInfo snsUserInfo);
 
     /**
      * 获取当前登录会员

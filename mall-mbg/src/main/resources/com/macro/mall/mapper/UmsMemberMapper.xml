@@ -21,6 +21,9 @@
     <result column="growth" jdbcType="INTEGER" property="growth" />
     <result column="luckey_count" jdbcType="INTEGER" property="luckeyCount" />
     <result column="history_integration" jdbcType="INTEGER" property="historyIntegration" />
+    <result column="wx_open_id" jdbcType="VARCHAR" property="wxOpenId" />
+    <result column="wx_union_id" jdbcType="VARCHAR" property="wxUnionId" />
+    <result column="mail" jdbcType="VARCHAR" property="mail" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -83,7 +86,7 @@
   <sql id="Base_Column_List">
     id, member_level_id, username, password, nickname, phone, status, create_time, icon, 
     gender, birthday, city, job, personalized_signature, source_type, integration, growth, 
-    luckey_count, history_integration
+    luckey_count, history_integration, wx_open_id, wx_union_id, mail
   </sql>
   <select id="selectByExample" parameterType="com.macro.mall.model.UmsMemberExample" resultMap="BaseResultMap">
     select
@@ -124,13 +127,15 @@
       create_time, icon, gender, 
       birthday, city, job, personalized_signature, 
       source_type, integration, growth, 
-      luckey_count, history_integration)
+      luckey_count, history_integration, wx_open_id, 
+      wx_union_id, mail)
     values (#{memberLevelId,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{nickname,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{icon,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER}, 
       #{birthday,jdbcType=DATE}, #{city,jdbcType=VARCHAR}, #{job,jdbcType=VARCHAR}, #{personalizedSignature,jdbcType=VARCHAR}, 
       #{sourceType,jdbcType=INTEGER}, #{integration,jdbcType=INTEGER}, #{growth,jdbcType=INTEGER}, 
-      #{luckeyCount,jdbcType=INTEGER}, #{historyIntegration,jdbcType=INTEGER})
+      #{luckeyCount,jdbcType=INTEGER}, #{historyIntegration,jdbcType=INTEGER}, #{wxOpenId,jdbcType=VARCHAR}, 
+      #{wxUnionId,jdbcType=VARCHAR}, #{mail,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.macro.mall.model.UmsMember">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -192,6 +197,15 @@
       <if test="historyIntegration != null">
         history_integration,
       </if>
+      <if test="wxOpenId != null">
+        wx_open_id,
+      </if>
+      <if test="wxUnionId != null">
+        wx_union_id,
+      </if>
+      <if test="mail != null">
+        mail,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="memberLevelId != null">
@@ -247,6 +261,15 @@
       </if>
       <if test="historyIntegration != null">
         #{historyIntegration,jdbcType=INTEGER},
+      </if>
+      <if test="wxOpenId != null">
+        #{wxOpenId,jdbcType=VARCHAR},
+      </if>
+      <if test="wxUnionId != null">
+        #{wxUnionId,jdbcType=VARCHAR},
+      </if>
+      <if test="mail != null">
+        #{mail,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -316,6 +339,15 @@
       <if test="record.historyIntegration != null">
         history_integration = #{record.historyIntegration,jdbcType=INTEGER},
       </if>
+      <if test="record.wxOpenId != null">
+        wx_open_id = #{record.wxOpenId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.wxUnionId != null">
+        wx_union_id = #{record.wxUnionId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mail != null">
+        mail = #{record.mail,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -341,7 +373,10 @@
       integration = #{record.integration,jdbcType=INTEGER},
       growth = #{record.growth,jdbcType=INTEGER},
       luckey_count = #{record.luckeyCount,jdbcType=INTEGER},
-      history_integration = #{record.historyIntegration,jdbcType=INTEGER}
+      history_integration = #{record.historyIntegration,jdbcType=INTEGER},
+      wx_open_id = #{record.wxOpenId,jdbcType=VARCHAR},
+      wx_union_id = #{record.wxUnionId,jdbcType=VARCHAR},
+      mail = #{record.mail,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -403,6 +438,15 @@
       <if test="historyIntegration != null">
         history_integration = #{historyIntegration,jdbcType=INTEGER},
       </if>
+      <if test="wxOpenId != null">
+        wx_open_id = #{wxOpenId,jdbcType=VARCHAR},
+      </if>
+      <if test="wxUnionId != null">
+        wx_union_id = #{wxUnionId,jdbcType=VARCHAR},
+      </if>
+      <if test="mail != null">
+        mail = #{mail,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -425,7 +469,10 @@
       integration = #{integration,jdbcType=INTEGER},
       growth = #{growth,jdbcType=INTEGER},
       luckey_count = #{luckeyCount,jdbcType=INTEGER},
-      history_integration = #{historyIntegration,jdbcType=INTEGER}
+      history_integration = #{historyIntegration,jdbcType=INTEGER},
+      wx_open_id = #{wxOpenId,jdbcType=VARCHAR},
+      wx_union_id = #{wxUnionId,jdbcType=VARCHAR},
+      mail = #{mail,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

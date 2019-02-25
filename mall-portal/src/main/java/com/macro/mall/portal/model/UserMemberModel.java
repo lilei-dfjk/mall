@@ -12,4 +12,5 @@ public class UserMemberModel implements Serializable {
     private String nickname;
     private String headPic;
     private String level;
+    private String email;
 }

@@ -2,6 +2,8 @@ package com.macro.mall.weixin.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.macro.mall.portal.domain.CommonResult;
+import com.macro.mall.portal.service.UmsMemberService;
 import com.macro.mall.weixin.AesException;
 import com.macro.mall.weixin.bean.Oauth2Token;
 import com.macro.mall.weixin.bean.SNSUserInfo;
@@ -11,6 +13,7 @@ import com.macro.mall.weixin.util.WXPublicUtils;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +40,11 @@ public class WxController {
     private String callbackUrl;
     @Value("${web.redirect.url}")
     private String redirectUrl;
+    @Value("${web.register.url}")
+    private String registerUrl;
+
+    @Autowired
+    private UmsMemberService umsMemberService;
 
     /**
      * URL编码（utf-8）
@@ -104,7 +112,10 @@ public class WxController {
         SNSUserInfo snsUserInfo = getSNSUserInfo(accessToken, openId);
         log.info("***********************************用户信息unionId：" + snsUserInfo.getUnionid() + "***:" + snsUserInfo.getNickname());
         // 设置要传递的参数
-
+        CommonResult commonResult = umsMemberService.wxAuthInit(snsUserInfo);
+        if (commonResult.getCode() == CommonResult.SUCCESS) {
+            return "redirect:" + registerUrl;
+        }
         //具体业务start
         //具体业务end
         return "redirect:" + redirectUrl;

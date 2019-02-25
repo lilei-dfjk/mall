@@ -26,11 +26,18 @@ public class UmsMemberInfoController {
         UserMemberModel model = new UserMemberModel();
         UmsMember currentMember = memberService.getCurrentMember();
         model.setHeadPic(currentMember.getIcon());
-        model.setLevel(currentMember.getMemberLevelName());
+//        model.setLevel(currentMember.getMemberLevelName());
         model.setNickname(currentMember.getNickname());
         model.setTelephone(currentMember.getPhone());
         model.setMemberId(currentMember.getId());
         model.setUsername(currentMember.getUsername());
         return new CommonResult().success(model);
+    }
+    @ApiOperation("会员信息")
+    @RequestMapping(value = "/update", method = RequestMethod.GET)
+    @ResponseBody
+    public Object update(UserMemberModel userMemberModel) {
+        memberService.updateUserInfo(userMemberModel);
+        return new CommonResult().success("");
     }
 }

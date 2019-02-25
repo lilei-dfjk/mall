@@ -8,8 +8,6 @@ public class UmsMember implements Serializable {
 
     private Long memberLevelId;
 
-    private String memberLevelName;
-
     /**
      * 用户名
      *
@@ -39,7 +37,7 @@ public class UmsMember implements Serializable {
     private String phone;
 
     /**
-     * 帐号启用状态:0->禁用；1->启用
+     * 帐号启用状态:0->禁用；1->启用; 2-初始化;
      *
      * @mbggenerated
      */
@@ -129,6 +127,22 @@ public class UmsMember implements Serializable {
      */
     private Integer historyIntegration;
 
+    /**
+     * 微信openId
+     *
+     * @mbggenerated
+     */
+    private String wxOpenId;
+
+    /**
+     * 微信unionId
+     *
+     * @mbggenerated
+     */
+    private String wxUnionId;
+
+    private String mail;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -145,14 +159,6 @@ public class UmsMember implements Serializable {
 
     public void setMemberLevelId(Long memberLevelId) {
         this.memberLevelId = memberLevelId;
-    }
-
-    public String getMemberLevelName() {
-        return memberLevelName;
-    }
-
-    public void setMemberLevelName(String memberLevelName) {
-        this.memberLevelName = memberLevelName;
     }
 
     public String getUsername() {
@@ -291,6 +297,30 @@ public class UmsMember implements Serializable {
         this.historyIntegration = historyIntegration;
     }
 
+    public String getWxOpenId() {
+        return wxOpenId;
+    }
+
+    public void setWxOpenId(String wxOpenId) {
+        this.wxOpenId = wxOpenId;
+    }
+
+    public String getWxUnionId() {
+        return wxUnionId;
+    }
+
+    public void setWxUnionId(String wxUnionId) {
+        this.wxUnionId = wxUnionId;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -316,6 +346,9 @@ public class UmsMember implements Serializable {
         sb.append(", growth=").append(growth);
         sb.append(", luckeyCount=").append(luckeyCount);
         sb.append(", historyIntegration=").append(historyIntegration);
+        sb.append(", wxOpenId=").append(wxOpenId);
+        sb.append(", wxUnionId=").append(wxUnionId);
+        sb.append(", mail=").append(mail);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
