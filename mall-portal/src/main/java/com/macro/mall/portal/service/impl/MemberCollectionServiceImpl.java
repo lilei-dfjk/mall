@@ -19,9 +19,9 @@ import java.util.List;
 public class MemberCollectionServiceImpl implements MemberCollectionService {
 
     @Autowired
-    private UmsProductCollectionMapper productCollectionMapper;
-    @Autowired
     private UmsMemberService memberService;
+    @Autowired
+    private UmsProductCollectionMapper productCollectionMapper;
     @Autowired
     private PortalProductService productService;
 
@@ -52,6 +52,19 @@ public class MemberCollectionServiceImpl implements MemberCollectionService {
     @Override
     public int deleteProduct(Long id) {
         return productCollectionMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public UmsProductCollection findByProductId(Long productId, Long memberId) {
+        UmsMember currentMember = memberService.getCurrentMember();
+        UmsProductCollectionExample example = new UmsProductCollectionExample();
+        example.createCriteria().andMemberIdEqualTo(memberId)
+                .andProductIdEqualTo(productId);
+        List<UmsProductCollection> collections = productCollectionMapper.selectByExample(example);
+        if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(collections)) {
+            return collections.get(0);
+        }
+        return null;
     }
 
     @Override

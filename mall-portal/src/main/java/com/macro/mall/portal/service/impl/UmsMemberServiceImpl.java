@@ -146,6 +146,9 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         UmsMember umsMember = memberMapper.selectByPrimaryKey(currentMember.getId());
         umsMember.setIcon(userMemberModel.getHeadPic());
         umsMember.setPhone(userMemberModel.getTelephone());
+        umsMember.setMail(userMemberModel.getEmail());
+        umsMember.setNickname(userMemberModel.getNickname());
+        memberMapper.updateByPrimaryKey(umsMember);
     }
 
     @Override

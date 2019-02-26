@@ -15,7 +15,7 @@ public class ProductDetailMode implements Serializable {
     private List<String> albumPics;
     private BigDecimal cnyPrice;
     private String h5Remark;
-    private long id;
+    private long productId;
     private Integer maxBuy;
     private int minBuy = 1;
     private String name;
@@ -23,4 +23,5 @@ public class ProductDetailMode implements Serializable {
     private BigDecimal price;
     private Integer stock;
     private BigDecimal weight;
+    private boolean collect = false;
 }

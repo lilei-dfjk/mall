@@ -8,5 +8,5 @@ import java.util.List;
 public interface CityService {
     CityModel listAllProvice();
 
-    List<TDAreainfo> listAllCitys();
+    List<CityModel> listAllCitys();
 }

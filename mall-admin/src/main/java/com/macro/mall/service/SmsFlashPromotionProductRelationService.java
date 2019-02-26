@@ -46,5 +46,5 @@ public interface SmsFlashPromotionProductRelationService {
      * @param flashPromotionSessionId
      * @return
      */
-    int getCount(Long flashPromotionId,Long flashPromotionSessionId);
+    int getCount(Long flashPromotionId, Long flashPromotionSessionId);
 }

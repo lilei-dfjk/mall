@@ -10,5 +10,7 @@ public interface MemberCollectionService {
 
     int deleteProduct(Long productId);
 
+    UmsProductCollection findByProductId(Long productId, Long memberId);
+
     List<UmsProductCollection> listProduct();
 }

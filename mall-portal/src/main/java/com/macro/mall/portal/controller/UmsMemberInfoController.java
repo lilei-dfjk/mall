@@ -33,8 +33,17 @@ public class UmsMemberInfoController {
         model.setUsername(currentMember.getUsername());
         return new CommonResult().success(model);
     }
+
+    @ApiOperation("昵称检测")
+    @RequestMapping(value = "/nickname/check", method = RequestMethod.GET)
+    @ResponseBody
+    public Object nickname(String userName) {
+        UmsMember byUsername = memberService.getByUsername(userName);
+        return new CommonResult().success(byUsername != null);
+    }
+
     @ApiOperation("会员信息")
-    @RequestMapping(value = "/update", method = RequestMethod.GET)
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     public Object update(UserMemberModel userMemberModel) {
         memberService.updateUserInfo(userMemberModel);

@@ -3,11 +3,9 @@ package com.macro.mall.search.service.impl;
 import com.macro.mall.logistcs.bean.LogisticsRuleBean;
 import com.macro.mall.logistcs.cons.LogisticType;
 import com.macro.mall.mapper.PmsMemberPriceMapper;
-import com.macro.mall.model.PmsMemberPrice;
-import com.macro.mall.model.PmsMemberPriceExample;
-import com.macro.mall.model.PmsProduct;
-import com.macro.mall.model.UmsMember;
+import com.macro.mall.model.*;
 import com.macro.mall.pay.rate.RateService;
+import com.macro.mall.portal.service.MemberCollectionService;
 import com.macro.mall.portal.service.PmsProductLogisticRuleService;
 import com.macro.mall.portal.service.PortalProductService;
 import com.macro.mall.portal.service.UmsMemberService;
@@ -73,6 +71,8 @@ public class EsProductServiceImpl implements EsProductService {
     @Autowired
     private EsBrandRepository brandRepository;
     @Autowired
+    private MemberCollectionService collectionService;
+    @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
     @Autowired
     private PmsMemberPriceMapper memberPriceMapper;
@@ -100,7 +100,7 @@ public class EsProductServiceImpl implements EsProductService {
         PmsProduct productInfo = portalProductService.getProductInfo(id);
         LogisticsRuleBean logisticRuleBean = productLogisticRuleService.getLogisticRuleBean(id, LogisticType.ZH);
         ProductDetailMode mode = new ProductDetailMode();
-        mode.setId(mode.getId());
+        mode.setProductId(id);
         String albumPics = productInfo.getAlbumPics();
         if (StringUtils.isEmpty(albumPics)) {
             String[] split = albumPics.split(",");
@@ -127,6 +127,8 @@ public class EsProductServiceImpl implements EsProductService {
                 if (!CollectionUtils.isEmpty(pmsMemberPrices)) {
                     mode.setPrice(pmsMemberPrices.get(0).getMemberPrice());
                 }
+                UmsProductCollection collection = collectionService.findByProductId(id, currentMember.getId());
+                mode.setCollect(null == collection);
             }
         }
 
