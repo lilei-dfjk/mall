@@ -6,6 +6,7 @@ import com.macro.mall.logistcs.bean.OrderBean;
 import com.macro.mall.logistcs.bean.ProductItem;
 import com.macro.mall.logistcs.cons.LogisticType;
 import com.macro.mall.mapper.OmsCartItemMapper;
+import com.macro.mall.mapper.OmsOrderItemMapper;
 import com.macro.mall.mapper.OmsOrderMapper;
 import com.macro.mall.mapper.PmsProductMapper;
 import com.macro.mall.model.*;
@@ -37,41 +38,42 @@ import java.util.stream.Collectors;
 @Service
 public class OmsOrderServiceImpl implements OmsOrderService {
 
+    @Value("${redis.key.prefix.orderId}")
+    private String REDIS_KEY_PREFIX_ORDER_ID;
     @Autowired
     private OmsCartItemMapper cartItemMapper;
     @Autowired
-    private PortalProductDao productDao;
+    private OmsCartItemService cartItemService;
     @Autowired
-    private PortalOrderItemDao orderItemDao;
-    @Autowired
-    private OmsPromotionService promotionService;
+    private UmsMemberReceiveAddressService memberReceiveAddressService;
     @Autowired
     private UmsMemberService memberService;
     @Autowired
-    private RedisService redisService;
+    private PortalOrderItemDao orderItemDao;
     @Autowired
-    private PortalProductService portalProductService;
-    @Autowired
-    private RateService rateService;
-    @Autowired
-    private PortalOrderDao portalOrderDao;
+    private OmsOrderItemMapper orderItemMapper;
     @Autowired
     private OmsOrderMapper orderMapper;
     @Autowired
     private PmsProductMapper pmsProductMapper;
     @Autowired
-    private OmsCartItemService cartItemService;
-    @Value("${redis.key.prefix.orderId}")
-    private String REDIS_KEY_PREFIX_ORDER_ID;
+    private PortalOrderDao portalOrderDao;
     @Autowired
-    private UmsMemberReceiveAddressService memberReceiveAddressService;
+    private PortalProductService portalProductService;
+    @Autowired
+    private PortalProductDao productDao;
     @Autowired
     private PmsProductLogisticRuleService productLogisticRuleService;
     @Autowired
-    private com.macro.mall.logistcs.service.ZhLogisticService zhLogisticService;
+    private OmsPromotionService promotionService;
+    @Autowired
+    private RateService rateService;
+    @Autowired
+    private RedisService redisService;
     @Autowired
     private RedisTemplate redisTemplate;
-
+    @Autowired
+    private com.macro.mall.logistcs.service.ZhLogisticService zhLogisticService;
 
     @Override
     public ConfirmOrderBeanResult generateConfirmOrder(List<Long> cardIds) {
@@ -79,6 +81,20 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         List<UmsMemberReceiveAddress> memberReceiveAddressList = memberReceiveAddressService.list();
         PortalCartItemWithDeal portalCartInfo = getPortalCartInfo(cardIds);
         return new ConfirmOrderBeanResult(portalCartInfo.getCarLists(), memberReceiveAddressList, portalCartInfo.getDealInfo());
+    }
+
+    @Override
+    public CommonResult getOrderId(String orderNo) {
+        OmsOrderExample example = new OmsOrderExample();
+        example.createCriteria().andOrderSnEqualTo(orderNo);
+        List<OmsOrder> omsOrders = orderMapper.selectByExample(example);
+        if (!CollectionUtils.isEmpty(omsOrders)) {
+            List<OmsOrderModel> modelList = omsOrders.stream().map(omsOrder -> initOrderModel(omsOrder)).collect(Collectors.toList());
+            if (!CollectionUtils.isEmpty(modelList)) {
+                return new CommonResult().success(modelList.get(0));
+            }
+        }
+        return null;
     }
 
     @Override
@@ -121,30 +137,6 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             }
         }
         return null;
-    }
-
-    private ProductItem initProductItem(OmsCartItem item, LogisticType logisticType) {
-        PmsProduct productInfo = portalProductService.getProductInfo(item.getProductId());
-        LogisticsRuleBean logisticRuleBean = productLogisticRuleService.getLogisticRuleBean(item.getProductId(), logisticType);
-        ProductItem productItem = new ProductItem();
-        productItem.setCartId(item.getId());
-        productItem.setProductId(productInfo.getId());
-        productItem.setNumber(item.getQuantity());
-        productItem.setProductSn(productInfo.getProductSn());
-        productItem.setRuleBean(logisticRuleBean);
-        productItem.setPic(productInfo.getPic());
-        productItem.setStock(productInfo.getStock());
-//        productItem.setProductSkuId(item.getProductSkuId());
-        productItem.setProductName(productInfo.getName());
-        productItem.setPrice(item.getPrice().doubleValue());
-        productItem.setWeight(productInfo.getWeight().doubleValue());
-        productItem.setPublishStatus(productInfo.getPublishStatus());
-        productItem.setCnyPrice(productInfo.getPrice().multiply(BigDecimal.valueOf(rateService.getAuToCnyRate())).doubleValue());
-        if (null != logisticRuleBean) {
-            productItem.setRuleType(logisticRuleBean.getLogisType());
-            productItem.setRuleBrandType(logisticRuleBean.getBrandRuleType());
-        }
-        return productItem;
     }
 
     @Override
@@ -192,6 +184,9 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         order.setOrderType(0);
         //收货人信息：姓名、电话、邮编、地址
         UmsMemberReceiveAddress address = memberReceiveAddressService.getItem(orderParam.getMemberReceiveAddressId());
+        if (null == address) {
+            return new CommonResult().failed("收货地址为空");
+        }
         order.setReceiverName(address.getName());
         order.setReceiverPhone(address.getPhoneNumber());
         order.setReceiverPostCode(address.getPostCode());
@@ -226,7 +221,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     private boolean hasStock(List<ProductItem> carLists) {
         for (ProductItem productItem : carLists) {
             PmsProduct skuStock = pmsProductMapper.selectByPrimaryKey(productItem.getProductId());
-            if (productItem.getNumber() >= (skuStock.getStock() - skuStock.getLockStock()) || productItem.getStock() <= 0) {
+            if (productItem.getNumber() >= (skuStock.getStock() - (skuStock.getLockStock() == null ? 0 : skuStock.getLockStock())) || productItem.getStock() <= 0) {
                 return false;
             }
         }
@@ -242,23 +237,6 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         }
     }
 
-    private void lockStock(ProductItem productItem) {
-        RedisLock lock = new RedisLock(redisTemplate, "product.stock.lock." + productItem.getProductId(), 10000, 20000);
-        try {
-            if (lock.lock()) {
-                PmsProduct skuStock = pmsProductMapper.selectByPrimaryKey(productItem.getProductId());
-                skuStock.setLockStock(skuStock.getLockStock() + productItem.getNumber());
-                pmsProductMapper.updateByPrimaryKeySelective(skuStock);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            //为了让分布式锁的算法更稳键些，持有锁的客户端在解锁之前应该再检查一次自己的锁是否已经超时，再去做DEL操作，因为可能客户端因为某个耗时的操作而挂起，
-            //操作完的时候锁因为超时已经被别人获得，这时就不必解锁了。 ————这里没有做
-            lock.unlock();
-        }
-    }
-
     /**
      * 生成18位订单编号:8位日期+2位平台号码+2位支付方式+6位以上自增id
      */
@@ -268,8 +246,8 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         String key = REDIS_KEY_PREFIX_ORDER_ID + date;
         Long increment = redisService.increment(key, 1);
         sb.append(date);
-        sb.append(String.format("%02d", order.getSourceType()));
-        sb.append(String.format("%02d", order.getPayType()));
+//        sb.append(String.format("%02d", order.getSourceType()));
+//        sb.append(String.format("%02d", order.getPayType()));
         String incrementStr = increment.toString();
         if (incrementStr.length() <= 6) {
             sb.append(String.format("%06d", increment));
@@ -286,6 +264,22 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         cartItemService.delete(currentMember.getId(), ids);
     }
 
+    private void lockStock(ProductItem productItem) {
+        RedisLock lock = new RedisLock(redisTemplate, "product.stock.lock." + productItem.getProductId(), 10000, 20000);
+        try {
+            if (lock.lock()) {
+                PmsProduct skuStock = pmsProductMapper.selectByPrimaryKey(productItem.getProductId());
+                skuStock.setLockStock((skuStock.getLockStock() == null ? 0 : skuStock.getLockStock()) + productItem.getNumber());
+                pmsProductMapper.updateByPrimaryKeySelective(skuStock);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            //为了让分布式锁的算法更稳键些，持有锁的客户端在解锁之前应该再检查一次自己的锁是否已经超时，再去做DEL操作，因为可能客户端因为某个耗时的操作而挂起，
+            //操作完的时候锁因为超时已经被别人获得，这时就不必解锁了。 ————这里没有做
+            lock.unlock();
+        }
+    }
 
     @Override
     public CommonResult paySuccess(Long orderId) {
@@ -319,61 +313,17 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     @Override
     public CommonResult listOrders(Integer status) {
 
-
-
-        OmsOrderModel mode0 = new OmsOrderModel();
-        OmsOrderItemModel itemModel0=new OmsOrderItemModel();
-        itemModel0.setProductId(57L);
-        itemModel0.setProductPic("http://aoyibuy-oss.oss-ap-southeast-2.aliyuncs.com/mall/images/20190201/Hydrangeas.jpg");
-        itemModel0.setProductName("产品测试产品测试");
-        OmsOrderItemModel itemModel00=new OmsOrderItemModel();
-        itemModel0.setProductId(57L);
-        itemModel0.setProductPic("http://aoyibuy-oss.oss-ap-southeast-2.aliyuncs.com/mall/images/20190201/Hydrangeas.jpg");
-        itemModel0.setProductName("产品测试产品测试");
-        List<OmsOrderItemModel> omsOrderItemModels = Arrays.asList(itemModel0, itemModel00);
-
-        mode0.setNumber(5);
-        mode0.setOrderNo("20198934323434");
-        mode0.setPrice(BigDecimal.valueOf(327.22));
-        mode0.setStatus(0);
-        mode0.setProducts(omsOrderItemModels);
-
-        OmsOrderModel model1 = new OmsOrderModel();
-        model1.setNumber(5);
-        model1.setOrderNo("20198934323434");
-        model1.setPrice(BigDecimal.valueOf(327.22));
-        model1.setStatus(1);
-        model1.setProducts(omsOrderItemModels);
-
-        OmsOrderModel model2 = new OmsOrderModel();
-        model2.setNumber(5);
-        model2.setOrderNo("20198934323434");
-        model2.setPrice(BigDecimal.valueOf(327.22));
-        model2.setStatus(2);
-        model2.setProducts(omsOrderItemModels);
-
-        OmsOrderModel model3 = new OmsOrderModel();
-        model3.setNumber(5);
-        model3.setOrderNo("20198934323434");
-        model3.setPrice(BigDecimal.valueOf(327.22));
-        model3.setStatus(3);
-        model3.setProducts(omsOrderItemModels);
-
-        OmsOrderModel model4 = new OmsOrderModel();
-        model4.setNumber(5);
-        model4.setOrderNo("20198934323434");
-        model4.setPrice(BigDecimal.valueOf(327.22));
-        model4.setStatus(4);
-        model4.setProducts(omsOrderItemModels);
-
-        OmsOrderModel model5 = new OmsOrderModel();
-        model5.setNumber(5);
-        model5.setOrderNo("20198934323434");
-        model5.setPrice(BigDecimal.valueOf(327.22));
-        model5.setStatus(5);
-        model5.setProducts(omsOrderItemModels);
-
-        return new CommonResult().success(Arrays.asList(mode0, model1, model2, model3, model4, model5));
+        OmsOrderExample example = new OmsOrderExample();
+        if (null != status) {
+            example.createCriteria().andStatusEqualTo(status);
+        }
+        example.createCriteria().andMemberIdEqualTo(memberService.getCurrentMember().getId());
+        List<OmsOrder> omsOrders = orderMapper.selectByExample(example);
+        if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(omsOrders)) {
+            List<OmsOrderModel> modelList = omsOrders.stream().map(omsOrder -> initOrderModel(omsOrder)).collect(Collectors.toList());
+            return new CommonResult().success(modelList);
+        }
+        return null;
     }
 
     @Override
@@ -386,5 +336,57 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         orderNums.put(4, 2);
         orderNums.put(5, 2);
         return new CommonResult().success(orderNums);
+    }
+
+    private OmsOrderModel initOrderModel(OmsOrder omsOrder) {
+        OmsOrderModel model = new OmsOrderModel();
+        model.setOrderNo(omsOrder.getOrderSn());
+        model.setPrice(omsOrder.getPayAmount());
+        model.setStatus(omsOrder.getStatus());
+        OmsOrderItemExample example = new OmsOrderItemExample();
+        example.createCriteria().andOrderSnEqualTo(omsOrder.getOrderSn());
+        List<OmsOrderItem> omsOrderItems = orderItemMapper.selectByExample(example);
+        if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(omsOrderItems)) {
+            List<OmsOrderItemModel> orderItemModels = omsOrderItems.stream().map(omsOrderItem -> initOrderItemModel(omsOrderItem)).collect(Collectors.toList());
+            model.setProducts(orderItemModels);
+            if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(model.getProducts())) {
+                int number = model.getProducts().stream().mapToInt(orderItemModel -> orderItemModel.getNumber()).sum();
+                model.setNumber(number);
+            }
+        }
+        return model;
+    }
+
+    private OmsOrderItemModel initOrderItemModel(OmsOrderItem omsOrderItem) {
+        OmsOrderItemModel itemModel0 = new OmsOrderItemModel();
+        itemModel0.setProductId(omsOrderItem.getProductId());
+        itemModel0.setProductPic(omsOrderItem.getProductPic());
+        itemModel0.setProductName(omsOrderItem.getProductName());
+        itemModel0.setNumber(omsOrderItem.getProductQuantity());
+        return itemModel0;
+    }
+
+    private ProductItem initProductItem(OmsCartItem item, LogisticType logisticType) {
+        PmsProduct productInfo = portalProductService.getProductInfo(item.getProductId());
+        LogisticsRuleBean logisticRuleBean = productLogisticRuleService.getLogisticRuleBean(item.getProductId(), logisticType);
+        ProductItem productItem = new ProductItem();
+        productItem.setCartId(item.getId());
+        productItem.setProductId(productInfo.getId());
+        productItem.setNumber(item.getQuantity());
+        productItem.setProductSn(productInfo.getProductSn());
+        productItem.setRuleBean(logisticRuleBean);
+        productItem.setPic(productInfo.getPic());
+        productItem.setStock(productInfo.getStock());
+//        productItem.setProductSkuId(item.getProductSkuId());
+        productItem.setProductName(productInfo.getName());
+        productItem.setPrice(item.getPrice().doubleValue());
+        productItem.setWeight(productInfo.getWeight().doubleValue());
+        productItem.setPublishStatus(productInfo.getPublishStatus());
+        productItem.setCnyPrice(productInfo.getPrice().multiply(BigDecimal.valueOf(rateService.getAuToCnyRate())).doubleValue());
+        if (null != logisticRuleBean) {
+            productItem.setRuleType(logisticRuleBean.getLogisType());
+            productItem.setRuleBrandType(logisticRuleBean.getBrandRuleType());
+        }
+        return productItem;
     }
 }

@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.github.pagehelper.PageHelper;
+import com.macro.mall.mapper.UmsMemberLevelMapper;
 import com.macro.mall.mapper.UmsMemberMapper;
 import com.macro.mall.model.UmsMember;
 import com.macro.mall.model.UmsMemberExample;
+import com.macro.mall.model.UmsMemberLevel;
+import com.macro.mall.model.UmsMemberLevelExample;
 import com.macro.mall.service.UmsMemberService;
 
 /**
@@ -25,6 +28,8 @@ public class UmsMemberServiceImpl implements UmsMemberService{
 	@Autowired
 	private UmsMemberMapper memberMapper;
 	@Autowired
+	private UmsMemberLevelMapper memberLevelMapper;
+	@Autowired
     private PasswordEncoder passwordEncoder;
 
 	@Override
@@ -34,6 +39,13 @@ public class UmsMemberServiceImpl implements UmsMemberService{
 		String md5Password = passwordEncoder.encodePassword(umsMember.getPassword(), null);
 		//密码
 		umsMember.setPassword(md5Password);
+		//查询默认等级信息
+		UmsMemberLevelExample example = new UmsMemberLevelExample();
+		example.createCriteria().andDefaultStatusEqualTo(1);
+		List<UmsMemberLevel> levels = memberLevelMapper.selectByExample(example);
+		if(levels != null && levels.size() > 0) {
+			umsMember.setMemberLevelId(levels.get(0).getId());
+		}
 		return memberMapper.insert(umsMember);
 	}
 

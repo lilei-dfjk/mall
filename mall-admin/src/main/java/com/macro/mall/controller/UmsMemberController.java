@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.macro.mall.dto.CommonResult;
-import com.macro.mall.model.CmsSubject;
 import com.macro.mall.model.UmsMember;
 import com.macro.mall.service.UmsMemberService;
 

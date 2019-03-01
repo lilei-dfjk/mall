@@ -14,6 +14,8 @@ public interface OmsOrderService {
      */
     ConfirmOrderBeanResult generateConfirmOrder(List<Long> ids);
 
+    CommonResult getOrderId(String orderId);
+
     /**
      * @param ids 购物车选择商品
      * @return

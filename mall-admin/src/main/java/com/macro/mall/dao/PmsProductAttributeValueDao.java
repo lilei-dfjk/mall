@@ -10,5 +10,5 @@ import java.util.List;
  * Created by macro on 2018/4/26.
  */
 public interface PmsProductAttributeValueDao {
-    int insertList(@Param("list")List<PmsProductAttributeValue> productAttributeValueList);
+    int insertList(@Param("list") List<PmsProductAttributeValue> productAttributeValueList);
 }

@@ -182,7 +182,7 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
     @Override
     public int nums(Long id) {
         OmsCartItemExample example = new OmsCartItemExample();
-        example.createCriteria().andMemberIdEqualTo(id);
+        example.createCriteria().andMemberIdEqualTo(id).andDeleteStatusEqualTo(0);
         return cartItemMapper.countByExample(example);
     }
 }

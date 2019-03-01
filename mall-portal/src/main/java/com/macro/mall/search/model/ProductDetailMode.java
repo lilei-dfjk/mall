@@ -23,5 +23,6 @@ public class ProductDetailMode implements Serializable {
     private BigDecimal price;
     private Integer stock;
     private BigDecimal weight;
+    private String pic;
     private boolean collect = false;
 }

@@ -102,12 +102,13 @@ public class EsProductServiceImpl implements EsProductService {
         ProductDetailMode mode = new ProductDetailMode();
         mode.setProductId(id);
         String albumPics = productInfo.getAlbumPics();
-        if (StringUtils.isEmpty(albumPics)) {
+        if (!StringUtils.isEmpty(albumPics)) {
             String[] split = albumPics.split(",");
             if (ArrayUtils.isNotEmpty(split)) {
                 mode.setAlbumPics(CollectionUtils.arrayToList(split));
             }
         }
+        mode.setPic(productInfo.getPic());
         mode.setPrice(mode.getPrice());
         mode.setH5Remark(productInfo.getDetailMobileHtml());
         mode.setPcRemark(productInfo.getDetailHtml());
@@ -215,10 +216,10 @@ public class EsProductServiceImpl implements EsProductService {
         //过滤
         if (brandId != null || productCategoryId != null) {
             BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-            if (brandId != null) {
+            if (!StringUtils.isEmpty(brandId)) {
                 boolQueryBuilder.must(QueryBuilders.termQuery("brandId", brandId));
             }
-            if (productCategoryId != null) {
+            if (!StringUtils.isEmpty(productCategoryId)) {
                 boolQueryBuilder.must(QueryBuilders.termQuery("productCategoryId", productCategoryId));
             }
             nativeSearchQueryBuilder.withFilter(boolQueryBuilder);
