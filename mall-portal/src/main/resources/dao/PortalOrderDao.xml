@@ -7,6 +7,10 @@
                     resultMap="com.macro.mall.mapper.OmsOrderItemMapper.BaseResultMap">
         </collection>
     </resultMap>
+    <resultMap id="statusMap" type="Map">
+        <result column="state" property="state" jdbcType="INTEGER" />
+        <result column="num" property="num" jdbcType="INTEGER" />
+    </resultMap>
     <select id="getDetail" resultMap="orderDetailMap">
         SELECT
             o.id,
@@ -88,4 +92,12 @@
             #{item.productSkuId}
         </foreach>
     </update>
+
+    <select id="sumStatus" resultMap="statusMap">
+        select status as status,count(id) as num
+        from oms_order
+        where 1=1 and member_id = #{memberId}
+       and status in (0,1,2,3,4,5)
+        group by status;
+    </select>
 </mapper>
