@@ -331,22 +331,27 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 
     @Override
     public CommonResult orderNums() {
-        Map<Integer, Integer> orderNums = new HashMap();
-        orderNums.put(0, 2);
-        orderNums.put(1, 3);
-        orderNums.put(2, 2);
-        orderNums.put(3, 2);
-        orderNums.put(4, 2);
-        orderNums.put(5, 2);
-        return new CommonResult().success(orderNums);
+        List<Map<Integer, Integer>> integerIntegerMap = portalOrderDao.sumStatus(memberService.getCurrentMember().getId());
+        if (!CollectionUtils.isEmpty(integerIntegerMap)) {
+            Map<String, Integer> maps = new HashMap<>(integerIntegerMap.size());
+            integerIntegerMap.stream().forEach(map -> {
+                maps.put(OmsOrderStatus.getNameByValue(map.get("status")), map.get("num"));
+                System.out.println(map);
+            });
+            return new CommonResult().success(maps);
+        }
+        return new CommonResult().success(null);
     }
 
     private OmsOrderModel initOrderModel(OmsOrder omsOrder) {
         OmsOrderModel model = new OmsOrderModel();
         model.setOrderId(omsOrder.getId());
         model.setOrderNo(omsOrder.getOrderSn());
-        model.setPrice(omsOrder.getPayAmount());
+        model.setTotalPrice(omsOrder.getPayAmount());
+        model.setPostPrice(omsOrder.getFreightAmount());
+        model.setTotalCnyPrice(omsOrder.getPayAmount().multiply(BigDecimal.valueOf(rateService.getAuToCnyRate())));
         model.setStatus(omsOrder.getStatus());
+//        model.setTotalWeight(0.00);
         OmsOrderItemExample example = new OmsOrderItemExample();
         example.createCriteria().andOrderSnEqualTo(omsOrder.getOrderSn());
         List<OmsOrderItem> omsOrderItems = orderItemMapper.selectByExample(example);
@@ -355,7 +360,9 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             model.setProducts(orderItemModels);
             if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(model.getProducts())) {
                 int number = model.getProducts().stream().mapToInt(orderItemModel -> orderItemModel.getNumber()).sum();
+                double productPrice = model.getProducts().stream().mapToDouble(orderItemModel -> orderItemModel.getPrice().doubleValue()).sum();
                 model.setNumber(number);
+                model.setProductPrice(productPrice);
             }
         }
         return model;
@@ -367,6 +374,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         itemModel0.setProductPic(omsOrderItem.getProductPic());
         itemModel0.setProductName(omsOrderItem.getProductName());
         itemModel0.setNumber(omsOrderItem.getProductQuantity());
+        itemModel0.setPrice(omsOrderItem.getProductPrice());
         return itemModel0;
     }
 

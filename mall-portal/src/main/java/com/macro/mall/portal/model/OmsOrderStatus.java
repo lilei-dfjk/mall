@@ -17,6 +17,16 @@ public enum OmsOrderStatus {
         this.value = i;
     }
 
+    public static String getNameByValue(int value) {
+        OmsOrderStatus[] values = OmsOrderStatus.values();
+        for (int i = 0; i < values.length; i++) {
+            if (values[i].value == value) {
+                return values[i].name();
+            }
+        }
+        return null;
+    }
+
     public int getValue() {
         return value;
     }

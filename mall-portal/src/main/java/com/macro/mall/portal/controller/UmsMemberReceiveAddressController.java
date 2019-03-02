@@ -47,6 +47,14 @@ public class UmsMemberReceiveAddressController {
         return new CommonResult().failed();
     }
 
+    @ApiOperation("获取默认收获地址")
+    @RequestMapping(value = "/default", method = RequestMethod.GET)
+    @ResponseBody
+    public Object defaultAddrr() {
+        UmsMemberReceiveAddress address = memberReceiveAddressService.defaultAddrr();
+        return new CommonResult().success(address);
+    }
+
     @ApiOperation("删除收货地址")
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     @ResponseBody
@@ -56,6 +64,22 @@ public class UmsMemberReceiveAddressController {
             return new CommonResult().success(count);
         }
         return new CommonResult().failed();
+    }
+
+    @ApiOperation("获取单个收获地址")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getItem(@PathVariable Long id) {
+        UmsMemberReceiveAddress address = memberReceiveAddressService.getItem(id);
+        return new CommonResult().success(address);
+    }
+
+    @ApiOperation("显示所有收货地址")
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @ResponseBody
+    public Object list() {
+        List<UmsMemberReceiveAddress> addressList = memberReceiveAddressService.list();
+        return new CommonResult().success(addressList);
     }
 
     @ApiOperation("修改收货地址")
@@ -81,21 +105,5 @@ public class UmsMemberReceiveAddressController {
             return new CommonResult().success(count);
         }
         return new CommonResult().failed();
-    }
-
-    @ApiOperation("显示所有收货地址")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @ResponseBody
-    public Object list() {
-        List<UmsMemberReceiveAddress> addressList = memberReceiveAddressService.list();
-        return new CommonResult().success(addressList);
-    }
-
-    @ApiOperation("获取单个收获地址")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public Object getItem(@PathVariable Long id) {
-        UmsMemberReceiveAddress address = memberReceiveAddressService.getItem(id);
-        return new CommonResult().success(address);
     }
 }

@@ -5,6 +5,7 @@ import com.macro.mall.portal.domain.OmsOrderDetail;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 前台订单自定义Dao
@@ -36,5 +37,7 @@ public interface PortalOrderDao {
      * 解除取消订单的库存锁定
      */
     int releaseSkuStockLock(@Param("itemList") List<OmsOrderItem> orderItemList);
+
+    List<Map<Integer, Integer>> sumStatus(@Param("memberId") long memberId);
 
 }

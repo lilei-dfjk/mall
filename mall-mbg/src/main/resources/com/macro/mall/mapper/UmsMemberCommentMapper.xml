@@ -10,6 +10,8 @@
     <result column="pics" jdbcType="VARCHAR" property="pics" />
     <result column="star" jdbcType="DOUBLE" property="star" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="member_nick_name" jdbcType="VARCHAR" property="memberNickName" />
+    <result column="member_head_pic" jdbcType="VARCHAR" property="memberHeadPic" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -70,7 +72,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, product_id, member_id, order_id, comment, pics, star, create_time
+    id, product_id, member_id, order_id, comment, pics, star, create_time, member_nick_name, 
+    member_head_pic
   </sql>
   <select id="selectByExample" parameterType="com.macro.mall.model.UmsMemberCommentExample" resultMap="BaseResultMap">
     select
@@ -108,10 +111,12 @@
     </selectKey>
     insert into ums_member_comment (product_id, member_id, order_id, 
       comment, pics, star, 
-      create_time)
+      create_time, member_nick_name, member_head_pic
+      )
     values (#{productId,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{orderId,jdbcType=BIGINT}, 
       #{comment,jdbcType=VARCHAR}, #{pics,jdbcType=VARCHAR}, #{star,jdbcType=DOUBLE}, 
-      #{createTime,jdbcType=TIMESTAMP})
+      #{createTime,jdbcType=TIMESTAMP}, #{memberNickName,jdbcType=VARCHAR}, #{memberHeadPic,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.macro.mall.model.UmsMemberComment">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -140,6 +145,12 @@
       <if test="createTime != null">
         create_time,
       </if>
+      <if test="memberNickName != null">
+        member_nick_name,
+      </if>
+      <if test="memberHeadPic != null">
+        member_head_pic,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="productId != null">
@@ -162,6 +173,12 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="memberNickName != null">
+        #{memberNickName,jdbcType=VARCHAR},
+      </if>
+      <if test="memberHeadPic != null">
+        #{memberHeadPic,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -198,6 +215,12 @@
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.memberNickName != null">
+        member_nick_name = #{record.memberNickName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.memberHeadPic != null">
+        member_head_pic = #{record.memberHeadPic,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -212,7 +235,9 @@
       comment = #{record.comment,jdbcType=VARCHAR},
       pics = #{record.pics,jdbcType=VARCHAR},
       star = #{record.star,jdbcType=DOUBLE},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP}
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      member_nick_name = #{record.memberNickName,jdbcType=VARCHAR},
+      member_head_pic = #{record.memberHeadPic,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -241,6 +266,12 @@
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="memberNickName != null">
+        member_nick_name = #{memberNickName,jdbcType=VARCHAR},
+      </if>
+      <if test="memberHeadPic != null">
+        member_head_pic = #{memberHeadPic,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -252,7 +283,9 @@
       comment = #{comment,jdbcType=VARCHAR},
       pics = #{pics,jdbcType=VARCHAR},
       star = #{star,jdbcType=DOUBLE},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      member_nick_name = #{memberNickName,jdbcType=VARCHAR},
+      member_head_pic = #{memberHeadPic,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

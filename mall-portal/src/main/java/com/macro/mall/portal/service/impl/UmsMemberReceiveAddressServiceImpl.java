@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 用户地址管理Service实现类
@@ -19,14 +20,28 @@ import java.util.List;
 @Service
 public class UmsMemberReceiveAddressServiceImpl implements UmsMemberReceiveAddressService {
     @Autowired
-    private UmsMemberService memberService;
-    @Autowired
     private UmsMemberReceiveAddressMapper addressMapper;
+    @Autowired
+    private UmsMemberService memberService;
+
     @Override
     public int add(UmsMemberReceiveAddress address) {
         UmsMember currentMember = memberService.getCurrentMember();
         address.setMemberId(currentMember.getId());
         return addressMapper.insert(address);
+    }
+
+    @Override
+    public UmsMemberReceiveAddress defaultAddrr() {
+        List<UmsMemberReceiveAddress> list = this.list();
+        if (!CollectionUtils.isEmpty(list)) {
+            Optional<UmsMemberReceiveAddress> first = list.stream().filter(add -> add.getDefaultStatus() == 1).findFirst();
+            if (first.isPresent()) {
+                return first.get();
+            }
+            return list.get(0);
+        }
+        return null;
     }
 
     @Override
@@ -43,7 +58,7 @@ public class UmsMemberReceiveAddressServiceImpl implements UmsMemberReceiveAddre
         UmsMember currentMember = memberService.getCurrentMember();
         UmsMemberReceiveAddressExample example = new UmsMemberReceiveAddressExample();
         example.createCriteria().andMemberIdEqualTo(currentMember.getId()).andIdEqualTo(id);
-        return addressMapper.updateByExampleSelective(address,example);
+        return addressMapper.updateByExampleSelective(address, example);
     }
 
     @Override
@@ -60,7 +75,7 @@ public class UmsMemberReceiveAddressServiceImpl implements UmsMemberReceiveAddre
         UmsMemberReceiveAddressExample example = new UmsMemberReceiveAddressExample();
         example.createCriteria().andMemberIdEqualTo(currentMember.getId()).andIdEqualTo(id);
         List<UmsMemberReceiveAddress> addressList = addressMapper.selectByExample(example);
-        if(!CollectionUtils.isEmpty(addressList)){
+        if (!CollectionUtils.isEmpty(addressList)) {
             return addressList.get(0);
         }
         return null;

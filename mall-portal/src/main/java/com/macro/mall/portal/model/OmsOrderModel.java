@@ -12,7 +12,12 @@ public class OmsOrderModel implements Serializable {
     private Long orderId;
     private String orderNo;
     private int number;
-    private BigDecimal price;
+    private double productPrice;
+    private BigDecimal totalPrice;
+    private BigDecimal totalCnyPrice;
+    private BigDecimal totalWeight;
+    private BigDecimal productWeight;
+    private BigDecimal postPrice;
     private List<OmsOrderItemModel> products;
     private int status;
 }

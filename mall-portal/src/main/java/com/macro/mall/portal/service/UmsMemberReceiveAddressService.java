@@ -14,6 +14,8 @@ public interface UmsMemberReceiveAddressService {
      */
     int add(UmsMemberReceiveAddress address);
 
+    UmsMemberReceiveAddress defaultAddrr();
+
     /**
      * 删除收货地址
      * @param id 地址表的id
