@@ -18,10 +18,7 @@ import com.macro.mall.portal.domain.CommonResult;
 import com.macro.mall.portal.domain.ConfirmOrderBeanResult;
 import com.macro.mall.portal.domain.OmsOrderDetail;
 import com.macro.mall.portal.domain.OrderParam;
-import com.macro.mall.portal.model.OmsOrderItemModel;
-import com.macro.mall.portal.model.OmsOrderModel;
-import com.macro.mall.portal.model.PortalCartItemWithDeal;
-import com.macro.mall.portal.model.PortalDealInfo;
+import com.macro.mall.portal.model.*;
 import com.macro.mall.portal.service.*;
 import com.macro.mall.portal.util.RedisLock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +73,13 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     private com.macro.mall.logistcs.service.ZhLogisticService zhLogisticService;
 
     @Override
+    public void deleteOrderById(Long orderId) {
+        OmsOrder omsOrder = orderMapper.selectByPrimaryKey(orderId);
+        omsOrder.setStatus(OmsOrderStatus.DELETE.getValue());
+        orderMapper.updateByPrimaryKey(omsOrder);
+    }
+
+    @Override
     public ConfirmOrderBeanResult generateConfirmOrder(List<Long> cardIds) {
         //获取用户收货地址列表
         List<UmsMemberReceiveAddress> memberReceiveAddressList = memberReceiveAddressService.list();
@@ -84,15 +88,11 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     }
 
     @Override
-    public CommonResult getOrderId(String orderNo) {
-        OmsOrderExample example = new OmsOrderExample();
-        example.createCriteria().andOrderSnEqualTo(orderNo);
-        List<OmsOrder> omsOrders = orderMapper.selectByExample(example);
-        if (!CollectionUtils.isEmpty(omsOrders)) {
-            List<OmsOrderModel> modelList = omsOrders.stream().map(omsOrder -> initOrderModel(omsOrder)).collect(Collectors.toList());
-            if (!CollectionUtils.isEmpty(modelList)) {
-                return new CommonResult().success(modelList.get(0));
-            }
+    public CommonResult getOrderId(Long orderId) {
+        OmsOrder omsOrder = orderMapper.selectByPrimaryKey(orderId);
+        if (null != omsOrder) {
+            OmsOrderModel omsOrderModel = initOrderModel(omsOrder);
+            return new CommonResult().success(omsOrderModel);
         }
         return null;
     }
@@ -145,6 +145,9 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         List<OmsOrderItem> orderItemList = new ArrayList<>();
         //获取购物车及优惠信息
         UmsMember currentMember = memberService.getCurrentMember();
+        if (null == portalCartInfo) {
+            return new CommonResult().failed("购物车为空");
+        }
         List<ProductItem> carLists = portalCartInfo.getCarLists();
         for (ProductItem cartPromotionItem : carLists) {
             //生成下单商品信息
@@ -340,6 +343,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 
     private OmsOrderModel initOrderModel(OmsOrder omsOrder) {
         OmsOrderModel model = new OmsOrderModel();
+        model.setOrderId(omsOrder.getId());
         model.setOrderNo(omsOrder.getOrderSn());
         model.setPrice(omsOrder.getPayAmount());
         model.setStatus(omsOrder.getStatus());

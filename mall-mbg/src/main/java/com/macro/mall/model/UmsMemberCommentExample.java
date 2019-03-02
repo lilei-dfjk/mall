@@ -604,6 +604,146 @@ public class UmsMemberCommentExample {
             addCriterion("create_time not between", value1, value2, "createTime");
             return (Criteria) this;
         }
+
+        public Criteria andMemberNickNameIsNull() {
+            addCriterion("member_nick_name is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberNickNameIsNotNull() {
+            addCriterion("member_nick_name is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberNickNameEqualTo(String value) {
+            addCriterion("member_nick_name =", value, "memberNickName");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberNickNameNotEqualTo(String value) {
+            addCriterion("member_nick_name <>", value, "memberNickName");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberNickNameGreaterThan(String value) {
+            addCriterion("member_nick_name >", value, "memberNickName");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberNickNameGreaterThanOrEqualTo(String value) {
+            addCriterion("member_nick_name >=", value, "memberNickName");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberNickNameLessThan(String value) {
+            addCriterion("member_nick_name <", value, "memberNickName");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberNickNameLessThanOrEqualTo(String value) {
+            addCriterion("member_nick_name <=", value, "memberNickName");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberNickNameLike(String value) {
+            addCriterion("member_nick_name like", value, "memberNickName");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberNickNameNotLike(String value) {
+            addCriterion("member_nick_name not like", value, "memberNickName");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberNickNameIn(List<String> values) {
+            addCriterion("member_nick_name in", values, "memberNickName");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberNickNameNotIn(List<String> values) {
+            addCriterion("member_nick_name not in", values, "memberNickName");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberNickNameBetween(String value1, String value2) {
+            addCriterion("member_nick_name between", value1, value2, "memberNickName");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberNickNameNotBetween(String value1, String value2) {
+            addCriterion("member_nick_name not between", value1, value2, "memberNickName");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberHeadPicIsNull() {
+            addCriterion("member_head_pic is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberHeadPicIsNotNull() {
+            addCriterion("member_head_pic is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberHeadPicEqualTo(String value) {
+            addCriterion("member_head_pic =", value, "memberHeadPic");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberHeadPicNotEqualTo(String value) {
+            addCriterion("member_head_pic <>", value, "memberHeadPic");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberHeadPicGreaterThan(String value) {
+            addCriterion("member_head_pic >", value, "memberHeadPic");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberHeadPicGreaterThanOrEqualTo(String value) {
+            addCriterion("member_head_pic >=", value, "memberHeadPic");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberHeadPicLessThan(String value) {
+            addCriterion("member_head_pic <", value, "memberHeadPic");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberHeadPicLessThanOrEqualTo(String value) {
+            addCriterion("member_head_pic <=", value, "memberHeadPic");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberHeadPicLike(String value) {
+            addCriterion("member_head_pic like", value, "memberHeadPic");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberHeadPicNotLike(String value) {
+            addCriterion("member_head_pic not like", value, "memberHeadPic");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberHeadPicIn(List<String> values) {
+            addCriterion("member_head_pic in", values, "memberHeadPic");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberHeadPicNotIn(List<String> values) {
+            addCriterion("member_head_pic not in", values, "memberHeadPic");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberHeadPicBetween(String value1, String value2) {
+            addCriterion("member_head_pic between", value1, value2, "memberHeadPic");
+            return (Criteria) this;
+        }
+
+        public Criteria andMemberHeadPicNotBetween(String value1, String value2) {
+            addCriterion("member_head_pic not between", value1, value2, "memberHeadPic");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

@@ -36,6 +36,8 @@ public class MemberProductCommentServiceImpl implements MemberProductCommentServ
         if (productComment.getProductId() > 0 && StringUtils.isNotBlank(productComment.getComment())) {
             if (CollectionUtils.isEmpty(umsMemberComments)) {
                 productComment.setMemberId(currentMember.getId());
+                productComment.setMemberNickName(currentMember.getNickname());
+                productComment.setMemberHeadPic(currentMember.getIcon());
                 productComment.setCreateTime(new Date());
                 memberCommentMapper.insert(productComment);
                 return 1;

@@ -9,12 +9,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface OmsOrderService {
+    @Transactional
+    void deleteOrderById(Long orderId);
+
     /**
      * 根据用户购物车信息生成确认单信息
      */
     ConfirmOrderBeanResult generateConfirmOrder(List<Long> ids);
 
-    CommonResult getOrderId(String orderId);
+    CommonResult getOrderId(Long orderId);
 
     /**
      * @param ids 购物车选择商品

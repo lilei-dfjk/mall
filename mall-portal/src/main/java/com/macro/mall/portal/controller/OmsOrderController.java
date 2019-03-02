@@ -38,9 +38,10 @@ public class OmsOrderController {
     }
 
     @ApiOperation("删除订单")
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/{orderId}", method = RequestMethod.POST)
     @ResponseBody
-    public Object delete(Long orderId) {
+    public Object delete(@PathVariable Long orderId) {
+        portalOrderService.deleteOrderById(orderId);
         return new CommonResult().success("删除成功");
     }
 
@@ -81,10 +82,10 @@ public class OmsOrderController {
     }
 
     @ApiOperation("获取详情")
-    @RequestMapping(value = "/info/{orderSn}", method = RequestMethod.GET)
+    @RequestMapping(value = "/info/{orderId}", method = RequestMethod.GET)
     @ResponseBody
-    public Object list(@PathVariable String orderSn) {
-        return portalOrderService.getOrderId(orderSn);
+    public Object list(@PathVariable Long orderId) {
+        return portalOrderService.getOrderId(orderId);
     }
 
     @ApiOperation("获取订单数量")

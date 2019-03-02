@@ -9,6 +9,7 @@ import java.util.List;
 
 @Data
 public class OmsOrderModel implements Serializable {
+    private Long orderId;
     private String orderNo;
     private int number;
     private BigDecimal price;

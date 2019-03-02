@@ -30,6 +30,20 @@ public class UmsMemberComment implements Serializable {
 
     private Date createTime;
 
+    /**
+     * 会员昵称
+     *
+     * @mbggenerated
+     */
+    private String memberNickName;
+
+    /**
+     * 会员头像
+     *
+     * @mbggenerated
+     */
+    private String memberHeadPic;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -96,6 +110,22 @@ public class UmsMemberComment implements Serializable {
         this.createTime = createTime;
     }
 
+    public String getMemberNickName() {
+        return memberNickName;
+    }
+
+    public void setMemberNickName(String memberNickName) {
+        this.memberNickName = memberNickName;
+    }
+
+    public String getMemberHeadPic() {
+        return memberHeadPic;
+    }
+
+    public void setMemberHeadPic(String memberHeadPic) {
+        this.memberHeadPic = memberHeadPic;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -110,6 +140,8 @@ public class UmsMemberComment implements Serializable {
         sb.append(", pics=").append(pics);
         sb.append(", star=").append(star);
         sb.append(", createTime=").append(createTime);
+        sb.append(", memberNickName=").append(memberNickName);
+        sb.append(", memberHeadPic=").append(memberHeadPic);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
