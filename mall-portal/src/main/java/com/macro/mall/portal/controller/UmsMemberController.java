@@ -30,10 +30,10 @@ public class UmsMemberController {
     private String tokenHead;
 
     @ApiOperation("获取验证码")
-    @RequestMapping(value = "/getAuthCode", method = RequestMethod.GET)
+    @RequestMapping(value = "/getAuthCode", method = RequestMethod.POST)
     @ResponseBody
-    public Object getAuthCode(@RequestParam String telephone) {
-        return memberService.generateAuthCode(telephone);
+    public Object getAuthCode(@RequestParam String telephone, @RequestParam String countryCode) {
+        return memberService.generateAuthCode(countryCode, telephone);
     }
 
     @RequestMapping(value = "/index")

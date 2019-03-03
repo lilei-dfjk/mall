@@ -1,5 +1,6 @@
 package com.macro.mall.portal.service.impl;
 
+import com.aliyuncs.CommonResponse;
 import com.macro.mall.mapper.UmsMemberLevelMapper;
 import com.macro.mall.mapper.UmsMemberMapper;
 import com.macro.mall.model.UmsMember;
@@ -13,6 +14,7 @@ import com.macro.mall.portal.model.UserMemberStatus;
 import com.macro.mall.portal.service.RedisService;
 import com.macro.mall.portal.service.UmsMemberService;
 import com.macro.mall.portal.util.JwtTokenUtil;
+import com.macro.mall.sms.service.SmsService;
 import com.macro.mall.weixin.bean.SNSUserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +56,8 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private SmsService smsService;
     @Autowired
     private UserDetailsService userDetailsService;
     @Value("${portal.verify.code}")
@@ -110,16 +114,20 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     }
 
     @Override
-    public CommonResult generateAuthCode(String telephone) {
+    public CommonResult generateAuthCode(String countryCode, String telephone) {
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
         for (int i = 0; i < 6; i++) {
             sb.append(random.nextInt(10));
         }
         //验证码绑定手机号并存储到redis
-        redisService.set(REDIS_KEY_PREFIX_AUTH_CODE + telephone, sb.toString());
-        redisService.expire(REDIS_KEY_PREFIX_AUTH_CODE + telephone, AUTH_CODE_EXPIRE_SECONDS);
-        return new CommonResult().success("获取验证码成功", sb.toString());
+        CommonResponse commonResponse = smsService.sendSms(countryCode, telephone, sb.toString());
+        if(commonResponse.getHttpResponse().isSuccess()) {
+            redisService.set(REDIS_KEY_PREFIX_AUTH_CODE + telephone, sb.toString());
+            redisService.expire(REDIS_KEY_PREFIX_AUTH_CODE + telephone, AUTH_CODE_EXPIRE_SECONDS);
+            return new CommonResult().success("获取验证码成功");
+        }
+        return new CommonResult().success("获取验证码失败");
     }
 
     @Override

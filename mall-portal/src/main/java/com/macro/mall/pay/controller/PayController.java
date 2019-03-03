@@ -1,5 +1,7 @@
 package com.macro.mall.pay.controller;
 
+import com.macro.mall.mapper.OmsOrderMapper;
+import com.macro.mall.model.OmsOrder;
 import com.macro.mall.pay.service.H5PayService;
 import com.macro.mall.portal.domain.CommonResult;
 import io.swagger.annotations.Api;
@@ -18,18 +20,24 @@ import java.util.Map;
 public class PayController {
 
     @Autowired
+    private OmsOrderMapper orderMapper;
+    @Autowired
     private H5PayService payService;
 
     @ApiOperation("支付")
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public Object pay(String orderId, double amount) {
-        Map<String, String> payParam = payService.getPayParam(amount, orderId);
-        if (payParam.get("return_code").equals("SUCCESS")){
-            String payUrl = payParam.get("pay_url");
-            return new CommonResult().success(payUrl);
+    public Object pay(Long orderId) {
+        OmsOrder omsOrder = orderMapper.selectByPrimaryKey(orderId);
+        if (null != omsOrder) {
+            Map<String, String> payParam = payService.getPayParam(omsOrder.getPayAmount().doubleValue(), omsOrder.getOrderSn());
+            if (payParam.get("return_code").equals("SUCCESS")) {
+                String payUrl = payParam.get("pay_url");
+                return new CommonResult().success(payUrl);
+            }
+            return new CommonResult().failed(payParam.get("error_msg"));
         }
-        return new CommonResult().failed(payParam.get("error_msg"));
+        return new CommonResult().failed("无此订单");
 
     }
 

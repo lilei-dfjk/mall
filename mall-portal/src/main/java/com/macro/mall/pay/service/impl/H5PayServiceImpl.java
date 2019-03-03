@@ -1,9 +1,11 @@
 package com.macro.mall.pay.service.impl;
 
+import com.macro.mall.mapper.OmsOrderMapper;
 import com.macro.mall.pay.omipayFunction.JSAPIOrder;
 import com.macro.mall.pay.service.H5PayService;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

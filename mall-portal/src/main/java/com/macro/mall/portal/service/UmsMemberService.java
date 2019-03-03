@@ -26,7 +26,7 @@ public interface UmsMemberService {
     /**
      * 生成验证码
      */
-    CommonResult generateAuthCode(String telephone);
+    CommonResult generateAuthCode(String countryCode, String telephone);
 
     /**
      * 修改密码
