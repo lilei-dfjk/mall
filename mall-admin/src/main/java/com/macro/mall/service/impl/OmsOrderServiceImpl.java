@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 @Service
 public class OmsOrderServiceImpl implements OmsOrderService {
     @Autowired
-    private OmsOrderMapper orderMapper;
-    @Autowired
     private OmsOrderDao orderDao;
+    @Autowired
+    private OmsOrderMapper orderMapper;
     @Autowired
     private OmsOrderOperateHistoryDao orderOperateHistoryDao;
     @Autowired
@@ -70,7 +70,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             history.setCreateTime(new Date());
             history.setOperateMan("后台管理员");
             history.setOrderStatus(4);
-            history.setNote("订单关闭:"+note);
+            history.setNote("订单关闭:" + note);
             return history;
         }).collect(Collectors.toList());
         orderOperateHistoryDao.insertList(historyList);
@@ -146,7 +146,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         history.setCreateTime(new Date());
         history.setOperateMan("后台管理员");
         history.setOrderStatus(status);
-        history.setNote("修改备注信息："+note);
+        history.setNote("修改备注信息：" + note);
         orderOperateHistoryMapper.insert(history);
         return count;
     }

@@ -169,6 +169,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         lockStock(carLists);
         //根据商品合计、运费、活动优惠、优惠券、积分计算应付金额
         OmsOrder order = new OmsOrder();
+        order.setTotalWeight(portalCartInfo.getDealInfo().getPostWeight());
         order.setDiscountAmount(new BigDecimal(0));
         order.setTotalAmount(BigDecimal.valueOf(portalCartInfo.getDealInfo().getOrderPrice()));
         order.setFreightAmount(BigDecimal.valueOf(portalCartInfo.getDealInfo().getPostPrice()));
@@ -326,7 +327,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             List<OmsOrderModel> modelList = omsOrders.stream().map(omsOrder -> initOrderModel(omsOrder)).collect(Collectors.toList());
             return new CommonResult().success(modelList);
         }
-        return null;
+        return new CommonResult().success(null);
     }
 
     @Override
@@ -351,7 +352,13 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         model.setPostPrice(omsOrder.getFreightAmount());
         model.setTotalCnyPrice(omsOrder.getPayAmount().multiply(BigDecimal.valueOf(rateService.getAuToCnyRate())));
         model.setStatus(omsOrder.getStatus());
-//        model.setTotalWeight(0.00);
+        model.setTotalWeight(null != omsOrder.getTotalWeight() ? omsOrder.getTotalWeight() : 0.00);
+        model.setProductWeight(null == omsOrder.getProductWeight() ? 0.00 : omsOrder.getProductWeight());
+        model.setPayTime(omsOrder.getPaymentTime());
+        model.setRecieveTime(omsOrder.getReceiveTime());
+        model.setCommentTime(omsOrder.getCommentTime());
+        model.setCommentFlag(null != omsOrder.getCommentTime());
+        model.setPayType(omsOrder.getPayType());
         OmsOrderItemExample example = new OmsOrderItemExample();
         example.createCriteria().andOrderSnEqualTo(omsOrder.getOrderSn());
         List<OmsOrderItem> omsOrderItems = orderItemMapper.selectByExample(example);
@@ -365,6 +372,8 @@ public class OmsOrderServiceImpl implements OmsOrderService {
                 model.setProductPrice(productPrice);
             }
         }
+        UmsMemberReceiveAddress address = initUserReceiveAddress(omsOrder);
+        model.setAddress(address);
         return model;
     }
 
@@ -376,6 +385,18 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         itemModel0.setNumber(omsOrderItem.getProductQuantity());
         itemModel0.setPrice(omsOrderItem.getProductPrice());
         return itemModel0;
+    }
+
+    private UmsMemberReceiveAddress initUserReceiveAddress(OmsOrder omsOrder) {
+        UmsMemberReceiveAddress address = new UmsMemberReceiveAddress();
+        address.setName(omsOrder.getReceiverName());
+        address.setRegion(omsOrder.getReceiverRegion());
+        address.setPostCode(omsOrder.getReceiverPostCode());
+        address.setPhoneNumber(omsOrder.getReceiverPhone());
+        address.setDetailAddress(omsOrder.getReceiverDetailAddress());
+        address.setProvince(omsOrder.getReceiverProvince());
+        address.setCity(omsOrder.getReceiverCity());
+        return address;
     }
 
     private ProductItem initProductItem(OmsCartItem item, LogisticType logisticType) {

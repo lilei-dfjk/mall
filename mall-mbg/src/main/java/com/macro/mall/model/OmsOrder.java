@@ -101,7 +101,7 @@ public class OmsOrder implements Serializable {
     private Integer sourceType;
 
     /**
-     * 订单状态：0->待付款；1->待发货；2->已发货；3->已完成；4->已关闭；5->无效订单
+     * 订单状态：0->待付款；1->待发货；2->已发货；3->已完成；4->已关闭；5->无效订单;6->已删除
      *
      * @mbggenerated
      */
@@ -302,6 +302,20 @@ public class OmsOrder implements Serializable {
      * @mbggenerated
      */
     private Date modifyTime;
+
+    /**
+     * 总重量
+     *
+     * @mbggenerated
+     */
+    private Double totalWeight;
+
+    /**
+     * 商品总重量
+     *
+     * @mbggenerated
+     */
+    private Double productWeight;
 
     private static final long serialVersionUID = 1L;
 
@@ -657,6 +671,22 @@ public class OmsOrder implements Serializable {
         this.modifyTime = modifyTime;
     }
 
+    public Double getTotalWeight() {
+        return totalWeight;
+    }
+
+    public void setTotalWeight(Double totalWeight) {
+        this.totalWeight = totalWeight;
+    }
+
+    public Double getProductWeight() {
+        return productWeight;
+    }
+
+    public void setProductWeight(Double productWeight) {
+        this.productWeight = productWeight;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -707,6 +737,8 @@ public class OmsOrder implements Serializable {
         sb.append(", receiveTime=").append(receiveTime);
         sb.append(", commentTime=").append(commentTime);
         sb.append(", modifyTime=").append(modifyTime);
+        sb.append(", totalWeight=").append(totalWeight);
+        sb.append(", productWeight=").append(productWeight);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

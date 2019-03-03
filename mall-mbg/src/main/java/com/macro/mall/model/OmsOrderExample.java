@@ -2915,6 +2915,126 @@ public class OmsOrderExample {
             addCriterion("modify_time not between", value1, value2, "modifyTime");
             return (Criteria) this;
         }
+
+        public Criteria andTotalWeightIsNull() {
+            addCriterion("total_weight is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalWeightIsNotNull() {
+            addCriterion("total_weight is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalWeightEqualTo(Double value) {
+            addCriterion("total_weight =", value, "totalWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalWeightNotEqualTo(Double value) {
+            addCriterion("total_weight <>", value, "totalWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalWeightGreaterThan(Double value) {
+            addCriterion("total_weight >", value, "totalWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalWeightGreaterThanOrEqualTo(Double value) {
+            addCriterion("total_weight >=", value, "totalWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalWeightLessThan(Double value) {
+            addCriterion("total_weight <", value, "totalWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalWeightLessThanOrEqualTo(Double value) {
+            addCriterion("total_weight <=", value, "totalWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalWeightIn(List<Double> values) {
+            addCriterion("total_weight in", values, "totalWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalWeightNotIn(List<Double> values) {
+            addCriterion("total_weight not in", values, "totalWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalWeightBetween(Double value1, Double value2) {
+            addCriterion("total_weight between", value1, value2, "totalWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalWeightNotBetween(Double value1, Double value2) {
+            addCriterion("total_weight not between", value1, value2, "totalWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductWeightIsNull() {
+            addCriterion("product_weight is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductWeightIsNotNull() {
+            addCriterion("product_weight is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductWeightEqualTo(Double value) {
+            addCriterion("product_weight =", value, "productWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductWeightNotEqualTo(Double value) {
+            addCriterion("product_weight <>", value, "productWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductWeightGreaterThan(Double value) {
+            addCriterion("product_weight >", value, "productWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductWeightGreaterThanOrEqualTo(Double value) {
+            addCriterion("product_weight >=", value, "productWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductWeightLessThan(Double value) {
+            addCriterion("product_weight <", value, "productWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductWeightLessThanOrEqualTo(Double value) {
+            addCriterion("product_weight <=", value, "productWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductWeightIn(List<Double> values) {
+            addCriterion("product_weight in", values, "productWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductWeightNotIn(List<Double> values) {
+            addCriterion("product_weight not in", values, "productWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductWeightBetween(Double value1, Double value2) {
+            addCriterion("product_weight between", value1, value2, "productWeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductWeightNotBetween(Double value1, Double value2) {
+            addCriterion("product_weight not between", value1, value2, "productWeight");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
