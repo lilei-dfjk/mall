@@ -14,6 +14,7 @@
     <result column="detail_address" jdbcType="VARCHAR" property="detailAddress" />
     <result column="identity_front" jdbcType="VARCHAR" property="identityFront" />
     <result column="identity_back" jdbcType="VARCHAR" property="identityBack" />
+    <result column="identity_no" jdbcType="VARCHAR" property="identityNo" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -75,7 +76,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, member_id, name, phone_number, default_status, post_code, province, city, region, 
-    detail_address, identity_front, identity_back
+    detail_address, identity_front, identity_back, identity_no
   </sql>
   <select id="selectByExample" parameterType="com.macro.mall.model.UmsMemberReceiveAddressExample" resultMap="BaseResultMap">
     select
@@ -114,11 +115,13 @@
     insert into ums_member_receive_address (member_id, name, phone_number, 
       default_status, post_code, province, 
       city, region, detail_address, 
-      identity_front, identity_back)
+      identity_front, identity_back, identity_no
+      )
     values (#{memberId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR}, 
       #{defaultStatus,jdbcType=INTEGER}, #{postCode,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
       #{city,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, #{detailAddress,jdbcType=VARCHAR}, 
-      #{identityFront,jdbcType=VARCHAR}, #{identityBack,jdbcType=VARCHAR})
+      #{identityFront,jdbcType=VARCHAR}, #{identityBack,jdbcType=VARCHAR}, #{identityNo,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.macro.mall.model.UmsMemberReceiveAddress">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -159,6 +162,9 @@
       <if test="identityBack != null">
         identity_back,
       </if>
+      <if test="identityNo != null">
+        identity_no,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="memberId != null">
@@ -193,6 +199,9 @@
       </if>
       <if test="identityBack != null">
         #{identityBack,jdbcType=VARCHAR},
+      </if>
+      <if test="identityNo != null">
+        #{identityNo,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -241,6 +250,9 @@
       <if test="record.identityBack != null">
         identity_back = #{record.identityBack,jdbcType=VARCHAR},
       </if>
+      <if test="record.identityNo != null">
+        identity_no = #{record.identityNo,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -259,7 +271,8 @@
       region = #{record.region,jdbcType=VARCHAR},
       detail_address = #{record.detailAddress,jdbcType=VARCHAR},
       identity_front = #{record.identityFront,jdbcType=VARCHAR},
-      identity_back = #{record.identityBack,jdbcType=VARCHAR}
+      identity_back = #{record.identityBack,jdbcType=VARCHAR},
+      identity_no = #{record.identityNo,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -300,6 +313,9 @@
       <if test="identityBack != null">
         identity_back = #{identityBack,jdbcType=VARCHAR},
       </if>
+      <if test="identityNo != null">
+        identity_no = #{identityNo,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -315,7 +331,8 @@
       region = #{region,jdbcType=VARCHAR},
       detail_address = #{detailAddress,jdbcType=VARCHAR},
       identity_front = #{identityFront,jdbcType=VARCHAR},
-      identity_back = #{identityBack,jdbcType=VARCHAR}
+      identity_back = #{identityBack,jdbcType=VARCHAR},
+      identity_no = #{identityNo,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

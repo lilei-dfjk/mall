@@ -28,7 +28,7 @@ public class UmsMemberReceiveAddressController {
     public Object add(@RequestParam(required = true) String name, @RequestParam(required = true) String phoneNumber, @RequestParam(required = true) Integer defaultStatus,
                       @RequestParam(required = true) String postCode, @RequestParam(required = true) String province, @RequestParam(required = true) String city,
                       @RequestParam(required = true) String region, @RequestParam(required = true) String detailAddress, @RequestParam(required = true) String identityFront,
-                      @RequestParam(required = true) String identityBack) {
+                      @RequestParam(required = true) String identityBack,@RequestParam(required = true) String identityNo) {
         UmsMemberReceiveAddress address = new UmsMemberReceiveAddress();
         address.setName(name);
         address.setCity(city);
@@ -40,6 +40,7 @@ public class UmsMemberReceiveAddressController {
         address.setDefaultStatus(defaultStatus);
         address.setDetailAddress(detailAddress);
         address.setIdentityFront(identityFront);
+        address.setIdentityNo(identityNo);
         int count = memberReceiveAddressService.add(address);
         if (count > 0) {
             return new CommonResult().success(count);

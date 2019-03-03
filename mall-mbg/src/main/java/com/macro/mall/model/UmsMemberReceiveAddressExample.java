@@ -913,6 +913,76 @@ public class UmsMemberReceiveAddressExample {
             addCriterion("identity_back not between", value1, value2, "identityBack");
             return (Criteria) this;
         }
+
+        public Criteria andIdentityNoIsNull() {
+            addCriterion("identity_no is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityNoIsNotNull() {
+            addCriterion("identity_no is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityNoEqualTo(String value) {
+            addCriterion("identity_no =", value, "identityNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityNoNotEqualTo(String value) {
+            addCriterion("identity_no <>", value, "identityNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityNoGreaterThan(String value) {
+            addCriterion("identity_no >", value, "identityNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityNoGreaterThanOrEqualTo(String value) {
+            addCriterion("identity_no >=", value, "identityNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityNoLessThan(String value) {
+            addCriterion("identity_no <", value, "identityNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityNoLessThanOrEqualTo(String value) {
+            addCriterion("identity_no <=", value, "identityNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityNoLike(String value) {
+            addCriterion("identity_no like", value, "identityNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityNoNotLike(String value) {
+            addCriterion("identity_no not like", value, "identityNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityNoIn(List<String> values) {
+            addCriterion("identity_no in", values, "identityNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityNoNotIn(List<String> values) {
+            addCriterion("identity_no not in", values, "identityNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityNoBetween(String value1, String value2) {
+            addCriterion("identity_no between", value1, value2, "identityNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdentityNoNotBetween(String value1, String value2) {
+            addCriterion("identity_no not between", value1, value2, "identityNo");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

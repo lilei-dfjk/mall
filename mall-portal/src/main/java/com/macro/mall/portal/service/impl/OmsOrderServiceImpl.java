@@ -5,10 +5,7 @@ import com.macro.mall.logistcs.bean.LogisticsRuleBean;
 import com.macro.mall.logistcs.bean.OrderBean;
 import com.macro.mall.logistcs.bean.ProductItem;
 import com.macro.mall.logistcs.cons.LogisticType;
-import com.macro.mall.mapper.OmsCartItemMapper;
-import com.macro.mall.mapper.OmsOrderItemMapper;
-import com.macro.mall.mapper.OmsOrderMapper;
-import com.macro.mall.mapper.PmsProductMapper;
+import com.macro.mall.mapper.*;
 import com.macro.mall.model.*;
 import com.macro.mall.pay.rate.RateService;
 import com.macro.mall.portal.dao.PortalOrderDao;
@@ -57,6 +54,8 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     private PortalOrderDao portalOrderDao;
     @Autowired
     private PortalProductService portalProductService;
+    @Autowired
+    private OmsOrderUnderPostMapper postMapper;
     @Autowired
     private PortalProductDao productDao;
     @Autowired
@@ -197,6 +196,10 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         order.setReceiverProvince(address.getProvince());
         order.setReceiverCity(address.getCity());
         order.setReceiverRegion(address.getRegion());
+        order.setReceiveId(orderParam.getMemberReceiveAddressId());
+        order.setReceiveIdentityFront(address.getIdentityFront());
+        order.setReceiveIdentityBack(address.getIdentityBack());
+        order.setReceiveIdentityNo(address.getIdentityNo());
         order.setReceiverDetailAddress(address.getDetailAddress());
         //0->未确认；1->已确认
         order.setConfirmStatus(0);
@@ -296,6 +299,11 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         //恢复所有下单商品的锁定库存，扣减真实库存
         OmsOrderDetail orderDetail = portalOrderDao.getDetail(orderId);
         int count = portalOrderDao.updateSkuStock(orderDetail.getOrderItemList());
+        OmsOrderUnderPost omsOrderUnderPost = new OmsOrderUnderPost();
+        omsOrderUnderPost.setCreateTime(new Date());
+        omsOrderUnderPost.setOrderId(orderId);
+        omsOrderUnderPost.setStatus((short) OmsPostStatus.INIT.getValue());
+        postMapper.insert(omsOrderUnderPost);
         return new CommonResult().success("支付成功", count);
     }
 

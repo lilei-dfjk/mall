@@ -317,6 +317,14 @@ public class OmsOrder implements Serializable {
      */
     private Double productWeight;
 
+    private Long receiveId;
+
+    private String receiveIdentityFront;
+
+    private String receiveIdentityBack;
+
+    private String receiveIdentityNo;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -687,6 +695,38 @@ public class OmsOrder implements Serializable {
         this.productWeight = productWeight;
     }
 
+    public Long getReceiveId() {
+        return receiveId;
+    }
+
+    public void setReceiveId(Long receiveId) {
+        this.receiveId = receiveId;
+    }
+
+    public String getReceiveIdentityFront() {
+        return receiveIdentityFront;
+    }
+
+    public void setReceiveIdentityFront(String receiveIdentityFront) {
+        this.receiveIdentityFront = receiveIdentityFront;
+    }
+
+    public String getReceiveIdentityBack() {
+        return receiveIdentityBack;
+    }
+
+    public void setReceiveIdentityBack(String receiveIdentityBack) {
+        this.receiveIdentityBack = receiveIdentityBack;
+    }
+
+    public String getReceiveIdentityNo() {
+        return receiveIdentityNo;
+    }
+
+    public void setReceiveIdentityNo(String receiveIdentityNo) {
+        this.receiveIdentityNo = receiveIdentityNo;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -739,6 +779,10 @@ public class OmsOrder implements Serializable {
         sb.append(", modifyTime=").append(modifyTime);
         sb.append(", totalWeight=").append(totalWeight);
         sb.append(", productWeight=").append(productWeight);
+        sb.append(", receiveId=").append(receiveId);
+        sb.append(", receiveIdentityFront=").append(receiveIdentityFront);
+        sb.append(", receiveIdentityBack=").append(receiveIdentityBack);
+        sb.append(", receiveIdentityNo=").append(receiveIdentityNo);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

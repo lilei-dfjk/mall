@@ -72,6 +72,13 @@ public class UmsMemberReceiveAddress implements Serializable {
      */
     private String identityBack;
 
+    /**
+     * 身份证号码
+     *
+     * @mbggenerated
+     */
+    private String identityNo;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -170,6 +177,14 @@ public class UmsMemberReceiveAddress implements Serializable {
         this.identityBack = identityBack;
     }
 
+    public String getIdentityNo() {
+        return identityNo;
+    }
+
+    public void setIdentityNo(String identityNo) {
+        this.identityNo = identityNo;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -188,6 +203,7 @@ public class UmsMemberReceiveAddress implements Serializable {
         sb.append(", detailAddress=").append(detailAddress);
         sb.append(", identityFront=").append(identityFront);
         sb.append(", identityBack=").append(identityBack);
+        sb.append(", identityNo=").append(identityNo);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
