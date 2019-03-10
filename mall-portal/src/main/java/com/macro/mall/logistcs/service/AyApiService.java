@@ -3,6 +3,7 @@ package com.macro.mall.logistcs.service;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ImmutableMap;
 import com.macro.mall.logistcs.model.IdentityRecordModel;
+import com.macro.mall.logistcs.model.LogisticTrackModel;
 import com.macro.mall.logistcs.model.RecordModel;
 import com.macro.mall.logistcs.util.HttpClientUtils;
 import com.macro.mall.portal.domain.CommonResult;
@@ -16,8 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class AyApiService extends AbstractLogicService {
@@ -117,8 +120,14 @@ public class AyApiService extends AbstractLogicService {
     public CommonResult getLogicTrack(String logicNo) {
         String result = HttpClientUtils.httpGet(track_url + logicNo, "UTF-8", ImmutableMap.of("Content-Type", "text/json; charset=utf-8", "Authorization", getToken()));
         HashMap hashMap = JsonUtil.jsonToPojo(result, HashMap.class);
+        logger.info("track no:{}, result:{}", logicNo, result);
         if (!CollectionUtils.isEmpty(hashMap) && hashMap.containsKey("Code") && hashMap.get("Code").equals("0")) {
-            return new CommonResult().success(hashMap.get("Message"));
+            String trackList = (String) hashMap.get("TrackList");
+            List<HashMap> hashMaps = JsonUtil.jsonToList(trackList, HashMap.class);
+            if(!CollectionUtils.isEmpty(hashMaps)) {
+                List<LogisticTrackModel> collect = hashMaps.stream().map(hashMap1 -> new LogisticTrackModel((String) hashMap1.get("StatusDetail"), (String) hashMap1.get("StatusTime"), (String) hashMap1.get("Location"))).collect(Collectors.toList());
+                return new CommonResult().success(collect);
+            }
         }
         return new CommonResult().failed(JsonUtil.objectToJson(hashMap));
     }
