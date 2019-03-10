@@ -3,6 +3,7 @@ package com.macro.mall.portal.service;
 import com.macro.mall.portal.domain.CommonResult;
 import com.macro.mall.portal.domain.ConfirmOrderBeanResult;
 import com.macro.mall.portal.domain.OrderParam;
+import com.macro.mall.portal.model.OmsLogisticOrderModel;
 import com.macro.mall.portal.model.PortalCartItemWithDeal;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,4 +58,6 @@ public interface OmsOrderService {
     CommonResult listOrders(Integer status);
 
     CommonResult orderNums();
+
+    List<OmsLogisticOrderModel> getLogisticOrders(String orderSn);
 }

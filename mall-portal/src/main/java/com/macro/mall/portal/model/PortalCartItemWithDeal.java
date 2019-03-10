@@ -1,5 +1,6 @@
 package com.macro.mall.portal.model;
 
+import com.macro.mall.logistcs.bean.LogisticsOrderBean;
 import com.macro.mall.logistcs.bean.ProductItem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,4 +15,5 @@ import java.util.List;
 public class PortalCartItemWithDeal {
     private List<ProductItem> carLists = new ArrayList<>();
     private PortalDealInfo dealInfo;
+    private List<LogisticsOrderBean> logisticsOrders;
 }

@@ -18,6 +18,7 @@ import com.macro.mall.portal.domain.OrderParam;
 import com.macro.mall.portal.model.*;
 import com.macro.mall.portal.service.*;
 import com.macro.mall.portal.util.RedisLock;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -38,6 +39,10 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     private OmsCartItemMapper cartItemMapper;
     @Autowired
     private OmsCartItemService cartItemService;
+    @Autowired
+    private OmsLogicOrderItemMapper logicOrderItemMapper;
+    @Autowired
+    private OmsLogisticOrderMapper logisticOrderMapper;
     @Autowired
     private UmsMemberReceiveAddressService memberReceiveAddressService;
     @Autowired
@@ -132,7 +137,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
                 orderPrice = productPrice + postPrice;
                 orderCnyPrice = BigDecimal.valueOf(orderPrice).multiply(BigDecimal.valueOf(rateService.getAuToCnyRate())).doubleValue();
                 PortalDealInfo portalDealInfo = new PortalDealInfo(productNum, postWeight, productPrice, postPrice, orderPrice, orderCnyPrice);
-                return new PortalCartItemWithDeal(productItems, portalDealInfo);
+                return new PortalCartItemWithDeal(productItems, portalDealInfo, logisticOrders);
             }
         }
         return null;
@@ -219,6 +224,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         Map<String, Object> result = new HashMap<>();
         result.put("order", order);
         result.put("orderItemList", orderItemList);
+        gernerateLogicOrder(portalCartInfo);
         return new CommonResult().success("下单成功", result);
     }
 
@@ -269,6 +275,37 @@ public class OmsOrderServiceImpl implements OmsOrderService {
      */
     private void deleteCartItemList(List<Long> ids, UmsMember currentMember) {
         cartItemService.delete(currentMember.getId(), ids);
+    }
+
+    private void gernerateLogicOrder(PortalCartItemWithDeal portalCartInfo) {
+        List<LogisticsOrderBean> logisticsOrders = portalCartInfo.getLogisticsOrders();
+        if (!CollectionUtils.isEmpty(logisticsOrders)) {
+            logisticsOrders.stream().forEach(logisticsOrder -> {
+                OmsLogisticOrder order = new OmsLogisticOrder();
+                order.setExpressPrice(BigDecimal.valueOf(logisticsOrder.getExpressPrice()));
+                order.setOrderNo(logisticsOrder.getOrderNo());
+                order.setTotalNumber(logisticsOrder.getTotalNumber());
+                order.setTotalPrice(BigDecimal.valueOf(logisticsOrder.getTotalPrice()));
+                order.setTotalWeight(logisticsOrder.getTotalWeight());
+                logisticOrderMapper.insert(order);
+                List<ProductItem> productItemList = logisticsOrder.getProductItemList();
+                productItemList.stream().forEach(productItem -> {
+                    OmsLogicOrderItem item = new OmsLogicOrderItem();
+                    item.setPic(productItem.getPic());
+                    item.setLogicOrderId(order.getId());
+                    item.setBrand(productItem.getBrand());
+                    item.setNumber(productItem.getNumber());
+                    item.setProductSn(productItem.getProductSn());
+                    item.setProductType(productItem.getProductType());
+                    item.setProductName(productItem.getProductName());
+                    item.setPrice(BigDecimal.valueOf(productItem.getPrice()));
+                    item.setWeight(BigDecimal.valueOf(productItem.getWeight()));
+                    item.setCnyPrice(BigDecimal.valueOf(productItem.getCnyPrice()));
+                    logicOrderItemMapper.insert(item);
+                });
+            });
+        }
+
     }
 
     private void lockStock(ProductItem productItem) {
@@ -350,6 +387,24 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             return new CommonResult().success(maps);
         }
         return new CommonResult().success(null);
+    }
+
+    @Override
+    public List<OmsLogisticOrderModel> getLogisticOrders(String orderSn) {
+        OmsLogisticOrderExample example = new OmsLogisticOrderExample();
+        example.createCriteria().andLogisticOrderNoEqualTo(orderSn);
+        List<OmsLogisticOrder> omsLogisticOrders = logisticOrderMapper.selectByExample(example);
+        List<OmsLogisticOrderModel> models = new ArrayList<>(omsLogisticOrders.size());
+        omsLogisticOrders.stream().forEach(order -> {
+            OmsLogisticOrderModel orderModel = new OmsLogisticOrderModel();
+            BeanUtils.copyProperties(order, orderModel);
+            OmsLogicOrderItemExample exampleItem = new OmsLogicOrderItemExample();
+            exampleItem.createCriteria().andLogicOrderIdLessThanOrEqualTo(order.getId());
+            List<OmsLogicOrderItem> omsLogicOrderItems = logicOrderItemMapper.selectByExample(exampleItem);
+            orderModel.setItems(omsLogicOrderItems);
+            models.add(orderModel);
+        });
+        return models;
     }
 
     private OmsOrderModel initOrderModel(OmsOrder omsOrder) {

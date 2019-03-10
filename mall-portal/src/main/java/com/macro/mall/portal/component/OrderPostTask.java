@@ -8,6 +8,7 @@ import com.macro.mall.model.OmsOrderUnderPost;
 import com.macro.mall.model.OmsOrderUnderPostExample;
 import com.macro.mall.model.UmsMemberReceiveAddress;
 import com.macro.mall.portal.domain.CommonResult;
+import com.macro.mall.portal.model.OmsLogisticOrderModel;
 import com.macro.mall.portal.model.OmsOrderModel;
 import com.macro.mall.portal.model.OmsPostStatus;
 import com.macro.mall.portal.service.OmsOrderService;
@@ -38,9 +39,13 @@ public class OrderPostTask {
             CommonResult result = portalOrderService.getOrderId(post.getOrderId());
             if (result.getCode() == CommonResult.SUCCESS && null != result.getData()) {
                 OmsOrderModel data = (OmsOrderModel) result.getData();
+                List<OmsLogisticOrderModel> logisticOrders = portalOrderService.getLogisticOrders(data.getOrderNo());
                 UmsMemberReceiveAddress address = data.getAddress();
                 logisticService.uploadIdentify(address.getName(), address.getIdentityNo(), address.getIdentityFront(), address.getIdentityBack());
-                ZhRecordBean orderBean = new ZhRecordBean();
+                logisticOrders.stream().forEach(logisticOrder -> {
+                    ZhRecordBean orderBean = new ZhRecordBean();
+//                    orderBean.setChrjjr();
+                });
 //                logisticService.recordLogistic();
             }
         } catch (Exception ex) {
